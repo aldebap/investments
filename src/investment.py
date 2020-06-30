@@ -7,6 +7,7 @@
 ################################################################################
 
 import json
+import sys
 
 #   Investment Operation class
 
@@ -67,11 +68,15 @@ class InvestmentDataFile:
         self.investment = []
 
     def load(self):
-		with open(self.dataFileName, 'r') as fileHandler:
-			fileDataAttributes = json.load(fileHandler)
+        with open(self.dataFileName, 'r') as fileHandler:
+            fileData = json.load(fileHandler)
 
-        self.investment = Configuration.unserialize(fileDataAttributes)
+        for investment in fileData['investments']:
+            self.investment.append(investment)
 
-	def save( self, configurationRef ):
-		with open( self.dataFileName, 'w' ) as fileHandler:
-			json.dump( Configuration.serialize( configurationRef ), fileHandler )
+        sys.stdout.write(f'[debug] Data file loaded: {self.investment}\n')
+
+    def save(self, configurationRef):
+        with open(self.dataFileName, 'w') as fileHandler:
+            json.dump(Configuration.serialize(
+                configurationRef), fileHandler)

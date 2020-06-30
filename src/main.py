@@ -32,14 +32,14 @@ def main():
     parser = argparse.ArgumentParser(description='Investments Application')
 
     parser.add_argument('-d', '--dataFileName=', dest='dataFileName',
-                        action='store', required=True, help='specify the investments data file name')
+                        action='store', help='specify the investments data file name')
     parser.add_argument('--version', dest='version', action='store_true',
                         help='output version information and exit')
 
     args = parser.parse_args()
 
     if True == args.version:
-        sys.stdout.write('Investment Application V1.0')
+        sys.stdout.write('Investments Application V1.0')
         sys.stdout.write(
             'This is free software: you are free to change and redistribute it.')
         sys.stdout.write('Written by Aldebaran Perseke (github.com/aldebap)')
@@ -48,8 +48,8 @@ def main():
     print(">>>>> Investments Application\n\n")
 
     if args.dataFileName is not None:
-        if os.path.isfile(args.dataFileName):
-            print("[info] Data file will be created\n")
+        if not os.path.isfile(args.dataFileName):
+            sys.stdout.write('[info] Data file will be created\n')
 
     myInvestmentServer = InvestmentServer(args.dataFileName)
     myInvestmentServer.start()
