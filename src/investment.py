@@ -1,13 +1,14 @@
 #!  /usr/local/bin/python3
 
 ################################################################################
-# investment.py  -  Jul-25-2020 by aldebap
+# investment.py  -  Jun-25-2020 by aldebap
 #
 # Investment class
 ################################################################################
 
 import json
 import sys
+import uuid
 
 #   Investment Operation class
 
@@ -15,6 +16,7 @@ import sys
 class Operation:
 
     def __init__(self):
+        self.id = ''
         self.date = ''
         self.description = ''
         self.amount = 0
@@ -25,6 +27,7 @@ class Operation:
 class Balance:
 
     def __init__(self):
+        self.id = ''
         self.date = ''
         self.amount = 0
 
@@ -34,6 +37,7 @@ class Balance:
 class Revenue:
 
     def __init__(self):
+        self.id = ''
         self.date = ''
         self.description = ''
         self.amount = 0
@@ -44,6 +48,7 @@ class Revenue:
 class Investment:
 
     def __init__(self):
+        self.id = ''
         self.name = ''
         self.type = ''
         self.bank = ''
@@ -51,12 +56,39 @@ class Investment:
         self.balance = []
         self.revenue = []
 
-    def start(self):
-        myConfigurationFile = ConfigurationFile(self.fileName)
-        myConfiguration = myConfigurationFile.load()
+    def __str__(self):
+        return f'{self.id}: {self.name} / {self.type} @ {self.bank}'
 
-        myListener = Listener(myConfiguration)
-        myListener.start()
+    @classmethod
+    def serialize(cls, ref):
+        attributes = {
+            "id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
+        }
+
+        return json.dumps(attributes)
+
+    @classmethod
+    def unserialize(cls, ref):
+        if isinstance(ref, dict):
+            attributes = ref
+        else:
+            attributes = json.loads(ref)
+
+        if 'id' not in attributes:
+            investmentID = uuid.uuid4()
+        else:
+            investmentID = attributes['id']
+        name = attributes['name']
+        investmentType = attributes['type']
+        bank = attributes['bank']
+
+        investmentAux = Investment()
+        investmentAux.id = investmentID
+        investmentAux.name = name
+        investmentAux.type = investmentType
+        investmentAux.bank = bank
+
+        return investmentAux
 
 #   InvestmentDataFile class
 
@@ -71,10 +103,12 @@ class InvestmentDataFile:
         with open(self.dataFileName, 'r') as fileHandler:
             fileData = json.load(fileHandler)
 
-        for investment in fileData['investments']:
-            self.investment.append(investment)
+        for investmentAttributes in fileData['investments']:
+            self.investment.append(
+                Investment.unserialize(investmentAttributes))
 
-        sys.stdout.write(f'[debug] Data file loaded: {self.investment}\n')
+        for investment in self.investment:
+            sys.stdout.write(f'[debug] Investment loaded: {investment}\n')
 
     def save(self, configurationRef):
         with open(self.dataFileName, 'w') as fileHandler:

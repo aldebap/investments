@@ -1,9 +1,9 @@
 #!	/usr/bin/python3
 
 ################################################################################
-#	test_cut.py  -  Nov-15-2018 by aldebap
+#	test_main.py  -  Jun-29-2020 by aldebap
 #
-#	Unit tests for the Python version of GNU Linux cut utility
+#	Unit tests for the entry point of the Investments Application
 ################################################################################
 
 from io import StringIO
@@ -18,9 +18,9 @@ import main
 #   Unit tests class
 
 
-class test_cut(unittest.TestCase):
+class test_main(unittest.TestCase):
 
-    #   cut.main() function tests
+    #   main.main() function tests
 
     #   test main - 01. check for no required options
     def test_main_withoutOptions(self):
