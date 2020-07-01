@@ -1,5 +1,6 @@
 #!  /usr/local/bin/python3
 
+from flask import Flask
 from investment import InvestmentDataFile
 
 ################################################################################
@@ -13,9 +14,18 @@ from investment import InvestmentDataFile
 
 class APIServer:
 
-    def __init__(self, portNumber):
+    def __init__(self, context, portNumber):
+        self.context = context
         self.portNumber = portNumber
+        self.flaskApp = None
 
     def start(self):
-        myListener = Listener(myConfiguration)
-        myListener.start()
+        self.flaskApp = Flask(__name__)
+
+        self.flaskApp.add_url_rule(
+            f'/{self.context}/v1/banks', 'GET banks', self. banks)
+
+        self.flaskApp.run()
+
+    def banks(self):
+        return '{ "Banks": [] }'

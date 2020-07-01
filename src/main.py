@@ -1,4 +1,5 @@
-#!  /usr/local/bin/python3
+#!  ../flask/bin/python3
+# #!  /usr/local/bin/python3
 
 ################################################################################
 # main.py  -  Jun-25-2020 by aldebap
@@ -11,6 +12,7 @@ import os.path
 import sys
 
 from investment import InvestmentDataFile
+from service import APIServer
 
 #   Application's class
 
@@ -19,10 +21,15 @@ class InvestmentServer:
 
     def __init__(self, dataFileName):
         self.dataFileName = dataFileName
+        self.APIServer = APIServer('investment', 8080)
+        # TODO: use a constant to set the context name
+        # TODO: use an argument to set the port number
 
     def start(self):
         myInvestmentDataFile = InvestmentDataFile(self.dataFileName)
         myInvestmentDataFile.load()
+
+        self.APIServer.start()
 
 #   Application's entry point
 
