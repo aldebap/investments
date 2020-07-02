@@ -1,0 +1,26 @@
+swagger: "2.0"
+info:
+  description: Investments Application Swagger file
+  version: "1.0.0"
+  title: Swagger file
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/investment"
+
+# Routes to application APIs
+paths:
+  /v1/banks:
+    get:
+      operationId: "service.APIServer.banks"
+      tags:
+        - "Banks"
+      summary: "The banks data structure supported by the server application"
+      description: "Get the list of all banks"
+      responses:
+        200:
+          description: "Successful get banks list operation"
+          schema:
+            type: "array"

@@ -11,25 +11,7 @@ import argparse
 import os.path
 import sys
 
-from investment import InvestmentDataFile
 from service import APIServer
-
-#   Application's class
-
-
-class InvestmentServer:
-
-    def __init__(self, dataFileName):
-        self.dataFileName = dataFileName
-        self.APIServer = APIServer('investment', 8080)
-        # TODO: use a constant to set the context name
-        # TODO: use an argument to set the port number
-
-    def start(self):
-        myInvestmentDataFile = InvestmentDataFile(self.dataFileName)
-        myInvestmentDataFile.load()
-
-        self.APIServer.start()
 
 #   Application's entry point
 
@@ -54,12 +36,15 @@ def main():
 
     print(">>>>> Investments Application\n\n")
 
+    # TODO: correctly check for the required data file argument
     if args.dataFileName is not None:
         if not os.path.isfile(args.dataFileName):
             sys.stdout.write('[info] Data file will be created\n')
 
-    myInvestmentServer = InvestmentServer(args.dataFileName)
-    myInvestmentServer.start()
+    # TODO: use a constant to set the context name
+    # TODO: use an argument to set the port number
+    myAPIServer = APIServer('investment', 8080, args.dataFileName)
+    myAPIServer.start()
 
 
 #   Application's entry point

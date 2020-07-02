@@ -107,10 +107,19 @@ class InvestmentDataFile:
             self.investment.append(
                 Investment.unserialize(investmentAttributes))
 
-        for investment in self.investment:
-            sys.stdout.write(f'[debug] Investment loaded: {investment}\n')
+        # for investment in self.investment:
+        #    sys.stdout.write(f'[debug] Investment loaded: {investment}\n')
 
     def save(self, configurationRef):
         with open(self.dataFileName, 'w') as fileHandler:
             json.dump(Configuration.serialize(
                 configurationRef), fileHandler)
+
+    def getAllBanks(self):
+        bankList = []
+
+        for investment in self.investment:
+            if investment.bank not in bankList:
+                bankList.append(investment.bank)
+
+        return bankList

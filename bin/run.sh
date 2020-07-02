@@ -10,7 +10,6 @@ export  DATAFILENAME=investimentos.json
 if [ -d 'flask' ]
 then
     source flask/bin/activate
-    echo source flask/bin/activate
 fi
 
 cd "${PYTHONPATH}"
