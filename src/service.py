@@ -29,11 +29,9 @@ class APIServer:
         # self.flaskApp.add_api('swagger.yml')
 
         self.flaskApp.add_url_rule(
-            f'/{self.context}/v1/banks', 'GET banks', self. banks)
+            f'/{self.context}/v1/banks', 'GET banks', self. banks, methods=['GET'])
 
         self.flaskApp.run(port=self.portNumber)
 
     def banks(self):
-        bankList = self.investmentDataFile.getAllBanks()
-
-        return '{ "Banks": ' + f'{bankList}' + ' }'
+        return {"Banks": self.investmentDataFile.getAllBanks()}
