@@ -43,17 +43,22 @@ class APIServer:
 
         self.flaskApp.run(port=self.portNumber)
 
-    #   service to get a lista of all banks
+    #   service to get a list of all banks
     @classmethod
     def banks(cls):
         return {"Banks": cls._singleInstance.investmentDataFile.getAllBanks()}
 
-    #   service to get a lista of all funds of a bank
+    #   service to get a list of all funds of a bank
     @classmethod
     def funds(cls, bank):
         return {"Funds": cls._singleInstance.investmentDataFile.getAllFunds(bank)}
 
-    #   service to get a lista of all types
+    #   service to get a list of all types
     @classmethod
     def types(cls):
         return {"Types": cls._singleInstance.investmentDataFile.getAllTypes()}
+
+    #   service to get a list with the balances of investments
+    @classmethod
+    def balances(cls):
+        return {"Balance": cls._singleInstance.investmentDataFile.getBalances()}

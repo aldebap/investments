@@ -56,3 +56,16 @@ paths:
           description: "Successful get types list operation"
           schema:
             type: "array"
+
+  /v1/balances:
+    get:
+      operationId: "service.APIServer.balances"
+      tags:
+        - "Balances"
+      summary: "A list with the balances of investments"
+      description: "Get the list of balances of investments"
+      responses:
+        200:
+          description: "Successful get a list of investments balances"
+          schema:
+            type: "array"

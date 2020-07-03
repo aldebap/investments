@@ -141,3 +141,8 @@ class InvestmentDataFile:
                 typeList.append(investment.type)
 
         return typeList
+
+    def getBalances(self):
+        balanceList = []
+
+        return balanceList
