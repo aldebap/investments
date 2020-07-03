@@ -123,3 +123,21 @@ class InvestmentDataFile:
                 bankList.append(investment.bank)
 
         return bankList
+
+    def getAllFunds(self, bank):
+        fundList = []
+
+        for investment in self.investment:
+            if investment.bank == bank and investment.name not in fundList:
+                fundList.append(investment.name)
+
+        return fundList
+
+    def getAllTypes(self):
+        typeList = []
+
+        for investment in self.investment:
+            if investment.type not in typeList:
+                typeList.append(investment.type)
+
+        return typeList

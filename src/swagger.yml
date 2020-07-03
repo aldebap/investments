@@ -17,10 +17,42 @@ paths:
       operationId: "service.APIServer.banks"
       tags:
         - "Banks"
-      summary: "The banks data structure supported by the server application"
+      summary: "A list of bank names"
       description: "Get the list of all banks"
       responses:
         200:
           description: "Successful get banks list operation"
+          schema:
+            type: "array"
+
+  /v1/banks/{bank}/funds:
+    get:
+      operationId: "service.APIServer.funds"
+      tags:
+        - "Funds"
+      summary: "A list of fund names by bank"
+      description: "Get the list of all funds of a particular bank"
+      parameters:
+        - name: bank
+          in: path
+          description: Bank name to get fund list
+          type: string
+          required: True
+      responses:
+        200:
+          description: "Successful get funds list operation"
+          schema:
+            type: "array"
+
+  /v1/types:
+    get:
+      operationId: "service.APIServer.types"
+      tags:
+        - "Types"
+      summary: "A list of investment type names"
+      description: "Get the list of all types"
+      responses:
+        200:
+          description: "Successful get types list operation"
           schema:
             type: "array"

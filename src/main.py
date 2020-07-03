@@ -41,10 +41,10 @@ def main():
         if not os.path.isfile(args.dataFileName):
             sys.stdout.write('[info] Data file will be created\n')
 
-    # TODO: use a constant to set the context name
     # TODO: use an argument to set the port number
-    myAPIServer = APIServer('investment', 8080, args.dataFileName)
-    myAPIServer.start()
+    myAPIServer = APIServer.instance()
+
+    myAPIServer.start(8080, args.dataFileName)
 
 
 #   Application's entry point
