@@ -61,4 +61,10 @@ class APIServer:
     #   service to get a list with the balances of investments
     @classmethod
     def balances(cls):
-        return {"Balance": cls._singleInstance.investmentDataFile.getBalances()}
+        balances = cls._singleInstance.investmentDataFile.getBalances()
+        investmentList = []
+
+        for investment in balances:
+            investmentList.append(investment.to_json())
+
+        return {"Investments": investmentList}
