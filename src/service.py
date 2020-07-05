@@ -58,13 +58,12 @@ class APIServer:
     def types(cls):
         return {"Types": cls._singleInstance.investmentDataFile.getAllTypes()}
 
-    #   service to get a list with the balances of investments
+    #   service to get a list with the investments
     @classmethod
-    def balances(cls):
-        balances = cls._singleInstance.investmentDataFile.getBalances()
-        investmentList = []
+    def investments(cls, startDate, endDate):
+        if startDate == '_':
+            startDate = None
+        if endDate == '_':
+            endDate = None
 
-        for investment in balances:
-            investmentList.append(investment.to_json())
-
-        return {"Investments": investmentList}
+        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(startDate, endDate)}

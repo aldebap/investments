@@ -192,25 +192,35 @@ class InvestmentDataFile:
 
         return typeList
 
-    # fetch the balance from all investment from the invetments content
-    def getBalances(self):
-        balanceList = []
+    # fetch all investments from the invetments content
+    def getInvestments(self, startDate, endDate):
+        investmentList = []
 
         for investment in self.investment:
-            currentBalance = None
+            balance = []
 
             for balanceItem in investment.balance:
-                if currentBalance is None or currentBalance.date < balanceItem.date:
-                    currentBalance = balanceItem
+                if startDate is None and endDate is None:
+                    if len(balance) == 0:
+                        balance.append(balanceItem)
+                    elif balance[0].date < balanceItem.date:
+                        balance[0] = balanceItem
+                else:
+                    if startDate is not None and endDate is None and startDate <= balanceItem.date:
+                        balance.append(balanceItem)
+                    elif startDate is None and endDate is not None and endDate >= balanceItem.date:
+                        balance.append(balanceItem)
+                    elif startDate is not None and endDate is not None and startDate <= balanceItem.date and endDate >= balanceItem.date:
+                        balance.append(balanceItem)
 
-            if currentBalance is not None and currentBalance.amount > 0:
+            if len(balance) != 0 and balance[0].amount > 0:
                 investmentAux = Investment()
                 investmentAux.id = investment.id
                 investmentAux.name = investment.name
                 investmentAux.type = investment.type
                 investmentAux.bank = investment.bank
-                investmentAux.balance = [currentBalance]
+                investmentAux.balance = balance
 
-                balanceList.append(investmentAux)
+                investmentList.append(investmentAux.to_json())
 
-        return balanceList
+        return investmentList
