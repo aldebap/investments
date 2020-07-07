@@ -71,7 +71,7 @@ class APIServer:
 
     #   service to get an investment given it's ID
     @classmethod
-    def investmentsByID(cls, investmentId, startDate, endDate, active):
+    def investmentByID(cls, investmentId, startDate, endDate, active):
         #   query parameters not informed are defaulted to '_' so, change it to None for the getInvestment() function
         if startDate == '_':
             startDate = None

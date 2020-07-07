@@ -91,7 +91,7 @@ paths:
 
   /v1/invetments/{investmentId}:
     get:
-      operationId: "service.APIServer.investmentsByID"
+      operationId: "service.APIServer.investmentByID"
       parameters:
         - name: investmentId
           in: path
