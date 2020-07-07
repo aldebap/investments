@@ -21,6 +21,38 @@ class Operation:
         self.description = ''
         self.amount = 0
 
+    def to_json(self):
+        return {
+            "id": self.id, "date": self.date, "description": self.description, "amount": self.amount
+        }
+
+    # unserialize a JSon as an Operation object
+    @classmethod
+    def unserialize(cls, ref):
+        if isinstance(ref, dict):
+            attributes = ref
+        else:
+            attributes = json.loads(ref)
+
+        if 'id' not in attributes:
+            operationID = uuid.uuid4()
+        else:
+            operationID = attributes['id']
+        date = attributes['date']
+        if 'description' not in attributes:
+            description = ''
+        else:
+            description = attributes['description']
+        amount = attributes['amount']
+
+        operationAux = Operation()
+        operationAux.id = operationID
+        operationAux.date = date
+        operationAux.description = description
+        operationAux.amount = amount
+
+        return operationAux
+
 #   Investment Balance class
 
 
@@ -87,13 +119,17 @@ class Investment:
         return f'{self.id}: {self.name} / {self.type} @ {self.bank}'
 
     def to_json(self):
+        operationList = []
         balanceList = []
+
+        for operation in self.operation:
+            operationList.append(operation.to_json())
 
         for balance in self.balance:
             balanceList.append(balance.to_json())
 
         return {
-            "id": self.id, "name": self.name, "type": self.type, "bank": self.bank, "balance": balanceList
+            "id": self.id, "name": self.name, "type": self.type, "bank": self.bank, "operations": operationList, "balance": balanceList
         }
 
     # serialize an Investment object into a JSon
@@ -135,6 +171,11 @@ class Investment:
             for balanceItemAttributes in attributes['balance']:
                 investmentAux.balance.append(
                     Balance.unserialize(balanceItemAttributes))
+
+        if 'operations' in attributes:
+            for operationItemAttributes in attributes['operations']:
+                investmentAux.operation.append(
+                    Operation.unserialize(operationItemAttributes))
 
         return investmentAux
 
@@ -193,10 +234,26 @@ class InvestmentDataFile:
         return typeList
 
     # fetch all investments from the invetments content
-    def getInvestments(self, startDate, endDate):
+    def getInvestments(self, investmentId, startDate, endDate, active):
         investmentList = []
 
         for investment in self.investment:
+            operation = []
+
+            for operationItem in investment.operation:
+                if startDate is None and endDate is None:
+                    if len(operation) == 0:
+                        operation.append(operationItem)
+                    elif operation[0].date < operationItem.date:
+                        operation[0] = operationItem
+                else:
+                    if startDate is not None and endDate is None and startDate <= operationItem.date:
+                        operation.append(operationItem)
+                    elif startDate is None and endDate is not None and endDate >= operationItem.date:
+                        operation.append(operationItem)
+                    elif startDate is not None and endDate is not None and startDate <= operationItem.date and endDate >= operationItem.date:
+                        operation.append(operationItem)
+
             balance = []
 
             for balanceItem in investment.balance:
@@ -213,12 +270,15 @@ class InvestmentDataFile:
                     elif startDate is not None and endDate is not None and startDate <= balanceItem.date and endDate >= balanceItem.date:
                         balance.append(balanceItem)
 
-            if len(balance) != 0 and balance[0].amount > 0:
+            # TODO: the vector needs to be sorted in order to the first item to be the current
+            # TODO: there's a bug in the investmentID filter
+            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[0].amount > 0):
                 investmentAux = Investment()
                 investmentAux.id = investment.id
                 investmentAux.name = investment.name
                 investmentAux.type = investment.type
                 investmentAux.bank = investment.bank
+                investmentAux.operation = operation
                 investmentAux.balance = balance
 
                 investmentList.append(investmentAux.to_json())

@@ -60,10 +60,22 @@ class APIServer:
 
     #   service to get a list with the investments
     @classmethod
-    def investments(cls, startDate, endDate):
+    def investments(cls, startDate, endDate, active):
+        #   query parameters not informed are defaulted to '_' so, change it to None for the getInvestment() function
         if startDate == '_':
             startDate = None
         if endDate == '_':
             endDate = None
 
-        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(startDate, endDate)}
+        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(None, startDate, endDate, active)}
+
+    #   service to get an investment given it's ID
+    @classmethod
+    def investmentsByID(cls, investmentId, startDate, endDate, active):
+        #   query parameters not informed are defaulted to '_' so, change it to None for the getInvestment() function
+        if startDate == '_':
+            startDate = None
+        if endDate == '_':
+            endDate = None
+
+        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}

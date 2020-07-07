@@ -73,6 +73,49 @@ paths:
           type: string
           required: False
           default: "_"
+        - name: active
+          in: query
+          description: Indicate when to fetch active only investments
+          type: boolean
+          required: False
+          default: True
+      tags:
+        - "Investments"
+      summary: "A list with the investments"
+      description: "Get the list of investments"
+      responses:
+        200:
+          description: "Successful get a list of investments"
+          schema:
+            type: "array"
+
+  /v1/invetments/{investmentId}:
+    get:
+      operationId: "service.APIServer.investmentsByID"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to get a specific item from the list
+          type: string
+          required: True
+        - name: startDate
+          in: query
+          description: The start date to get balance values
+          type: string
+          required: False
+          default: "_"
+        - name: endDate
+          in: query
+          description: The end date to get balance values
+          type: string
+          required: False
+          default: "_"
+        - name: active
+          in: query
+          description: Indicate when to fetch active only investments
+          type: boolean
+          required: False
+          default: True
       tags:
         - "Investments"
       summary: "A list with the investments"
