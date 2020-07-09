@@ -2,7 +2,8 @@
 
 from flask import Flask
 import connexion
-from investment import InvestmentDataFile
+
+from investmentData import InvestmentDataFile
 
 ################################################################################
 # service.py  -  Jun-30-2020 by aldebap
