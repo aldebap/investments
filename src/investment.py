@@ -81,25 +81,28 @@ class Investment:
         investmentAux.type = investmentType
         investmentAux.bank = bank
 
-        investmentAux.operation = []
+        operationAux = []
 
         if 'operations' in attributes:
             for operationItemAttributes in attributes['operations']:
-                investmentAux.operation.append(
-                    Operation.unserialize(operationItemAttributes))
+                operationAux.append(Operation.unserialize(operationItemAttributes))
 
-        investmentAux.balance = []
+        investmentAux.operation = sorted(operationAux)
+
+        balanceAux = []
 
         if 'balance' in attributes:
             for balanceItemAttributes in attributes['balance']:
-                investmentAux.balance.append(
-                    Balance.unserialize(balanceItemAttributes))
+                balanceAux.append(Balance.unserialize(balanceItemAttributes))
 
-        investmentAux.revenue = []
+        investmentAux.balance = sorted(balanceAux)
+
+        revenueAux = []
 
         if 'revenue' in attributes:
             for revenueItemAttributes in attributes['revenue']:
-                investmentAux.revenue.append(
-                    Operation.unserialize(revenueItemAttributes))
+                revenueAux.append(Operation.unserialize(revenueItemAttributes))
+
+        investmentAux.revenue = sorted(revenueAux)
 
         return investmentAux

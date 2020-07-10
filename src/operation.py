@@ -20,6 +20,12 @@ class Operation:
         self.description = ''
         self.amount = 0
 
+    def __eq__(self, ref):
+        return self.date == ref.date
+
+    def __lt__(self, ref):
+        return self.date < ref.date
+
     def to_json(self):
         return {
             "id": self.id, "date": self.date, "description": self.description, "amount": self.amount

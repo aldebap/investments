@@ -26,14 +26,12 @@ class InvestmentDataFile:
             fileData = json.load(fileHandler)
 
         for investmentAttributes in fileData['investments']:
-            self.investment.append(
-                Investment.unserialize(investmentAttributes))
+            self.investment.append(Investment.unserialize(investmentAttributes))
 
     # serialize the investments content onto the investment data file
     def save(self, configurationRef):
         with open(self.dataFileName, 'w') as fileHandler:
-            json.dump(Configuration.serialize(
-                configurationRef), fileHandler)
+            json.dump(Configuration.serialize(configurationRef), fileHandler)
 
     # fetch all banks from the invetments content
     def getAllBanks(self):
@@ -70,6 +68,7 @@ class InvestmentDataFile:
         investmentList = []
 
         for investment in self.investment:
+            # TODO: if no period is given, should consider operations and revenue from last balance item forth
             operation = []
 
             for operationItem in investment.operation:
@@ -88,6 +87,7 @@ class InvestmentDataFile:
 
             balance = []
 
+            # TODO: this algorithm can be improved
             for balanceItem in investment.balance:
                 if startDate is None and endDate is None:
                     if len(balance) == 0:
@@ -118,9 +118,8 @@ class InvestmentDataFile:
                     elif startDate is not None and endDate is not None and startDate <= revenueItem.date and endDate >= revenueItem.date:
                         revenue.append(revenueItem)
 
-            # TODO: the vector needs to be sorted in order to the first item to be the current
             # TODO: there's a bug in the investmentID filter
-            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[0].amount > 0):
+            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[len(balance) - 1].amount > 0):
                 investmentAux = Investment()
                 investmentAux.id = investment.id
                 investmentAux.name = investment.name
