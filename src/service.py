@@ -42,9 +42,10 @@ class APIServer:
         self.flaskApp = connexion.App(__name__, specification_dir='./')
         self.flaskApp.add_api('swagger.yml')
 
+        #   settings for the webApp static content
         self.webAppRoot = '../webApp'
-        self.flaskApp.add_url_rule('/<path:fileName>', 'static_content', self._serve_page, methods=['GET'])
         self.flaskApp.add_url_rule('/', 'index', self._goto_index, methods=['GET'])
+        self.flaskApp.add_url_rule('/<path:fileName>', 'staticFiles', self._serve_page, methods=['GET'])
 
         self.flaskApp.run(port=self.portNumber,debug=True)
 

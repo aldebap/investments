@@ -87,7 +87,7 @@ class Investment:
             for operationItemAttributes in attributes['operations']:
                 operationAux.append(Operation.unserialize(operationItemAttributes))
 
-        investmentAux.operation = sorted(operationAux)
+        investmentAux.operation = sorted(operationAux, reverse=True)
 
         balanceAux = []
 
@@ -95,7 +95,7 @@ class Investment:
             for balanceItemAttributes in attributes['balance']:
                 balanceAux.append(Balance.unserialize(balanceItemAttributes))
 
-        investmentAux.balance = sorted(balanceAux)
+        investmentAux.balance = sorted(balanceAux, reverse=True)
 
         revenueAux = []
 
@@ -103,6 +103,6 @@ class Investment:
             for revenueItemAttributes in attributes['revenue']:
                 revenueAux.append(Operation.unserialize(revenueItemAttributes))
 
-        investmentAux.revenue = sorted(revenueAux)
+        investmentAux.revenue = sorted(revenueAux, reverse=True)
 
         return investmentAux

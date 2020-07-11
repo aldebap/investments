@@ -119,7 +119,7 @@ class InvestmentDataFile:
                         revenue.append(revenueItem)
 
             # TODO: there's a bug in the investmentID filter
-            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[len(balance) - 1].amount > 0):
+            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[0].amount > 0):
                 investmentAux = Investment()
                 investmentAux.id = investment.id
                 investmentAux.name = investment.name
