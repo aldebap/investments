@@ -27,7 +27,7 @@ def main():
     args = parser.parse_args()
 
     if True == args.version:
-        sys.stdout.write('Investments Application V1.0\n')
+        sys.stdout.write('Investments Application V1.0\n\n')
         sys.stdout.write('This is free software: you are free to change and redistribute it.\n')
         sys.stdout.write('Written by Aldebaran Perseke (github.com/aldebap)\n')
         return
@@ -43,6 +43,7 @@ def main():
         sys.stdout.write('[error] argument for --portNumber must be a positive number\n')
         return
 
+    #   instantiate and run the API Web Server
     myAPIServer = APIServer.instance()
 
     myAPIServer.start(args.portNumber, args.dataFileName)

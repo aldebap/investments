@@ -1,6 +1,6 @@
 #!  /usr/local/bin/python3
 
-from flask import Flask
+from flask import Flask, send_from_directory
 import connexion
 
 from investmentData import InvestmentDataFile
@@ -38,11 +38,26 @@ class APIServer:
 
         self.investmentDataFile.load()
 
+        #self.flaskApp = Flask(__name__, static_url_path='/webApp', static_folder='./static/')
         self.flaskApp = Flask(__name__)
         self.flaskApp = connexion.App(__name__, specification_dir='./')
         self.flaskApp.add_api('swagger.yml')
 
-        self.flaskApp.run(port=self.portNumber)
+        self.webAppRoot = '../webApp'
+        self.flaskApp.add_url_rule('/', 'index', self._goto_index, methods=['GET'])
+
+        self.flaskApp.run(port=self.portNumber,debug=True)
+
+    def _goto_index(self):
+        return self._serve_page('index.html')
+
+    def _serve_page(self, fileName):
+        return send_from_directory(self.webAppRoot, fileName)
+
+    #   service to get a list of all banks
+    @classmethod
+    def staticFile(cls, path):
+        return cls._singleInstance.flaskApp.send_static_file(path)
 
     #   service to get a list of all banks
     @classmethod
