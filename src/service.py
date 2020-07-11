@@ -38,12 +38,12 @@ class APIServer:
 
         self.investmentDataFile.load()
 
-        #self.flaskApp = Flask(__name__, static_url_path='/webApp', static_folder='./static/')
         self.flaskApp = Flask(__name__)
         self.flaskApp = connexion.App(__name__, specification_dir='./')
         self.flaskApp.add_api('swagger.yml')
 
         self.webAppRoot = '../webApp'
+        self.flaskApp.add_url_rule('/<path:fileName>', 'static_content', self._serve_page, methods=['GET'])
         self.flaskApp.add_url_rule('/', 'index', self._goto_index, methods=['GET'])
 
         self.flaskApp.run(port=self.portNumber,debug=True)
