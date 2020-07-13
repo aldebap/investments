@@ -22,33 +22,33 @@ function getInvestments() {
         method: "GET",
         success: (_result) => {
             let line = 1;
+            let maxDate = '';
             let totalAmount = 0;
 
-            //  TODO: amount formmating
-            //  TODO: date formmating
-            //  TODO: during iteration, save the most recent date
             _result['Investments'].forEach((investment) => {
                 $('tbody').append('<tr id="' + investment.id + '">');
                 $('#' + investment.id).append('<td>' + line);
                 $('#' + investment.id).append('<td>' + investment.bank);
                 $('#' + investment.id).append('<td>' + investment.type);
                 $('#' + investment.id).append('<td>' + investment.name);
-                $('#' + investment.id).append('<td>' + investment.balance[0].date);
-                $('#' + investment.id).append('<td style="text-align:right">' + investment.balance[0].amount);
+                $('#' + investment.id).append('<td>' + investment.balance[0].date.slice(6) + '/' + investment.balance[0].date.slice(4, 6)
+                    + '/' + investment.balance[0].date.slice(0, 4));
+                $('#' + investment.id).append('<td style="text-align:right">' + investment.balance[0].amount.toFixed(2));
 
+                if (maxDate == '' || investment.balance[0].date > maxDate) {
+                    maxDate = investment.balance[0].date;
+                }
                 totalAmount += investment.balance[0].amount;
                 line++;
             });
 
-            //  TODO: use a different background colour for the total line
-            //  TODO: amount formmating
-            $('tbody').append('<tr id="totalAmount">');
+            $('tbody').append('<tr id="totalAmount" class="table-active">');
             $('#totalAmount').append('<td>Total');
             $('#totalAmount').append('<td>&nbsp;');
             $('#totalAmount').append('<td>&nbsp;');
             $('#totalAmount').append('<td>&nbsp;');
-            $('#totalAmount').append('<td>&nbsp;');
-            $('#totalAmount').append('<td style="text-align:right">' + totalAmount);
+            $('#totalAmount').append('<td>' + maxDate.slice(6) + '/' + maxDate.slice(4, 6) + '/' + maxDate.slice(0, 4));
+            $('#totalAmount').append('<td style="text-align:right">' + totalAmount.toFixed(2));
         }
     });
 }

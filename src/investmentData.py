@@ -67,59 +67,55 @@ class InvestmentDataFile:
     def getInvestments(self, investmentId, startDate, endDate, active):
         investmentList = []
 
-        for investment in self.investment:
-            # TODO: if no period is given, should consider operations and revenue from last balance item forth
-            operation = []
+        #   if no period is informed, find the second max date in such a way to allow evaluate the evolution
+        #   TODO: figure out a better way to do this
+        if startDate is None and endDate is None:
+            for investment in self.investment:
+                if len(investment.balance) > 1 and (startDate is None or investment.balance[ 1 ].date > startDate):
+                    startDate = investment.balance[ 1 ].date
 
-            for operationItem in investment.operation:
-                if startDate is None and endDate is None:
-                    if len(operation) == 0:
-                        operation.append(operationItem)
-                    elif operation[0].date < operationItem.date:
-                        operation[0] = operationItem
-                else:
-                    if startDate is not None and endDate is None and startDate <= operationItem.date:
-                        operation.append(operationItem)
-                    elif startDate is None and endDate is not None and endDate >= operationItem.date:
-                        operation.append(operationItem)
-                    elif startDate is not None and endDate is not None and startDate <= operationItem.date and endDate >= operationItem.date:
-                        operation.append(operationItem)
+        #   trasverse the investments list to fetch those that satisfy all search criteria
+        for investment in self.investment:
+            if active == True and investment.balance[0].amount == 0:
+                continue
+
+            #   there's a bug when the investmentId is given
+            if investmentId is not None and investmentId != investment.id:
+                print( f'[debug] investmentId: {investmentId}; investment.id: {investment.id};' )
+                continue
 
             balance = []
 
-            # TODO: this algorithm can be improved
             for balanceItem in investment.balance:
-                if startDate is None and endDate is None:
-                    if len(balance) == 0:
-                        balance.append(balanceItem)
-                    elif balance[0].date < balanceItem.date:
-                        balance[0] = balanceItem
-                else:
-                    if startDate is not None and endDate is None and startDate <= balanceItem.date:
-                        balance.append(balanceItem)
-                    elif startDate is None and endDate is not None and endDate >= balanceItem.date:
-                        balance.append(balanceItem)
-                    elif startDate is not None and endDate is not None and startDate <= balanceItem.date and endDate >= balanceItem.date:
-                        balance.append(balanceItem)
+                if startDate is not None and endDate is None and startDate <= balanceItem.date:
+                    balance.append(balanceItem)
+                elif startDate is None and endDate is not None and endDate >= balanceItem.date:
+                    balance.append(balanceItem)
+                elif startDate is not None and endDate is not None and startDate <= balanceItem.date and endDate >= balanceItem.date:
+                    balance.append(balanceItem)
+
+            operation = []
+
+            for operationItem in investment.operation:
+                if startDate is not None and endDate is None and startDate <= operationItem.date:
+                    operation.append(operationItem)
+                elif startDate is None and endDate is not None and endDate >= operationItem.date:
+                    operation.append(operationItem)
+                elif startDate is not None and endDate is not None and startDate <= operationItem.date and endDate >= operationItem.date:
+                    operation.append(operationItem)
+
 
             revenue = []
 
             for revenueItem in investment.revenue:
-                if startDate is None and endDate is None:
-                    if len(revenue) == 0:
-                        revenue.append(revenueItem)
-                    elif revenue[0].date < revenueItem.date:
-                        revenue[0] = revenueItem
-                else:
-                    if startDate is not None and endDate is None and startDate <= revenueItem.date:
-                        revenue.append(revenueItem)
-                    elif startDate is None and endDate is not None and endDate >= revenueItem.date:
-                        revenue.append(revenueItem)
-                    elif startDate is not None and endDate is not None and startDate <= revenueItem.date and endDate >= revenueItem.date:
-                        revenue.append(revenueItem)
+                if startDate is not None and endDate is None and startDate <= revenueItem.date:
+                    revenue.append(revenueItem)
+                elif startDate is None and endDate is not None and endDate >= revenueItem.date:
+                    revenue.append(revenueItem)
+                elif startDate is not None and endDate is not None and startDate <= revenueItem.date and endDate >= revenueItem.date:
+                    revenue.append(revenueItem)
 
-            # TODO: there's a bug in the investmentID filter
-            if len(balance) != 0 and (investmentId is None or investmentId == investment.id) and (active == False or balance[0].amount > 0):
+            if len(balance) > 0:
                 investmentAux = Investment()
                 investmentAux.id = investment.id
                 investmentAux.name = investment.name
