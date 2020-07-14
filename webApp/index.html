@@ -29,6 +29,7 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             View
                         </a>
+                        <!-- TODO: create codo to make both views available -->
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Listing view</a>
                             <a class="dropdown-item" href="#">Graphical view</a>
@@ -42,8 +43,13 @@
                 </div>
                 -->
                 <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="startDate" aria-label="Start date">
-                    <input class="form-control mr-sm-2" type="search" placeholder="endDate" aria-label="End date">
+                    <!-- TODO: implement date period filtering -->
+                    <!-- TODO: create a service to make these two fields dropboxes -->
+                    <input class="form-control mr-sm-2" type="search" placeholder="startDate" aria-label="Start date"
+                        id="filterStartDate">
+                    <input class="form-control mr-sm-2" type="search" placeholder="endDate" aria-label="End date"
+                        id="filterEndDate">
+                    <!-- TODO: add a field to indicate active investments -->
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Filter</button>
                 </form>
             </div>
@@ -57,7 +63,7 @@
     <script type="text/javascript" src="js/investments.js"></script>
 
     <script type="text/javascript">
-        getInvestments();
+        loadInvestments();
     </script>
 </body>
 

@@ -57,7 +57,7 @@ paths:
           schema:
             type: "array"
 
-  /v1/invetments:
+  /v1/investments:
     get:
       operationId: "service.APIServer.investments"
       parameters:
@@ -89,7 +89,7 @@ paths:
           schema:
             type: "array"
 
-  /v1/invetments/{investmentId}:
+  /v1/investments/{investmentId}:
     get:
       operationId: "service.APIServer.investmentByID"
       parameters:
