@@ -31,17 +31,19 @@
                         </a>
                         <!-- TODO: create codo to make both views available -->
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Listing view</a>
-                            <a class="dropdown-item" href="#">Graphical view</a>
+                            <a href="javascript:void(0);" onclick="ShowOld(2367,146986,2);"></a>
+                            <a class="dropdown-item" href="#"
+                                onclick="selectListingView(); showInvestmentsView();">Listing view</a>
+                            <a class="dropdown-item" href="#"
+                                onclick="selectEvolutionView(); showInvestmentsView();">Evolution view</a>
+                            <a class="dropdown-item" href="#"
+                                onclick="selectGraphicalView(); showInvestmentsView();">Graphical view</a>
                         </div>
                     </li>
                 </ul>
 
-                <!--
-                <div class="spinner-border text-ligth" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-                -->
+                <div id="loadingSpinner"></div>&nbsp;&nbsp;&nbsp;
+
                 <form class="form-inline my-2 my-lg-0">
                     <!-- TODO: implement date period filtering -->
                     <!-- TODO: create a service to make these two fields dropboxes -->
@@ -63,6 +65,7 @@
     <script type="text/javascript" src="js/investments.js"></script>
 
     <script type="text/javascript">
+        selectListingView();
         loadInvestments();
     </script>
 </body>

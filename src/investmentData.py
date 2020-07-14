@@ -71,8 +71,14 @@ class InvestmentDataFile:
         #   TODO: figure out a better way to do this
         if startDate is None and endDate is None:
             for investment in self.investment:
-                if len(investment.balance) > 1 and (startDate is None or investment.balance[ 1 ].date > startDate):
+                if active == True and investment.balance[0].amount == 0:
+                    continue
+
+                if len(investment.balance) > 1 and (startDate is None or investment.balance[ 1 ].date < startDate):
                     startDate = investment.balance[ 1 ].date
+
+                if endDate is None or investment.balance[ 0 ].date > endDate:
+                    endDate = investment.balance[ 0 ].date
 
         #   trasverse the investments list to fetch those that satisfy all search criteria
         for investment in self.investment:
@@ -87,32 +93,20 @@ class InvestmentDataFile:
             balance = []
 
             for balanceItem in investment.balance:
-                if startDate is not None and endDate is None and startDate <= balanceItem.date:
-                    balance.append(balanceItem)
-                elif startDate is None and endDate is not None and endDate >= balanceItem.date:
-                    balance.append(balanceItem)
-                elif startDate is not None and endDate is not None and startDate <= balanceItem.date and endDate >= balanceItem.date:
+                if startDate <= balanceItem.date and endDate >= balanceItem.date:
                     balance.append(balanceItem)
 
             operation = []
 
             for operationItem in investment.operation:
-                if startDate is not None and endDate is None and startDate <= operationItem.date:
-                    operation.append(operationItem)
-                elif startDate is None and endDate is not None and endDate >= operationItem.date:
-                    operation.append(operationItem)
-                elif startDate is not None and endDate is not None and startDate <= operationItem.date and endDate >= operationItem.date:
+                if startDate <= operationItem.date and endDate >= operationItem.date:
                     operation.append(operationItem)
 
 
             revenue = []
 
             for revenueItem in investment.revenue:
-                if startDate is not None and endDate is None and startDate <= revenueItem.date:
-                    revenue.append(revenueItem)
-                elif startDate is None and endDate is not None and endDate >= revenueItem.date:
-                    revenue.append(revenueItem)
-                elif startDate is not None and endDate is not None and startDate <= revenueItem.date and endDate >= revenueItem.date:
+                if startDate <= revenueItem.date and endDate >= revenueItem.date:
                     revenue.append(revenueItem)
 
             if len(balance) > 0:
