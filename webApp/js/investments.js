@@ -113,12 +113,12 @@ function showInvestmentsListingView() {
     $('tr').append('<th scope="col">Type</th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
-    $('tr').append('<th scope="col">Balance</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody>');
 
     let line = 1;
     let maxDate = '';
-    let totalAmount = 0;
+    let totalBalance = 0;
 
     //  TODO: to make the title  columns bank, type and name to work as a filter
     //  TODO: to make the investment line click to show the investment evolution
@@ -128,14 +128,14 @@ function showInvestmentsListingView() {
         $('#' + investment.id).append('<td>' + investment.bank);
         $('#' + investment.id).append('<td>' + investment.type);
         $('#' + investment.id).append('<td>' + investment.name);
-        $('#' + investment.id).append('<td>' + investment.balance[0].date.slice(6) + '/' + investment.balance[0].date.slice(4, 6)
-            + '/' + investment.balance[0].date.slice(0, 4));
-        $('#' + investment.id).append('<td style="text-align:right">' + investment.balance[0].amount.toFixed(2).replace(/(\d)(\d{3}[.,])/g, '$1,$2'));
+        $('#' + investment.id).append('<td>' + formatInvDate(investment.balance[0].date));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount));
 
+        //  summarize the investment to the grand total
         if (maxDate == '' || investment.balance[0].date > maxDate) {
             maxDate = investment.balance[0].date;
         }
-        totalAmount += investment.balance[0].amount;
+        totalBalance += investment.balance[0].amount;
         line++;
     });
 
@@ -144,8 +144,10 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>Total');
-    $('#totalAmount').append('<td>' + maxDate.slice(6) + '/' + maxDate.slice(4, 6) + '/' + maxDate.slice(0, 4));
-    $('#totalAmount').append('<td style="text-align:right">' + totalAmount.toFixed(2).replace(/(\d)(\d{3}[.,])/g, '$1,$2'));
+    $('#totalAmount').append('<td>' + formatInvDate(maxDate));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
+
+    $('#container').append('<a href="#" class="float"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill my-float" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4a.5.5 0 0 0-1 0v3.5H4a.5.5 0 0 0 0 1h3.5V12a.5.5 0 0 0 1 0V8.5H12a.5.5 0 0 0 0-1H8.5V4z"/></svg></a>');
 }
 
 /*  *
@@ -164,36 +166,69 @@ function showInvestmentsEvolutionView() {
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Start Date</th>');
     $('tr').append('<th scope="col">End Date</th>');
-    $('tr').append('<th scope="col">Operations</th>');
-    $('tr').append('<th scope="col">Profit</th>');
-    $('tr').append('<th scope="col">Interests</th>');
-    $('tr').append('<th scope="col">Balance</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Operations</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Profit</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Interests</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody>');
 
     let line = 1;
+    let minDate = '';
     let maxDate = '';
-    let totalAmount = 0;
+    let totalOperations = 0;
+    let totalProfit = 0;
+    let totalInterests = 0;
+    let totalBalance = 0;
 
     //  TODO: to make the title  columns bank, type and name to work as a filter
-    //  TODO: to make the investment line click to show the investment evolution
     investments.forEach((investment) => {
+        let startDate = investment.balance[investment.balance.length - 1].date;
+        let endDate = investment.balance[0].date;
+        let operationsAmount = 0;
+        let profitAmount = 0;
+
+        //  summarize all operations
+        investment.operations.forEach((operation) => {
+            operationsAmount += operation.amount;
+        });
+
+        //  summarize all profit
+        investment.revenue.forEach((revenue) => {
+            profitAmount += revenue.amount;
+        });
+
+        //  evaluate the total interests
+        let interestsAmount = investment.balance[0].amount - investment.balance[investment.balance.length - 1].amount;
+
+        //  there were a previous balance before the current operations
+        if (investment.balance[investment.balance.length - 1].amount != operationsAmount) {
+            interestsAmount -= operationsAmount;
+        }
+
         $('tbody').append('<tr id="' + investment.id + '">');
         $('#' + investment.id).append('<td>' + line);
         $('#' + investment.id).append('<td>' + investment.bank);
         $('#' + investment.id).append('<td>' + investment.type);
         $('#' + investment.id).append('<td>' + investment.name);
-        $('#' + investment.id).append('<td>' + 'TODO ...');
-        $('#' + investment.id).append('<td>' + investment.balance[0].date.slice(6) + '/' + investment.balance[0].date.slice(4, 6)
-            + '/' + investment.balance[0].date.slice(0, 4));
-        $('#' + investment.id).append('<td>' + 'TODO ...');
-        $('#' + investment.id).append('<td>' + 'TODO ...');
-        $('#' + investment.id).append('<td>' + 'TODO ...');
-        $('#' + investment.id).append('<td style="text-align:right">' + investment.balance[0].amount.toFixed(2).replace(/(\d)(\d{3}[.,])/g, '$1,$2'));
+        $('#' + investment.id).append('<td>' + formatInvDate(startDate));
+        $('#' + investment.id).append('<td>' + formatInvDate(endDate));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(operationsAmount));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(profitAmount));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(interestsAmount));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount));
 
-        if (maxDate == '' || investment.balance[0].date > maxDate) {
-            maxDate = investment.balance[0].date;
+        //  summarize the investment to the grand total
+        if (minDate == '' || startDate < minDate) {
+            minDate = startDate;
         }
-        totalAmount += investment.balance[0].amount;
+        if (maxDate == '' || endDate > maxDate) {
+            maxDate = endDate;
+        }
+        totalOperations += operationsAmount;
+        totalProfit += profitAmount;
+        totalInterests += interestsAmount;
+        totalBalance += investment.balance[0].amount;
+
         line++;
     });
 
@@ -202,12 +237,12 @@ function showInvestmentsEvolutionView() {
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>Total');
-    $('#totalAmount').append('<td>' + '---');
-    $('#totalAmount').append('<td>' + maxDate.slice(6) + '/' + maxDate.slice(4, 6) + '/' + maxDate.slice(0, 4));
-    $('#totalAmount').append('<td>' + 'TODO ...');
-    $('#totalAmount').append('<td>' + 'TODO ...');
-    $('#totalAmount').append('<td>' + 'TODO ...');
-    $('#totalAmount').append('<td style="text-align:right">' + totalAmount.toFixed(2).replace(/(\d)(\d{3}[.,])/g, '$1,$2'));
+    $('#totalAmount').append('<td>' + formatInvDate(minDate));
+    $('#totalAmount').append('<td>' + formatInvDate(maxDate));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalOperations));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalProfit));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalInterests));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 }
 
 /*  *
@@ -217,4 +252,20 @@ function showInvestmentsEvolutionView() {
 function showInvestmentsGraphicalView() {
     $('#container').empty();
     $('#container').append('<p>To be implemented</p>');
+}
+
+/*  *
+    * auxiliary function to format an inverted date
+    */
+
+function formatInvDate(_date) {
+    return _date.slice(6) + '/' + _date.slice(4, 6) + '/' + _date.slice(0, 4);
+}
+
+/*  *
+    * auxiliary function to format a number as currency
+    */
+
+function to_currency(_number) {
+    return _number.toFixed(2).replace(/(\d)(\d{3}[.,])/g, '$1,$2');
 }
