@@ -129,7 +129,14 @@ function showInvestmentsListingView() {
         $('#' + investment.id).append('<td>' + investment.type);
         $('#' + investment.id).append('<td>' + investment.name);
         $('#' + investment.id).append('<td>' + formatInvDate(investment.balance[0].date));
-        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount));
+        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
+            + '&nbsp;<a data-toggle="collapse" href="#detailsRow-' + line + '" role="button" aria-expanded="false" aria-controls="detailsRow-' + line + '">'
+            + '<img src="img/caretDown.svg" /></a>');
+
+        $('tbody').append('<tr class="collapse" id="detailsRow-' + line + '">');
+        $('#detailsRow-' + line).append('<td colspan="6"><p>Bank: ' + investment.bank + '</p>'
+            + '<p>Type: ' + investment.type + '</p>'
+            + '<p>Name: ' + investment.name + '</p>');
 
         //  summarize the investment to the grand total
         if (maxDate == '' || investment.balance[0].date > maxDate) {
@@ -147,7 +154,7 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 
-    $('#container').append('<a href="#" class="float"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill my-float" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4a.5.5 0 0 0-1 0v3.5H4a.5.5 0 0 0 0 1h3.5V12a.5.5 0 0 0 1 0V8.5H12a.5.5 0 0 0 0-1H8.5V4z"/></svg></a>');
+    $('#container').append('<a href="#" class="float"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
