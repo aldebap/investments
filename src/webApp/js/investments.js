@@ -134,9 +134,12 @@ function showInvestmentsListingView() {
             + '<img src="img/caretDown.svg" /></a>');
 
         $('tbody').append('<tr class="collapse" id="detailsRow-' + line + '">');
-        $('#detailsRow-' + line).append('<td colspan="6"><p>Bank: ' + investment.bank + '</p>'
-            + '<p>Type: ' + investment.type + '</p>'
-            + '<p>Name: ' + investment.name + '</p>');
+        $('#detailsRow-' + line).append('<td colspan="6"><form>'
+            + '<div class="form-group"><label for="inputAddress">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" placeholder="' + investment.bank + '"></div>'
+            + '<div class="form-group"><label for="inputAddress">Type</label><input type="text" class="form-control" id="inputType-' + line + '" placeholder="' + investment.type + '"></div>'
+            + '<div class="form-group"><label for="inputAddress">Name</label><input type="text" class="form-control" id="inputName-' + line + '" placeholder="' + investment.name + '"></div>'
+            + '<button type="submit" class="btn btn-primary">Update</button>'
+            + '</form>');
 
         //  summarize the investment to the grand total
         if (maxDate == '' || investment.balance[0].date > maxDate) {
