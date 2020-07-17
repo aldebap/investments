@@ -114,32 +114,88 @@ function showInvestmentsListingView() {
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
-    $('table').append('<tbody>');
+    $('table').append('<tbody id="mainTable">');
 
     let line = 1;
     let maxDate = '';
     let totalBalance = 0;
 
     //  TODO: to make the title  columns bank, type and name to work as a filter
-    //  TODO: to make the investment line click to show the investment evolution
     investments.forEach((investment) => {
-        $('tbody').append('<tr id="' + investment.id + '">');
+        $('#mainTable').append('<tr id="' + investment.id + '">');
         $('#' + investment.id).append('<td>' + line);
         $('#' + investment.id).append('<td>' + investment.bank);
         $('#' + investment.id).append('<td>' + investment.type);
         $('#' + investment.id).append('<td>' + investment.name);
         $('#' + investment.id).append('<td>' + formatInvDate(investment.balance[0].date));
         $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
-            + '&nbsp;<a data-toggle="collapse" href="#detailsRow-' + line + '" role="button" aria-expanded="false" aria-controls="detailsRow-' + line + '">'
+            + '&nbsp;<a data-toggle="collapse" href="#collapseRow-' + line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + line + '">'
             + '<img src="img/caretDown.svg" /></a>');
 
-        $('tbody').append('<tr class="collapse" id="detailsRow-' + line + '">');
-        $('#detailsRow-' + line).append('<td colspan="6"><form>'
-            + '<div class="form-group"><label for="inputAddress">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" placeholder="' + investment.bank + '"></div>'
-            + '<div class="form-group"><label for="inputAddress">Type</label><input type="text" class="form-control" id="inputType-' + line + '" placeholder="' + investment.type + '"></div>'
-            + '<div class="form-group"><label for="inputAddress">Name</label><input type="text" class="form-control" id="inputName-' + line + '" placeholder="' + investment.name + '"></div>'
+        $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container"><div class="row" id="detailsRow-' + line + '">');
+        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formEditInvestment-' + line + '">'
+            + '<input type="hidden" value="' + investment.id + '" />'
+            + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" placeholder="' + investment.bank + '" /></div>'
+            + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + line + '" placeholder="' + investment.type + '" /></div>'
+            + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + line + '" placeholder="' + investment.name + '" /></div>'
             + '<button type="submit" class="btn btn-primary">Update</button>'
-            + '</form>');
+            + '</form></div>');
+
+        //  format the  operations details table
+        let operationTable = '';
+        let operationIndex = 1;
+
+        investment.operations.forEach((operation) => {
+            operationTable += '<tr><td>' + operationIndex + '</td><td>' + formatInvDate(operation.date) + '</td><td>' + to_currency(operation.amount) + '</td></tr>';
+
+            operationIndex++;
+        });
+
+        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageOperations-' + line + '">'
+            + '<table class="table table-hover">'
+            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+            + '<tbody>' + operationTable + '</tbody>'
+            + '</table>'
+            + '<button type="submit" class="btn btn-primary">New</button>'
+            + '</form></div>');
+
+        //  format the revenue details table
+        let revenueTable = '';
+        let revenueIndex = 1;
+
+        investment.revenue.forEach((revenue) => {
+            revenueTable += '<tr><td>' + revenueIndex + '</td><td>' + formatInvDate(revenue.date) + '</td><td>' + to_currency(revenue.amount) + '</td></tr>';
+
+            revenueIndex++;
+        });
+
+        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageRevenue-' + line + '">'
+            + '<table class="table table-hover">'
+            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+            + '<tbody>' + revenueTable + '</tbody>'
+            + '</table>'
+            + '<button type="submit" class="btn btn-primary">New</button>'
+            + '</form></div>');
+
+        //  format the  balance details table
+        let balanceTable = '';
+        let balanceIndex = 1;
+
+        investment.balance.forEach((balance) => {
+            balanceTable += '<tr><td>' + balanceIndex + '</td><td>' + formatInvDate(balance.date) + '</td><td>' + to_currency(balance.amount) + '</td></tr>';
+
+            balanceIndex++;
+        });
+
+        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageBalance-' + line + '">'
+            + '<table class="table table-hover">'
+            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+            + '<tbody>' + balanceTable + '</tbody>'
+            + '</table>'
+            + '<button type="submit" class="btn btn-primary">New</button>'
+            + '</form></div>');
+
+        $('#detailsRow-' + line).append('</div></div></td></tr>');
 
         //  summarize the investment to the grand total
         if (maxDate == '' || investment.balance[0].date > maxDate) {
@@ -149,7 +205,7 @@ function showInvestmentsListingView() {
         line++;
     });
 
-    $('tbody').append('<tr id="totalAmount" class="table-active">');
+    $('#mainTable').append('<tr id="totalAmount" class="table-active">');
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>&nbsp;');
