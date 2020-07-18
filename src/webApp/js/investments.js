@@ -109,7 +109,6 @@ function showInvestmentsListingView() {
     $('thead').append('<tr>');
     $('tr').append('<th scope="col">#</th>');
     $('tr').append('<th scope="col">Bank</th>');
-    //$('tr').append('<th scope="col"><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Bank</button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Banco do Brasil</a><a class="dropdown-item" href="#">Santander</a></div></div></th>');
     $('tr').append('<th scope="col">Type</th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
@@ -132,14 +131,16 @@ function showInvestmentsListingView() {
             + '&nbsp;<a data-toggle="collapse" href="#collapseRow-' + line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + line + '">'
             + '<img src="img/caretDown.svg" /></a>');
 
-        $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container"><div class="row" id="detailsRow-' + line + '">');
-        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formEditInvestment-' + line + '">'
+        //  format the investment details form
+        $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
+        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + line + '">'
             + '<input type="hidden" value="' + investment.id + '" />'
-            + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" placeholder="' + investment.bank + '" /></div>'
-            + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + line + '" placeholder="' + investment.type + '" /></div>'
-            + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + line + '" placeholder="' + investment.name + '" /></div>'
-            + '<button type="submit" class="btn btn-primary">Update</button>'
-            + '</form></div>');
+            + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" value="' + investment.bank + '" /></div>'
+            + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + line + '" value="' + investment.type + '" /></div>'
+            + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + line + '" value="' + investment.name + '" /></div>'
+            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">Update</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+            + '</form></div></div>');
 
         //  format the  operations details table
         let operationTable = '';
@@ -151,13 +152,15 @@ function showInvestmentsListingView() {
             operationIndex++;
         });
 
-        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageOperations-' + line + '">'
-            + '<table class="table table-hover">'
-            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + line + '">'
+            + '<table class="table">'
+            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
             + '<tbody>' + operationTable + '</tbody>'
             + '</table>'
-            + '<button type="submit" class="btn btn-primary">New</button>'
-            + '</form></div>');
+            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+            + '</form></div></div>');
 
         //  format the revenue details table
         let revenueTable = '';
@@ -169,13 +172,15 @@ function showInvestmentsListingView() {
             revenueIndex++;
         });
 
-        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageRevenue-' + line + '">'
-            + '<table class="table table-hover">'
-            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + line + '">'
+            + '<table class="table">'
+            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
             + '<tbody>' + revenueTable + '</tbody>'
             + '</table>'
-            + '<button type="submit" class="btn btn-primary">New</button>'
-            + '</form></div>');
+            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+            + '</form></div></div>');
 
         //  format the  balance details table
         let balanceTable = '';
@@ -187,15 +192,17 @@ function showInvestmentsListingView() {
             balanceIndex++;
         });
 
-        $('#detailsRow-' + line).append('<div class="col-sm"><form id="formManageBalance-' + line + '">'
-            + '<table class="table table-hover">'
-            + '<thead class="thead-dark"><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + line + '">'
+            + '<table class="table">'
+            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
             + '<tbody>' + balanceTable + '</tbody>'
             + '</table>'
-            + '<button type="submit" class="btn btn-primary">New</button>'
-            + '</form></div>');
+            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+            + '</form></div></div>');
 
-        $('#detailsRow-' + line).append('</div></div></td></tr>');
+        $('#containerRow-' + line).append('</div></td></tr>');
 
         //  summarize the investment to the grand total
         if (maxDate == '' || investment.balance[0].date > maxDate) {
