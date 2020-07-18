@@ -130,77 +130,11 @@ function showInvestmentsListingView() {
         $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
             + '&nbsp;<a data-toggle="collapse" href="#collapseRow-' + line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + line + '">'
             + '<img src="img/caretDown.svg" /></a>');
+        // TODO: to catch the event of clicking the caret to show it upside down, and to close other collapse rows that may be open
 
-        //  format the investment details form
         $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
-        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + line + '">'
-            + '<input type="hidden" value="' + investment.id + '" />'
-            + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + line + '" value="' + investment.bank + '" /></div>'
-            + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + line + '" value="' + investment.type + '" /></div>'
-            + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + line + '" value="' + investment.name + '" /></div>'
-            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">Update</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
-            + '</form></div></div>');
 
-        //  format the  operations details table
-        let operationTable = '';
-        let operationIndex = 1;
-
-        investment.operations.forEach((operation) => {
-            operationTable += '<tr><td>' + operationIndex + '</td><td>' + formatInvDate(operation.date) + '</td><td>' + to_currency(operation.amount) + '</td></tr>';
-
-            operationIndex++;
-        });
-
-        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + line + '">'
-            + '<table class="table">'
-            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-            + '<tbody>' + operationTable + '</tbody>'
-            + '</table>'
-            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
-            + '</form></div></div>');
-
-        //  format the revenue details table
-        let revenueTable = '';
-        let revenueIndex = 1;
-
-        investment.revenue.forEach((revenue) => {
-            revenueTable += '<tr><td>' + revenueIndex + '</td><td>' + formatInvDate(revenue.date) + '</td><td>' + to_currency(revenue.amount) + '</td></tr>';
-
-            revenueIndex++;
-        });
-
-        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + line + '">'
-            + '<table class="table">'
-            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-            + '<tbody>' + revenueTable + '</tbody>'
-            + '</table>'
-            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
-            + '</form></div></div>');
-
-        //  format the  balance details table
-        let balanceTable = '';
-        let balanceIndex = 1;
-
-        investment.balance.forEach((balance) => {
-            balanceTable += '<tr><td>' + balanceIndex + '</td><td>' + formatInvDate(balance.date) + '</td><td>' + to_currency(balance.amount) + '</td></tr>';
-
-            balanceIndex++;
-        });
-
-        $('#containerRow-' + line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + line + '">'
-            + '<table class="table">'
-            + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-            + '<tbody>' + balanceTable + '</tbody>'
-            + '</table>'
-            + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-            + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
-            + '</form></div></div>');
+        addInvestmentDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
 
@@ -221,6 +155,99 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 
     $('#container').append('<a href="#" class="float"><img src="img/addButton.svg" /></a>');
+}
+
+/*  *
+    * show the investments listing view
+    */
+
+function addInvestmentDetails(_line, _investment) {
+
+    //  format the investment details form
+    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + _line + '">'
+        + '<input type="hidden" value="' + _investment.id + '" />'
+        + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + _line + '" value="' + _investment.bank + '" /></div>'
+        + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + _line + '" value="' + _investment.type + '" /></div>'
+        + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + _line + '" value="' + _investment.name + '" /></div>'
+        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary" onclick="updateInvestment( ' + _line + ' );">Update</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '</form></div></div>');
+
+    //  format the  operations details table
+    let operationTable = '';
+    let operationIndex = 1;
+
+    _investment.operations.forEach((operation) => {
+        operationTable += '<tr><td>' + operationIndex + '</td><td>' + formatInvDate(operation.date) + '</td><td>' + to_currency(operation.amount) + '</td></tr>';
+
+        operationIndex++;
+    });
+
+    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + _line + '">'
+        + '<table class="table">'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<tbody>' + operationTable + '</tbody>'
+        + '</table>'
+        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '</form></div></div>');
+
+    //  format the revenue details table
+    let revenueTable = '';
+    let revenueIndex = 1;
+
+    _investment.revenue.forEach((revenue) => {
+        revenueTable += '<tr><td>' + revenueIndex + '</td><td>' + formatInvDate(revenue.date) + '</td><td>' + to_currency(revenue.amount) + '</td></tr>';
+
+        revenueIndex++;
+    });
+
+    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
+        + '<table class="table">'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<tbody>' + revenueTable + '</tbody>'
+        + '</table>'
+        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '</form></div></div>');
+
+    //  format the  balance details table
+    let balanceTable = '';
+    let balanceIndex = 1;
+
+    _investment.balance.forEach((balance) => {
+        balanceTable += '<tr><td>' + balanceIndex + '</td><td>' + formatInvDate(balance.date) + '</td><td>' + to_currency(balance.amount) + '</td></tr>';
+
+        balanceIndex++;
+    });
+
+    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + _line + '">'
+        + '<table class="table">'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<tbody>' + balanceTable + '</tbody>'
+        + '</table>'
+        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
+        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '</form></div></div>');
+}
+
+/*  *
+    * update investment item
+    */
+
+function updateInvestment(_line) {
+
+    let bank = $('#inputBank-' + _line).val();
+    let type = $('#inputType-' + _line).val();
+    let name = $('#inputName-' + _line).val();
+
+    //  check if any field was changed
+    if (bank != investments[_line - 1].bank || type != investments[_line - 1].type || name != investments[_line - 1].name) {
+        console.log('[debug] updating investment ' + _line + ': --> ' + bank + '/' + type + ': ' + name);
+    }
 }
 
 /*  *
