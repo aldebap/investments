@@ -29,9 +29,14 @@ class InvestmentDataFile:
             self.investment.append(Investment.unserialize(investmentAttributes))
 
     # serialize the investments content onto the investment data file
-    def save(self, configurationRef):
-        with open(self.dataFileName, 'w') as fileHandler:
-            json.dump(Configuration.serialize(configurationRef), fileHandler)
+    def save(self):
+        investmentList = []
+
+        for investment in self.investment:
+            investmentList.append( Investment.serialize(investment))
+
+        with open('__' + self.dataFileName, 'w') as fileHandler:
+            json.dump({ 'investments': investmentList}, fileHandler)
 
     # fetch all banks from the invetments content
     def getAllBanks(self):
@@ -85,9 +90,7 @@ class InvestmentDataFile:
             if active == True and investment.balance[0].amount == 0:
                 continue
 
-            #   there's a bug when the investmentId is given
-            if investmentId is not None and investmentId != investment.id:
-                print( f'[debug] investmentId: {investmentId}; investment.id: {investment.id};' )
+            if investmentId is not None and investmentId != str(investment.id):
                 continue
 
             balance = []
@@ -122,3 +125,22 @@ class InvestmentDataFile:
                 investmentList.append(investmentAux.to_json())
 
         return investmentList
+
+    # patch an investment in the invetments content
+    def patchInvestment(self, investmentId, investmentData):
+
+        #   trasverse the investments list to fetch the given investment Id
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+                if investmentData.get('bank') is not None:
+                    investment.bank = investmentData.get( 'bank' )
+                if investmentData.get('type') is not None:
+                    investment.type = investmentData.get( 'type' )
+                if investmentData.get('name') is not None:
+                    investment.name = investmentData.get( 'name' )
+
+                self.save()
+
+                return investment.to_json()
+
+        return {}

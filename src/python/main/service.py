@@ -93,3 +93,8 @@ class APIServer:
             endDate = None
 
         return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
+
+    #   service to patch an investment given it's ID
+    @classmethod
+    def patchInvestment(cls, investmentId, investmentData):
+        return cls._singleInstance.investmentDataFile.patchInvestment(investmentId, investmentData)

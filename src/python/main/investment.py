@@ -54,7 +54,8 @@ class Investment:
     def serialize(cls, ref):
         # TODO: use constants for the names of all JSon fields
         attributes = {
-            "id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
+            #"id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
+            "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
         }
 
         return json.dumps(attributes)

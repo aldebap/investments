@@ -44,7 +44,7 @@ function loadInvestments() {
     let endDate = $('#filterEndDate').val();
     //  TODO: this needs to be an option in the navbar
     let active = true;
-    let requestURL = "/investment/v1/investments";
+    let requestURL = '/investment/v1/investments';
     let queryString = '';
 
     //  based on the filter options, format the investments service query string
@@ -71,7 +71,7 @@ function loadInvestments() {
 
     $.ajax({
         url: requestURL,
-        method: "GET",
+        method: 'GET',
         success: (_result) => {
             investments = _result['Investments'];
 
@@ -243,10 +243,48 @@ function updateInvestment(_line) {
     let bank = $('#inputBank-' + _line).val();
     let type = $('#inputType-' + _line).val();
     let name = $('#inputName-' + _line).val();
+    let payload = {};
 
-    //  check if any field was changed
-    if (bank != investments[_line - 1].bank || type != investments[_line - 1].type || name != investments[_line - 1].name) {
-        console.log('[debug] updating investment ' + _line + ': --> ' + bank + '/' + type + ': ' + name);
+    if (bank != investments[_line - 1].bank) {
+        payload['bank'] = bank;
+    }
+    if (type != investments[_line - 1].type) {
+        payload['type'] = type;
+    }
+    if (name != investments[_line - 1].name) {
+        payload['name'] = name;
+    }
+
+    //  if any field was changed, patch the investment record
+    if (0 < Object.keys(payload).length) {
+
+        let requestURL = '/investment/v1/investments';
+
+        //  show the  spinner while loading the data from the API server
+        $('#loadingSpinner').empty();
+        $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+        $.ajax({
+            url: requestURL + '/' + investments[_line - 1].id,
+            method: 'PATCH',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(payload),
+            processData: false,
+            error: function () {
+                console.log('[debug] Error attempting to patch investment');
+                //  hide the spinner
+                $('#loadingSpinner').empty();
+            },
+            success: (_result) => {
+
+                investments[_line - 1].bank = bank;
+                investments[_line - 1].type = type;
+                investments[_line - 1].name = name;
+
+                //  hide the spinner
+                $('#loadingSpinner').empty();
+            }
+        });
     }
 }
 

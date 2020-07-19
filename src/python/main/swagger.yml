@@ -125,3 +125,33 @@ paths:
           description: "Successful get a list of investments"
           schema:
             type: "array"
+
+  /v1/investments/{investmentId}:
+    patch:
+      operationId: "service.APIServer.patchInvestment"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to of the item to be patched
+          type: string
+          required: True
+        - name: investmentData
+          in: body
+          schema:
+            type: object
+            properties:
+              bank:
+                type: string
+              type:
+                type: string
+              name:
+                type: string
+      tags:
+        - "Investments"
+      summary: "Patch an investment item"
+      description: "Patch an investment item"
+      responses:
+        200:
+          description: "Successful patched the investment item"
+          schema:
+            type: "array"
