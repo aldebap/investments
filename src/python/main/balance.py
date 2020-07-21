@@ -33,12 +33,10 @@ class Balance:
     # serialize a JSon as an Balance object
     @classmethod
     def serialize(cls, ref):
-        attributes = {
-            #"id": ref.id, "date": ref.date, "amount": ref.amount
+        return {
+            #"id": self.id, "date": self.date, "amount": self.amount
             "date": ref.date, "amount": ref.amount
         }
-
-        return json.dumps(attributes)
 
     # unserialize a JSon as an Balance object
     @classmethod

@@ -35,7 +35,7 @@ class InvestmentDataFile:
         for investment in self.investment:
             investmentList.append( Investment.serialize(investment))
 
-        with open('__' + self.dataFileName, 'w') as fileHandler:
+        with open(self.dataFileName, 'w') as fileHandler:
             json.dump({ 'investments': investmentList}, fileHandler)
 
     # fetch all banks from the invetments content

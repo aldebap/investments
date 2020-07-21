@@ -154,7 +154,7 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 
-    $('#container').append('<a href="#" class="float"><img src="img/addButton.svg" /></a>');
+    $('#container').append('<a class="float" data-toggle="modal" data-target="#newInvestment"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
@@ -235,6 +235,15 @@ function addInvestmentDetails(_line, _investment) {
 }
 
 /*  *
+    * add a new investment item
+    */
+
+function addNewInvestment() {
+    console.log('[debug] about to create a new investment');
+    $('#newInvestment').modal('hide');
+}
+
+/*  *
     * update investment item
     */
 
@@ -271,6 +280,7 @@ function updateInvestment(_line) {
             data: JSON.stringify(payload),
             processData: false,
             error: function () {
+                //  TODO: use Bootstrap toasts to show the result of update operation
                 console.log('[debug] Error attempting to patch investment');
                 //  hide the spinner
                 $('#loadingSpinner').empty();
@@ -283,6 +293,7 @@ function updateInvestment(_line) {
 
                 //  hide the spinner
                 $('#loadingSpinner').empty();
+                //  TODO: use Bootstrap toasts to show the result of update operation
             }
         });
     }

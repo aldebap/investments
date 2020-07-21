@@ -30,6 +30,7 @@ class Investment:
     def __str__(self):
         return f'{self.id}: {self.name} / {self.type} @ {self.bank}'
 
+    # TODO: fix the redundancy of having two methods to do the exact same thing
     def to_json(self):
         operationList = []
         balanceList = []
@@ -52,13 +53,25 @@ class Investment:
 
     @classmethod
     def serialize(cls, ref):
-        # TODO: use constants for the names of all JSon fields
-        attributes = {
-            #"id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
-            "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
-        }
+        operationList = []
+        balanceList = []
+        revenueList = []
 
-        return json.dumps(attributes)
+        for operation in ref.operation:
+            operationList.append(Operation.serialize(operation))
+
+        for balance in ref.balance:
+            balanceList.append(Balance.serialize(balance))
+
+        for revenue in ref.revenue:
+            revenueList.append(Revenue.serialize(revenue))
+
+        # TODO: use constants for the names of all JSon fields
+        #return json.dumps(attributes)
+        return  {
+            #"id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
+            "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": operationList, "balance": balanceList, "revenue": revenueList
+        }
 
     # unserialize a JSon as an Investment object
     @classmethod
