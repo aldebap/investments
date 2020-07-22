@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     </link>
+    <!-- TODO: fix and move this to a .css file-->
     <style>
         .float {
             position: fixed;
@@ -34,6 +35,7 @@
 
 <body>
     <div class="container-fluid">
+        <!-- Navigation bar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <img src="img/investmentsLogo.svg" />
             &nbsp;
@@ -93,16 +95,50 @@
                             <div class="card-body">
                                 <form id="formNewInvestment">
                                     <div class="form-group">
-                                        <label for="inputBank">Bank</label>
+                                        <label for="inputBank-new">Bank</label>
                                         <input type="text" class="form-control" id="inputBank-new" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputType">Type</label>
+                                        <label for="inputType-new">Type</label>
                                         <input type="text" class="form-control" id="inputType-new" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputName">Name</label>
+                                        <label for="inputName-new">Name</label>
                                         <input type="text" class="form-control" id="inputName-new" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Initial operation</div>
+                            <div class="card-body">
+                                <form id="formInvestmentsInitialOperation">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="inputOperationDate-new">Date</label>
+                                            <input type="text" class="form-control" id="inputOperationDate-new" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputOperationAmount-new">Amount</label>
+                                            <input type="text" class="form-control" id="inputOperationAmount-new" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Initial balance</div>
+                            <div class="card-body">
+                                <form id="formInvestmentsInitialBalance">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="inputBalanceDate-new">Date</label>
+                                            <input type="text" class="form-control" id="inputBalanceDate-new" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputBalanceAmount-new">Amount</label>
+                                            <input type="text" class="form-control" id="inputBalanceAmount-new" />
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -118,6 +154,10 @@
         </div>
 
         <div id="container"></div>
+
+        <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+            <div id="toastContainer" style="position: absolute; top: 0; right: 0;" />
+        </div>
     </div>
 
     <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>

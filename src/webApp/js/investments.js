@@ -239,8 +239,67 @@ function addInvestmentDetails(_line, _investment) {
     */
 
 function addNewInvestment() {
-    console.log('[debug] about to create a new investment');
-    $('#newInvestment').modal('hide');
+
+    let bank = $('#inputBank-new').val();
+    let type = $('#inputType-new').val();
+    let name = $('#inputName-new').val();
+    let operationDate = $('#inputOperationDate-new').val();
+    let operationAmount = $('#inputOperationAmount-new').val();
+    let balanceDate = $('#inputBalanceDate-new').val();
+    let balanceAmount = $('#inputBalanceAmount-new').val();
+    let payload = {};
+
+    if (0 < bank.length) {
+        payload['bank'] = bank;
+    }
+    if (0 < type.length) {
+        payload['type'] = type;
+    }
+    if (0 < name.length) {
+        payload['name'] = name;
+    }
+    if (0 < operationDate.length && 0 < operationAmount.length) {
+        payload['operation'] = { date: operationDate, amount: operationAmount };
+    }
+
+    if (0 < balanceDate.length && 0 < balanceAmount.length) {
+        payload['balance'] = { date: balanceDate, amount: balanceAmount };
+    }
+
+    //  if all field are validated, add the investment record
+    let requestURL = '/investment/v1/investments';
+
+    //  show the  spinner while loading the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    $.ajax({
+        url: requestURL,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(payload),
+        processData: false,
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to add investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to add investment');
+
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+            $('#newInvestment').modal('hide');
+        },
+        success: (_result) => {
+
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+            $('#newInvestment').modal('hide');
+        }
+    });
 }
 
 /*  *
@@ -280,8 +339,15 @@ function updateInvestment(_line) {
             data: JSON.stringify(payload),
             processData: false,
             error: function () {
-                //  TODO: use Bootstrap toasts to show the result of update operation
+
+                $('#toastContainer').empty();
+                $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                    + 'Error trying to update investment data'
+                    + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                    + '</div>');
+
                 console.log('[debug] Error attempting to patch investment');
+
                 //  hide the spinner
                 $('#loadingSpinner').empty();
             },
@@ -290,6 +356,16 @@ function updateInvestment(_line) {
                 investments[_line - 1].bank = bank;
                 investments[_line - 1].type = type;
                 investments[_line - 1].name = name;
+
+                $('#toastContainer').empty();
+                $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
+                    + '<div class="toast-header">'
+                    + '<img src="..." class="rounded mr-2" alt="..." />'
+                    + '<strong class="mr-auto">' + name + '</strong>'
+                    + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                    + '</div>'
+                    + '<div class="toast-body">Investment data updated succesfully</div>'
+                    + '</div>');
 
                 //  hide the spinner
                 $('#loadingSpinner').empty();
@@ -395,8 +471,8 @@ function showInvestmentsEvolutionView() {
 }
 
 /*  *
-    * show the investments evolution view
-    */
+* show the investments evolution view
+*/
 
 function showInvestmentsGraphicalView() {
     $('#container').empty();
