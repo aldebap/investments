@@ -475,8 +475,13 @@ function showInvestmentsEvolutionView() {
 */
 
 function showInvestmentsGraphicalView() {
+
     $('#container').empty();
-    $('#container').append('<p>To be implemented</p>');
+    $('#container').append('<svg id="bankDistribution-pizza" width="1000" height="1000">'
+        + '<path d="M 950,500 a 450,450 0 0,0 -675,-389 l -25,-44 a 500,500 0 0,1 750,433 z" fill="red" />'
+        + '<path d="M 275,111 a 450,450 0 0,0 225,839 l 0,50 a 500,500 0 0,1 -250,-933 z" fill="yellow" />'
+        + '<path d="M 500,950 a 450,450 0 0,0 450,-450 l 50,0 a 500,500 0 0,1 -500,500 z" fill="green" />'
+        + '</svg>');
 }
 
 /*  *
