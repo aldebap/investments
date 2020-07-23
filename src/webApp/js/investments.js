@@ -1,8 +1,14 @@
-///////////////#//////////#////////////#/////#///////////////#/////////#////////
+////////////////////////////////////////////////////////////////////////////////
 //  investments.js  -  Jul-11-2020 by aldebap
 //
 //  Investments web application
-///////////////#//////////#////////////#/////#///////////////#/////////#////////
+////////////////////////////////////////////////////////////////////////////////
+
+//  constants
+
+const LISTING_VIEW = 'listing';
+const EVOLUTION_VIEW = 'evolution';
+const GRAPHICAL_VIEW = 'graphical';
 
 //  globals
 
@@ -13,9 +19,8 @@ let investments = [];
     * select listing view as the current investments view
     */
 
-//  TODO: use some constants for the view names
 function selectListingView() {
-    currentView = 'listing';
+    currentView = LISTING_VIEW;
 }
 
 /*  *
@@ -23,7 +28,7 @@ function selectListingView() {
     */
 
 function selectEvolutionView() {
-    currentView = 'evolution';
+    currentView = EVOLUTION_VIEW;
 }
 
 /*  *
@@ -31,7 +36,7 @@ function selectEvolutionView() {
     */
 
 function selectGraphicalView() {
-    currentView = 'graphical';
+    currentView = GRAPHICAL_VIEW;
 }
 
 /*  *
@@ -88,11 +93,11 @@ function loadInvestments() {
     */
 
 function showInvestmentsView() {
-    if (currentView == 'listing') {
+    if (LISTING_VIEW == currentView) {
         showInvestmentsListingView();
-    } else if (currentView == 'evolution') {
+    } else if (EVOLUTION_VIEW == currentView) {
         showInvestmentsEvolutionView();
-    } else if (currentView == 'graphical') {
+    } else if (GRAPHICAL_VIEW == currentView) {
         showInvestmentsGraphicalView();
     }
 }
@@ -134,7 +139,7 @@ function showInvestmentsListingView() {
 
         $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
-        addInvestmentDetails(line, investment);
+        showInvestmentDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
 
@@ -154,14 +159,14 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 
-    $('#container').append('<a class="float" data-toggle="modal" data-target="#newInvestment"><img src="img/addButton.svg" /></a>');
+    $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
-    * show the investments listing view
+    * show the investment details
     */
 
-function addInvestmentDetails(_line, _investment) {
+function showInvestmentDetails(_line, _investment) {
 
     //  format the investment details form
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + _line + '">'
@@ -232,6 +237,27 @@ function addInvestmentDetails(_line, _investment) {
         + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
         + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
         + '</form></div></div>');
+}
+
+/*  *
+    * show the add new investment modal
+    */
+
+function showNewInvestmentModal() {
+
+    //  clean previous values from the form
+    $('#inputBank-new').val('');
+    $('#inputType-new').val('');
+    $('#inputName-new').val('');
+    $('#inputOperationDate-new').val('');
+    $('#inputOperationAmount-new').val('');
+    $('#inputBalanceDate-new').val('');
+    $('#inputBalanceAmount-new').val('');
+
+    //  show the new Investment modal
+    $('#newInvestment').modal({
+        show: true
+    });
 }
 
 /*  *
@@ -476,12 +502,29 @@ function showInvestmentsEvolutionView() {
 
 function showInvestmentsGraphicalView() {
 
+    const distributionByBankID = "distributionByBank";
+
     $('#container').empty();
-    $('#container').append('<svg id="bankDistribution-pizza" width="1000" height="1000">'
-        + '<path d="M 950,500 a 450,450 0 0,0 -675,-389 l -25,-44 a 500,500 0 0,1 750,433 z" fill="red" />'
-        + '<path d="M 275,111 a 450,450 0 0,0 225,839 l 0,50 a 500,500 0 0,1 -250,-933 z" fill="yellow" />'
-        + '<path d="M 500,950 a 450,450 0 0,0 450,-450 l 50,0 a 500,500 0 0,1 -500,500 z" fill="green" />'
-        + '</svg>');
+    $('#container').append('<div class="card"><div class="card-header">Distribution by Bank</div><div class="card-body" id="' + distributionByBankID + '" /></div></div>');
+
+    let parameters = {};
+    let data = {};
+
+    parameters = {
+        width: $('#' + distributionByBankID).width()
+        , height: Math.round(0.6 * $('#' + distributionByBankID).width())
+    };
+
+    //  sum the balance amounts grouped by bank
+    investments.forEach((investment) => {
+        if (investment.bank in data) {
+            data[investment.bank] += investment.balance[0].amount;
+        } else {
+            data[investment.bank] = investment.balance[0].amount;
+        }
+    });
+
+    donutGraphic(distributionByBankID, parameters, data);
 }
 
 /*  *
