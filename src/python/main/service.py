@@ -94,6 +94,11 @@ class APIServer:
 
         return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
 
+    #   service to insert a new investment
+    @classmethod
+    def insertNewInvestment(cls, investmentData):
+        return cls._singleInstance.investmentDataFile.insertNewInvestment(investmentData)
+
     #   service to patch an investment given it's ID
     @classmethod
     def patchInvestment(cls, investmentId, investmentData):

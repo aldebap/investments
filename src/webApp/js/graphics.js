@@ -6,7 +6,9 @@
 
 //  constants
 
-const COLOUR_PALLETE = ['red', 'yellow', 'green', 'blue', 'gray']
+const DEFAULT_PALLETE = ['red', 'yellow', 'green', 'blue', 'gray'];
+const PASTEL_PALLETE = ['#38908F', '#B2E8E0', '#CA7E8D', '#909090', '#F3DDB3', '#C1CD97', '#E18D96', '#C884BA', '#D2A3A9', '#E6DCE5'
+    , '#EBC3C1', '#ECAD8F', '#AF6E4E', '#9DABDD', '#70AE98', '#ECBE7A', '#BC85A3', '#E6B655', '#5E96AE', '#CA7E8D', '#D3C0f9'];
 
 /*  *
     * Genarete a donut graphic
@@ -16,6 +18,7 @@ function donutGraphic(_elementId, _parameters, _data) {
 
     let width = 400;
     let height = 400;
+    let colourPallete = DEFAULT_PALLETE;
 
     //  get the parameters
     if ('width' in _parameters) {
@@ -23,6 +26,11 @@ function donutGraphic(_elementId, _parameters, _data) {
     }
     if ('height' in _parameters) {
         height = _parameters['height'];
+    }
+    if ('colourPallete' in _parameters) {
+        if ('PASTEL' == _parameters['colourPallete']) {
+            colourPallete = PASTEL_PALLETE;
+        }
     }
     //  TODO: there must be a property to select the reference in the bottom, left, top, right
     //  TODO: there must be a property to show the % of each element  in the reference
@@ -51,7 +59,7 @@ function donutGraphic(_elementId, _parameters, _data) {
             + ' A ' + Math.round(innerRadix) + ',' + Math.round(innerRadix) + ' 0 0,0 ' + Math.round(height / 2 + innerRadix * Math.cos(endAngle)) + ',' + Math.round(height / 2 - innerRadix * Math.sin(endAngle))
             + ' L ' + Math.round(height / 2 + outerRadix * Math.cos(endAngle)) + ',' + Math.round(height / 2 - outerRadix * Math.sin(endAngle))
             + ' A ' + Math.round(outerRadix) + ',' + Math.round(outerRadix) + ' 0 0,1 ' + Math.round(height / 2 + outerRadix * Math.cos(startAngle)) + ',' + Math.round(height / 2 - outerRadix * Math.sin(startAngle))
-            + ' z" stroke="black" stroke-width="2" fill="' + COLOUR_PALLETE[sliceNumber] + '" />';
+            + ' z" stroke="black" stroke-width="2" fill="' + colourPallete[sliceNumber] + '" />';
 
         startAngle = endAngle;
         sliceNumber++;
@@ -68,7 +76,7 @@ function donutGraphic(_elementId, _parameters, _data) {
     for (var bank in _data) {
 
         donutSlicesReferences += '<rect x="' + Math.round(height + referenceMargin) + '" y="' + Math.round(height - (sliceNumber + 1) * referenceHeigth)
-            + '" width="' + Math.round(referenceHeigth) + '" height="' + Math.round(referenceHeigth) + '" stroke="black" stroke-width="2" fill="' + COLOUR_PALLETE[sliceNumber] + '" />'
+            + '" width="' + Math.round(referenceHeigth) + '" height="' + Math.round(referenceHeigth) + '" stroke="black" stroke-width="2" fill="' + colourPallete[sliceNumber] + '" />'
             + '<text x="' + Math.round(height + referenceMargin + 2 * referenceHeigth) + '" y="' + Math.round(height - sliceNumber * referenceHeigth)
             + '"  stroke="black">' + bank + ' (' + Math.round(100 * _data[bank] / sum) + '%)</text>'
 

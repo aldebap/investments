@@ -58,6 +58,31 @@ paths:
             type: "array"
 
   /v1/investments:
+    post:
+      operationId: "service.APIServer.insertNewInvestment"
+      parameters:
+        - name: investmentData
+          in: body
+          schema:
+            type: object
+            properties:
+              bank:
+                type: string
+              type:
+                type: string
+              name:
+                type: string
+      tags:
+        - "Investments"
+      summary: "Insert a new investment item"
+      description: "Insert a new  investment item"
+      responses:
+        200:
+          description: "Successfully inserted the new investment item"
+          schema:
+            type: "array"
+
+  /v1/investments:
     get:
       operationId: "service.APIServer.investments"
       parameters:

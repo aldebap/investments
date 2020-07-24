@@ -126,6 +126,23 @@ class InvestmentDataFile:
 
         return investmentList
 
+    # insert a new investment in the invetments content
+    def insertNewInvestment(self, investmentData):
+        investmentAux = Investment()
+
+        print( f'[debug] insert new investment: {investmentData}' )
+
+        if investmentData.get('bank') is not None:
+            investmentAux.bank = investmentData.get( 'bank' )
+        if investmentData.get('type') is not None:
+            investmentAux.type = investmentData.get( 'type' )
+        if investmentData.get('name') is not None:
+            investmentAux.name = investmentData.get( 'name' )
+
+        self.investment.append(investmentAux.to_json())
+
+        return investmentAux.to_json()
+
     # patch an investment in the invetments content
     def patchInvestment(self, investmentId, investmentData):
 
