@@ -54,11 +54,17 @@ function donutGraphic(_elementId, _parameters, _data) {
     for (var bank in _data) {
 
         var endAngle = startAngle + 2 * Math.PI * _data[bank] / sum;
+        var innerArcFlag = ' 0 0,0 ';
+        var outterArcFlag = ' 0 0,1 ';
 
+        if (Math.PI < endAngle - startAngle) {
+            innerArcFlag = ' 0 1,0 ';
+            outterArcFlag = ' 0 1,1 ';
+        }
         donutSlices += '<path d="M ' + Math.round(height / 2 + innerRadix * Math.cos(startAngle)) + ',' + Math.round(height / 2 - innerRadix * Math.sin(startAngle))
-            + ' A ' + Math.round(innerRadix) + ',' + Math.round(innerRadix) + ' 0 0,0 ' + Math.round(height / 2 + innerRadix * Math.cos(endAngle)) + ',' + Math.round(height / 2 - innerRadix * Math.sin(endAngle))
+            + ' A ' + Math.round(innerRadix) + ',' + Math.round(innerRadix) + innerArcFlag + Math.round(height / 2 + innerRadix * Math.cos(endAngle)) + ',' + Math.round(height / 2 - innerRadix * Math.sin(endAngle))
             + ' L ' + Math.round(height / 2 + outerRadix * Math.cos(endAngle)) + ',' + Math.round(height / 2 - outerRadix * Math.sin(endAngle))
-            + ' A ' + Math.round(outerRadix) + ',' + Math.round(outerRadix) + ' 0 0,1 ' + Math.round(height / 2 + outerRadix * Math.cos(startAngle)) + ',' + Math.round(height / 2 - outerRadix * Math.sin(startAngle))
+            + ' A ' + Math.round(outerRadix) + ',' + Math.round(outerRadix) + outterArcFlag + Math.round(height / 2 + outerRadix * Math.cos(startAngle)) + ',' + Math.round(height / 2 - outerRadix * Math.sin(startAngle))
             + ' z" stroke="black" stroke-width="2" fill="' + colourPallete[sliceNumber] + '" />';
 
         startAngle = endAngle;
