@@ -270,9 +270,9 @@ function addNewInvestment() {
     let type = $('#inputType-new').val();
     let name = $('#inputName-new').val();
     let operationDate = $('#inputOperationDate-new').val();
-    let operationAmount = $('#inputOperationAmount-new').val();
+    let operationAmount = Number($('#inputOperationAmount-new').val());
     let balanceDate = $('#inputBalanceDate-new').val();
-    let balanceAmount = $('#inputBalanceAmount-new').val();
+    let balanceAmount = Number($('#inputBalanceAmount-new').val());
     let payload = {};
 
     if (0 < bank.length) {
@@ -284,11 +284,11 @@ function addNewInvestment() {
     if (0 < name.length) {
         payload['name'] = name;
     }
-    if (0 < operationDate.length && 0 < operationAmount.length) {
+    if (0 < operationDate.length && operationAmount != NaN) {
         payload['operation'] = { date: operationDate, amount: operationAmount };
     }
 
-    if (0 < balanceDate.length && 0 < balanceAmount.length) {
+    if (0 < balanceDate.length && balanceAmount != NaN) {
         payload['balance'] = { date: balanceDate, amount: balanceAmount };
     }
 
@@ -298,6 +298,8 @@ function addNewInvestment() {
     //  show the  spinner while loading the data from the API server
     $('#loadingSpinner').empty();
     $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    console.log('[debug] insert payload: ' + JSON.stringify(payload));
 
     $.ajax({
         url: requestURL,

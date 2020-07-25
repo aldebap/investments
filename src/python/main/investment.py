@@ -28,7 +28,7 @@ class Investment:
         self.revenue = []
 
     def __str__(self):
-        return f'{self.id}: {self.name} / {self.type} @ {self.bank}'
+        return f'{self.id}: {self.name} / {self.type} @ {self.bank} - balance: {self.balance}'
 
     # TODO: fix the redundancy of having two methods to do the exact same thing
     def to_json(self):

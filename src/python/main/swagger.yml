@@ -72,17 +72,29 @@ paths:
                 type: string
               name:
                 type: string
+              operation:
+                type: object
+                properties:
+                  date:
+                    type: string
+                  amount:
+                    type: number
+              balance:
+                type: object
+                properties:
+                  date:
+                    type: string
+                  amount:
+                    type: number
       tags:
         - "Investments"
       summary: "Insert a new investment item"
       description: "Insert a new  investment item"
       responses:
-        200:
-          description: "Successfully inserted the new investment item"
+        201:
+          description: "New investment successfully created"
           schema:
             type: "array"
-
-  /v1/investments:
     get:
       operationId: "service.APIServer.investments"
       parameters:
@@ -150,8 +162,6 @@ paths:
           description: "Successful get a list of investments"
           schema:
             type: "array"
-
-  /v1/investments/{investmentId}:
     patch:
       operationId: "service.APIServer.patchInvestment"
       parameters:

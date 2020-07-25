@@ -10,6 +10,9 @@ import json
 import uuid
 
 from investment import Investment
+from operation import Operation
+from balance import Balance
+from revenue import Revenue
 
 #   InvestmentDataFile class
 
@@ -132,14 +135,39 @@ class InvestmentDataFile:
 
         print( f'[debug] insert new investment: {investmentData}' )
 
-        if investmentData.get('bank') is not None:
-            investmentAux.bank = investmentData.get( 'bank' )
-        if investmentData.get('type') is not None:
-            investmentAux.type = investmentData.get( 'type' )
-        if investmentData.get('name') is not None:
-            investmentAux.name = investmentData.get( 'name' )
+        if 'bank' in investmentData:
+            investmentAux.bank = investmentData['bank']
+        if 'type' in investmentData:
+            investmentAux.type = investmentData['type']
+        if 'name' in investmentData:
+            investmentAux.name = investmentData['name']
 
-        self.investment.append(investmentAux.to_json())
+        if 'operation' in investmentData:
+            print( f'[debug] operation: {investmentData["operation"]}' )
+            if 'date' in investmentData['operation'] and 'amount' in investmentData['operation']:
+                #operationAux = Operation()
+
+                #operationAux.date = investmentData['operation']['date']
+                #operationAux.amount = investmentData['operation']['amount']
+
+                #print( f'[debug] operationAux: {operationAux}' )
+                #investmentAux.operation.append(operationAux)
+                investmentAux.operation.append(Operation.unserialize(investmentData['operation']))
+
+        if 'balance' in investmentData:
+            print( f'[debug] balance: {investmentData["balance"]}' )
+            if 'date' in investmentData['balance'] and 'amount' in investmentData['balance']:
+                #balanceAux = Balance()
+
+                #balanceAux.date = investmentData['balance']['date']
+                #balanceAux.amount = investmentData['balance']['amount']
+
+                #print( f'[debug] balanceAux: {balanceAux}' )
+                #investmentAux.balance.append(balanceAux)
+                investmentAux.balance.append(Balance.unserialize(investmentData['balance']))
+
+        print( '[debug] investmentAux: ' + investmentAux.__str__())
+        self.investment.append(investmentAux)
 
         return investmentAux.to_json()
 
