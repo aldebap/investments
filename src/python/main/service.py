@@ -1,6 +1,6 @@
 #!  /usr/local/bin/python3
 
-from flask import Flask, send_from_directory
+from flask import Flask, abort, send_from_directory
 import connexion
 
 from investmentData import InvestmentDataFile
@@ -60,17 +60,17 @@ class APIServer:
     #   service to get a list of all banks
     @classmethod
     def banks(cls):
-        return {"Banks": cls._singleInstance.investmentDataFile.getAllBanks()}
+        return {'Banks': cls._singleInstance.investmentDataFile.getAllBanks()}
 
     #   service to get a list of all funds of a bank
     @classmethod
     def funds(cls, bank):
-        return {"Funds": cls._singleInstance.investmentDataFile.getAllFunds(bank)}
+        return {'Funds': cls._singleInstance.investmentDataFile.getAllFunds(bank)}
 
     #   service to get a list of all types
     @classmethod
     def types(cls):
-        return {"Types": cls._singleInstance.investmentDataFile.getAllTypes()}
+        return {'Types': cls._singleInstance.investmentDataFile.getAllTypes()}
 
     #   service to get a list with the investments
     @classmethod
@@ -81,7 +81,7 @@ class APIServer:
         if endDate == '_':
             endDate = None
 
-        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(None, startDate, endDate, active)}
+        return {'Investments': cls._singleInstance.investmentDataFile.getInvestments(None, startDate, endDate, active)}
 
     #   service to get an investment given it's ID
     @classmethod
@@ -92,12 +92,24 @@ class APIServer:
         if endDate == '_':
             endDate = None
 
-        return {"Investments": cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
+        return {'Investments': cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
 
     #   service to insert a new investment
     @classmethod
     def insertNewInvestment(cls, investmentData):
-        return cls._singleInstance.investmentDataFile.insertNewInvestment(investmentData)
+        #   in the payload from POST method, operations and balance objects are not arrays so, a mapping to server's internal representation is required
+        if 'bank' not in investmentData or 0 == len(investmentData['bank']):
+            abort(400, 'bank attribute is required')
+
+        investmentAux = {
+            'bank': investmentData['bank']
+            , 'type':investmentData['type']
+            , 'name':investmentData['name']
+            , 'operations': [ investmentData['operation'] ]
+            , 'balance': [ investmentData['balance'] ]
+        }
+
+        return cls._singleInstance.investmentDataFile.insertNewInvestment(investmentAux), 201
 
     #   service to patch an investment given it's ID
     @classmethod
