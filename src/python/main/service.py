@@ -97,10 +97,15 @@ class APIServer:
     #   service to insert a new investment
     @classmethod
     def insertNewInvestment(cls, investmentData):
-        #   in the payload from POST method, operations and balance objects are not arrays so, a mapping to server's internal representation is required
+
         if 'bank' not in investmentData or 0 == len(investmentData['bank']):
             abort(400, 'bank attribute is required')
+        if 'type' not in investmentData or 0 == len(investmentData['type']):
+            abort(400, 'type attribute is required')
+        if 'name' not in investmentData or 0 == len(investmentData['name']):
+            abort(400, 'name attribute is required')
 
+        #   in the payload from POST method, operations and balance objects are not arrays so, a mapping to server's internal representation is required
         investmentAux = {
             'bank': investmentData['bank']
             , 'type':investmentData['type']
@@ -115,3 +120,13 @@ class APIServer:
     @classmethod
     def patchInvestment(cls, investmentId, investmentData):
         return cls._singleInstance.investmentDataFile.patchInvestment(investmentId, investmentData)
+
+    #   service to delete an investment given it's ID
+    @classmethod
+    def deleteInvestment(cls, investmentId):
+        result = cls._singleInstance.investmentDataFile.deleteInvestment(investmentId)
+
+        if 'investmentId' not in result:
+            abort(404, 'investmentId not found')
+
+        return result, 204

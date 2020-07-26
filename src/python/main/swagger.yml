@@ -190,3 +190,25 @@ paths:
           description: "Successful patched the investment item"
           schema:
             type: "array"
+    delete:
+      operationId: "service.APIServer.deleteInvestment"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to of the item to be deleted
+          type: string
+          required: True
+      tags:
+        - "Investments"
+      summary: "Delete an investment item"
+      description: "Delete an investment item"
+      responses:
+        204:
+          description: "Successfully deleted the investment item"
+          schema:
+            type: "array"
+        404:
+          description: "InvestmentId not found"
+          schema:
+            type: "array"
+

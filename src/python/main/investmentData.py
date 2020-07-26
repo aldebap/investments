@@ -156,3 +156,22 @@ class InvestmentDataFile:
 
         #   TODO: need to retunr something here
         return {}
+
+    # delete an investment in the invetments content
+    def deleteInvestment(self, investmentId):
+
+        #   trasverse the investments list to fetch the given investment Id
+        index = 0
+
+        print( f'attempt to delete investmentId: {investmentId}' )
+        for investment in self.investment:
+            print( f'iterating through investmentId: {str(investment.id)}' )
+            if investmentId == str(investment.id):
+                print( f'investment found' )
+                self.investment.pop( index )
+                return { 'investmentId': investmentId }
+
+            index += 1
+
+        #   TODO: need to retunr something here
+        return {}
