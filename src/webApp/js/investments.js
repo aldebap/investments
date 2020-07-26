@@ -170,12 +170,13 @@ function showInvestmentDetails(_line, _investment) {
 
     //  format the investment details form
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + _line + '">'
-        + '<input type="hidden" value="' + _investment.id + '" />'
+        + '<input type="hidden" id="inputInvestmentId-' + _line + '" value="' + _investment.id + '" />'
         + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + _line + '" value="' + _investment.bank + '" /></div>'
         + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + _line + '" value="' + _investment.type + '" /></div>'
         + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + _line + '" value="' + _investment.name + '" /></div>'
         + '<div class="float-right"><button type="submit" class="btn btn-outline-primary" onclick="updateInvestment( ' + _line + ' );">Update</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        //+ '<button type="submit" class="btn btn-outline-primary" onclick="showDeleteInvestmentModal( ' + _investment.id + ' );">Delete</button></div>'
+        + '<button type="submit" class="btn btn-outline-primary" onclick="showDeleteInvestmentModal( ' + _line + ' );">Delete</button></div>'
         + '</form></div></div>');
 
     //  format the  operations details table
@@ -319,15 +320,15 @@ function addNewInvestment() {
 
             //  hide the spinner and the modal
             $('#loadingSpinner').empty();
-            $('#newInvestment').modal('hide');
         },
         success: (_result) => {
 
             //  hide the spinner and the modal
             $('#loadingSpinner').empty();
-            $('#newInvestment').modal('hide');
         }
     });
+
+    $('#newInvestment').modal('hide');
 }
 
 /*  *
@@ -401,6 +402,73 @@ function updateInvestment(_line) {
             }
         });
     }
+}
+
+/*  *
+    * show the delete investment modal
+    */
+
+function showDeleteInvestmentModal(_line) {
+
+    console.log('[debug] showDeleteInvestmentModal()');
+
+    //  set the investmentId to be deleted
+    let investmentId = $('#inputInvestmentId-' + _line).val();
+
+    $('#deleteInvestmentId').val(investmentId);
+
+    //  show the new Investment modal
+    $('#deleteInvestment').modal({
+        show: true
+    });
+}
+
+/*  *
+    * delete investment item
+    */
+
+function deleteInvestment() {
+    let investmentId = $('#deleteInvestmentId').val();
+    let requestURL = '/investment/v1/investments';
+
+    //  show the  spinner while loading the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    $.ajax({
+        url: requestURL + '/' + investmentId,
+        method: 'DELETE',
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to delete investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to delete investment');
+
+            //  hide the spinner
+            $('#loadingSpinner').empty();
+        },
+        success: (_result) => {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
+                + '<div class="toast-header">'
+                + '<img src="..." class="rounded mr-2" alt="..." />'
+                + '<strong class="mr-auto">' + investmentId + '</strong>'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>'
+                + '<div class="toast-body">Investment succesfully deleted</div>'
+                + '</div>');
+
+            //  hide the spinner
+            $('#loadingSpinner').empty();
+        }
+    });
+
+    $('#deleteInvestment').modal('hide');
 }
 
 /*  *
