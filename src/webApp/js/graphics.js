@@ -40,8 +40,8 @@ function donutGraphic(_elementId, _parameters, _data) {
     //  evaluate the sum of all data elements
     var sum = 0;
 
-    for (var bank in _data) {
-        sum += _data[bank];
+    for (var fieldName in _data) {
+        sum += _data[fieldName];
     }
 
     //  genarete the donut slices
@@ -51,9 +51,9 @@ function donutGraphic(_elementId, _parameters, _data) {
     var sliceNumber = 0;
     var donutSlices = '';
 
-    for (var bank in _data) {
+    for (var fieldName in _data) {
 
-        var endAngle = startAngle + 2 * Math.PI * _data[bank] / sum;
+        var endAngle = startAngle + 2 * Math.PI * _data[fieldName] / sum;
         var innerArcFlag = ' 0 0,0 ';
         var outterArcFlag = ' 0 0,1 ';
 
@@ -79,12 +79,12 @@ function donutGraphic(_elementId, _parameters, _data) {
 
     sliceNumber = 0;
 
-    for (var bank in _data) {
+    for (var fieldName in _data) {
 
         donutSlicesReferences += '<rect x="' + Math.round(height + referenceMargin) + '" y="' + Math.round(height - (sliceNumber + 1) * referenceHeigth)
             + '" width="' + Math.round(referenceHeigth) + '" height="' + Math.round(referenceHeigth) + '" stroke="black" stroke-width="2" fill="' + colourPallete[sliceNumber] + '" />'
             + '<text x="' + Math.round(height + referenceMargin + 2 * referenceHeigth) + '" y="' + Math.round(height - sliceNumber * referenceHeigth)
-            + '"  stroke="black">' + bank + ' (' + Math.round(100 * _data[bank] / sum) + '%)</text>'
+            + '"  stroke="black">' + fieldName + ' (' + Math.round(100 * _data[fieldName] / sum) + '%)</text>'
 
         sliceNumber++;
     }

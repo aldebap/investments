@@ -112,6 +112,7 @@ function showInvestmentsListingView() {
     $('#container').append('<table class="table table-hover">');
     $('table').append('<thead class="thead-dark">');
     $('thead').append('<tr>');
+    //  TODO: to make the title  columns bank, type and name to work as a filter
     $('tr').append('<th scope="col">#</th>');
     $('tr').append('<th scope="col">Bank</th>');
     $('tr').append('<th scope="col">Type</th>');
@@ -120,11 +121,23 @@ function showInvestmentsListingView() {
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody id="mainTable">');
 
+    showInvestmentTable();
+
+    $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
+}
+
+/*  *
+    * show the investments table
+    */
+
+function showInvestmentTable() {
+
     let line = 1;
     let maxDate = '';
     let totalBalance = 0;
 
-    //  TODO: to make the title  columns bank, type and name to work as a filter
+    $('#mainTable').empty();
+
     investments.forEach((investment) => {
         $('#mainTable').append('<tr id="' + investment.id + '">');
         $('#' + investment.id).append('<td>' + line);
@@ -139,7 +152,7 @@ function showInvestmentsListingView() {
 
         $('#mainTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
-        showInvestmentDetails(line, investment);
+        showInvestmentTableDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
 
@@ -158,45 +171,34 @@ function showInvestmentsListingView() {
     $('#totalAmount').append('<td>Total');
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
-
-    $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
     * show the investment details
     */
 
-function showInvestmentDetails(_line, _investment) {
+function showInvestmentTableDetails(_line, _investment) {
+
+    let investment = investments[_line - 1];
 
     //  format the investment details form
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body"><form id="formEditInvestment-' + _line + '">'
-        + '<input type="hidden" id="inputInvestmentId-' + _line + '" value="' + _investment.id + '" />'
-        + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + _line + '" value="' + _investment.bank + '" /></div>'
-        + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + _line + '" value="' + _investment.type + '" /></div>'
-        + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + _line + '" value="' + _investment.name + '" /></div>'
+        + '<input type="hidden" id="inputInvestmentId-' + _line + '" value="' + investment.id + '" />'
+        + '<div class="form-group"><label for="inputBank">Bank</label><input type="text" class="form-control" id="inputBank-' + _line + '" value="' + investment.bank + '" /></div>'
+        + '<div class="form-group"><label for="inputType">Type</label><input type="text" class="form-control" id="inputType-' + _line + '" value="' + investment.type + '" /></div>'
+        + '<div class="form-group"><label for="inputName">Name</label><input type="text" class="form-control" id="inputName-' + _line + '" value="' + investment.name + '" /></div>'
         + '<div class="float-right"><button type="submit" class="btn btn-outline-primary" onclick="updateInvestment( ' + _line + ' );">Update</button> &nbsp;'
-        //+ '<button type="submit" class="btn btn-outline-primary" onclick="showDeleteInvestmentModal( ' + _investment.id + ' );">Delete</button></div>'
         + '<button type="submit" class="btn btn-outline-primary" onclick="showDeleteInvestmentModal( ' + _line + ' );">Delete</button></div>'
         + '</form></div></div>');
-
-    //  format the  operations details table
-    let operationTable = '';
-    let operationIndex = 1;
-
-    _investment.operations.forEach((operation) => {
-        operationTable += '<tr><td>' + operationIndex + '</td><td>' + formatInvDate(operation.date) + '</td><td>' + to_currency(operation.amount) + '</td></tr>';
-
-        operationIndex++;
-    });
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + _line + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-        + '<tbody>' + operationTable + '</tbody>'
+        + '<tbody id="operationDetail-' + _line + '"></tbody>'
         + '</table>'
-        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;'
+        + '<button type="button" class="btn btn-outline-primary">Edit</button> &nbsp;'
+        + '<button type="button" class="btn btn-outline-primary">Delete</button></div>'
         + '</form></div></div>');
 
     //  format the revenue details table
@@ -238,6 +240,60 @@ function showInvestmentDetails(_line, _investment) {
         + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
         + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
         + '</form></div></div>');
+
+    showOperationTableDetails(_line);
+}
+
+/*  *
+    * show the operation details
+    */
+
+function showOperationTableDetails(_line) {
+
+    let investment = investments[_line - 1];
+
+    $('#operationDetail-' + _line).empty();
+
+    //  format the  operations details table
+    let operationIndex = 1;
+
+    investment.operations.forEach((operation) => {
+        $('#operationDetail-' + _line).append('<tr><td>' + operationIndex + '</td>'
+            + '<td>' + formatInvDate(operation.date) + '</td>'
+            + '<td>' + to_currency(operation.amount) + '</td></tr>');
+
+        operationIndex++;
+    });
+}
+
+/*  *
+    * show the input fields to allow adding a new operation
+    */
+
+function showNewOperationInputFields(_line) {
+
+    $('#operationDetail-' + _line).append('<tr><td>New</td>'
+        + '<td><input type="text" class="form-control" id="inputNewOperationDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>'
+        + '<tr><td colspan="3"><div class="float-right"><button type="submit" class="btn btn-outline-primary">Confirm</button>'
+        + '<button type="button" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button></div></td></tr>');
+}
+
+/*  *
+    * Confirm adding a new operation
+    */
+
+function confirmNewOperation(_line) {
+
+}
+
+/*  *
+    * Confirm adding a new operation
+    */
+
+function cancelNewOperation(_line) {
+
+    showOperationTableDetails(_line);
 }
 
 /*  *
@@ -323,6 +379,7 @@ function addNewInvestment() {
         },
         success: (_result) => {
 
+            showInvestmentTable();
             //  hide the spinner and the modal
             $('#loadingSpinner').empty();
         }
@@ -463,6 +520,7 @@ function deleteInvestment() {
                 + '<div class="toast-body">Investment succesfully deleted</div>'
                 + '</div>');
 
+            showInvestmentTable();
             //  hide the spinner
             $('#loadingSpinner').empty();
         }
