@@ -10,6 +10,9 @@ const LISTING_VIEW = 'listing';
 const EVOLUTION_VIEW = 'evolution';
 const GRAPHICAL_VIEW = 'graphical';
 
+const CRUD_BUTTONS = 'crud';
+const CONFIRMATION_BUTTONS = 'confirmation';
+
 //  globals
 
 let currentView = '';
@@ -196,7 +199,7 @@ function showInvestmentTableDetails(_line, _investment) {
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
         + '<tbody id="operationDetail-' + _line + '"></tbody>'
         + '</table>'
-        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;'
+        + '<div class="float-right" id="operationDetailButtons-' + _line + '"><button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;'
         + '<button type="button" class="btn btn-outline-primary">Edit</button> &nbsp;'
         + '<button type="button" class="btn btn-outline-primary">Delete</button></div>'
         + '</form></div></div>');
@@ -242,6 +245,7 @@ function showInvestmentTableDetails(_line, _investment) {
         + '</form></div></div>');
 
     showOperationTableDetails(_line);
+    showOperationDetailsButtons(_line, CRUD_BUTTONS);
 }
 
 /*  *
@@ -267,6 +271,26 @@ function showOperationTableDetails(_line) {
 }
 
 /*  *
+    * show the operation details buttons
+    */
+
+function showOperationDetailsButtons(_line, _buttonsType) {
+
+    $('#operationDetailButtons-' + _line).empty();
+
+    if (CRUD_BUTTONS == _buttonsType) {
+
+        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;');
+        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary">Edit</button> &nbsp;');
+        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary">Delete</button>');
+    } else if (CONFIRMATION_BUTTONS == _buttonsType) {
+
+        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
+        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button>');
+    }
+}
+
+/*  *
     * show the input fields to allow adding a new operation
     */
 
@@ -274,9 +298,9 @@ function showNewOperationInputFields(_line) {
 
     $('#operationDetail-' + _line).append('<tr><td>New</td>'
         + '<td><input type="text" class="form-control" id="inputNewOperationDate-' + _line + '" /></td>'
-        + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>'
-        + '<tr><td colspan="3"><div class="float-right"><button type="submit" class="btn btn-outline-primary">Confirm</button>'
-        + '<button type="button" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button></div></td></tr>');
+        + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>');
+
+    showOperationDetailsButtons(_line, CONFIRMATION_BUTTONS);
 }
 
 /*  *
@@ -285,6 +309,56 @@ function showNewOperationInputFields(_line) {
 
 function confirmNewOperation(_line) {
 
+    let investment = investments[_line - 1];
+    let operationDate = $('#inputNewOperationDate-' + _line).val();
+    let operationAmount = Number($('#inputNewOperationDate-' + _line).val());
+    let payload = {};
+
+    if (0 < operationDate.length) {
+        payload['date'] = operationDate;
+    }
+    if (operationAmount != NaN) {
+        payload['amount'] = operationAmount;
+    }
+
+    //  if all field are validated, add the operation record
+    let requestURL = '/investment/v1/investments/' + investment.id + '/operations';
+
+    //  show the  spinner while loading the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    console.log('[debug] insert payload: ' + JSON.stringify(payload));
+
+    $.ajax({
+        url: requestURL,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(payload),
+        processData: false,
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to add operation to investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to add operation');
+
+            showOperationTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        },
+        success: (_result) => {
+
+            showOperationTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        }
+    });
+
+    showOperationDetailsButtons(_line, CRUD_BUTTONS);
 }
 
 /*  *
@@ -294,6 +368,7 @@ function confirmNewOperation(_line) {
 function cancelNewOperation(_line) {
 
     showOperationTableDetails(_line);
+    showOperationDetailsButtons(_line, CRUD_BUTTONS);
 }
 
 /*  *
