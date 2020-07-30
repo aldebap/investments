@@ -57,20 +57,27 @@ class APIServer:
     def _serveStaticFile(self, fileName):
         return send_from_directory(self.webAppRoot, fileName)
 
-    #   service to get a list of all banks
+    #   service to insert a new investment
     @classmethod
-    def banks(cls):
-        return {'Banks': cls._singleInstance.investmentDataFile.getAllBanks()}
+    def insertNewInvestment(cls, investmentData):
 
-    #   service to get a list of all funds of a bank
-    @classmethod
-    def funds(cls, bank):
-        return {'Funds': cls._singleInstance.investmentDataFile.getAllFunds(bank)}
+        if 'bank' not in investmentData or 0 == len(investmentData['bank']):
+            abort(400, 'bank attribute is required')
+        if 'type' not in investmentData or 0 == len(investmentData['type']):
+            abort(400, 'type attribute is required')
+        if 'name' not in investmentData or 0 == len(investmentData['name']):
+            abort(400, 'name attribute is required')
 
-    #   service to get a list of all types
-    @classmethod
-    def types(cls):
-        return {'Types': cls._singleInstance.investmentDataFile.getAllTypes()}
+        #   in the payload from POST method, operations and balance objects are not arrays so, a mapping to server's internal representation is required
+        investmentAux = {
+            'bank': investmentData['bank']
+            , 'type':investmentData['type']
+            , 'name':investmentData['name']
+            , 'operations': [ investmentData['operation'] ]
+            , 'balance': [ investmentData['balance'] ]
+        }
+
+        return cls._singleInstance.investmentDataFile.insertNewInvestment(investmentAux), 201
 
     #   service to get a list with the investments
     @classmethod
@@ -94,28 +101,6 @@ class APIServer:
 
         return {'Investments': cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
 
-    #   service to insert a new investment
-    @classmethod
-    def insertNewInvestment(cls, investmentData):
-
-        if 'bank' not in investmentData or 0 == len(investmentData['bank']):
-            abort(400, 'bank attribute is required')
-        if 'type' not in investmentData or 0 == len(investmentData['type']):
-            abort(400, 'type attribute is required')
-        if 'name' not in investmentData or 0 == len(investmentData['name']):
-            abort(400, 'name attribute is required')
-
-        #   in the payload from POST method, operations and balance objects are not arrays so, a mapping to server's internal representation is required
-        investmentAux = {
-            'bank': investmentData['bank']
-            , 'type':investmentData['type']
-            , 'name':investmentData['name']
-            , 'operations': [ investmentData['operation'] ]
-            , 'balance': [ investmentData['balance'] ]
-        }
-
-        return cls._singleInstance.investmentDataFile.insertNewInvestment(investmentAux), 201
-
     #   service to patch an investment given it's ID
     @classmethod
     def patchInvestment(cls, investmentId, investmentData):
@@ -126,7 +111,39 @@ class APIServer:
     def deleteInvestment(cls, investmentId):
         result = cls._singleInstance.investmentDataFile.deleteInvestment(investmentId)
 
-        if 'investmentId' not in result:
+        if 'id' not in result:
             abort(404, 'investmentId not found')
 
         return result, 204
+
+    #   service to get a list of all banks
+    @classmethod
+    def banks(cls):
+        return {'Banks': cls._singleInstance.investmentDataFile.getAllBanks()}
+
+    #   service to get a list of all funds of a bank
+    @classmethod
+    def funds(cls, bank):
+        return {'Funds': cls._singleInstance.investmentDataFile.getAllFunds(bank)}
+
+    #   service to get a list of all types
+    @classmethod
+    def types(cls):
+        return {'Types': cls._singleInstance.investmentDataFile.getAllTypes()}
+
+    #   service to insert a new operation to an investment
+    @classmethod
+    def insertNewOperation(cls, investmentId, operationData):
+
+        if 'date' not in operationData or 0 == len(operationData['date']):
+            abort(400, 'date attribute is required')
+
+        if 'amount' not in operationData or 0 == operationData['amount']:
+            abort(400, 'amount attribute is required')
+
+        result = cls._singleInstance.investmentDataFile.insertNewOperation(investmentId, operationData)
+
+        if 'id' not in result:
+            abort(404, 'investmentId not found')
+
+        return result, 201

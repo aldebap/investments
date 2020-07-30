@@ -311,7 +311,7 @@ function confirmNewOperation(_line) {
 
     let investment = investments[_line - 1];
     let operationDate = $('#inputNewOperationDate-' + _line).val();
-    let operationAmount = Number($('#inputNewOperationDate-' + _line).val());
+    let operationAmount = Number($('#inputNewOperationAmount-' + _line).val());
     let payload = {};
 
     if (0 < operationDate.length) {
@@ -352,6 +352,8 @@ function confirmNewOperation(_line) {
         },
         success: (_result) => {
 
+            //  TODO: the same period filter needs to be aplied to the result investment
+            investments[_line - 1] = _result;
             showOperationTableDetails(_line);
             //  hide the spinner and the modal
             $('#loadingSpinner').empty();

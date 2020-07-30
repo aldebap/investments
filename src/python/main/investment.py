@@ -120,3 +120,6 @@ class Investment:
         investmentAux.revenue = sorted(revenueAux, reverse=True)
 
         return investmentAux
+
+    def addOperation(self, newOperation):
+        self.operation.append(Operation.unserialize(newOperation))

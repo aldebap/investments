@@ -71,12 +71,21 @@ class InvestmentDataFile:
 
         return typeList
 
+    # insert a new investment in the invetments content
+    def insertNewInvestment(self, investmentData):
+        investmentAux = Investment.unserialize(investmentData)
+
+        self.investment.append(investmentAux)
+
+        return investmentAux.to_json()
+
     # fetch all investments from the invetments content
     def getInvestments(self, investmentId, startDate, endDate, active):
         investmentList = []
 
         #   if no period is informed, find the second max date in such a way to allow evaluate the evolution
         #   TODO: figure out a better way to do this
+        #   TODO: after inserting an operation with bigger date than the end date of balance, the same is not returned in the result: this must be fixed somehow
         if startDate is None and endDate is None:
             for investment in self.investment:
                 if active == True and investment.balance[0].amount == 0:
@@ -129,14 +138,6 @@ class InvestmentDataFile:
 
         return investmentList
 
-    # insert a new investment in the invetments content
-    def insertNewInvestment(self, investmentData):
-        investmentAux = Investment.unserialize(investmentData)
-
-        self.investment.append(investmentAux)
-
-        return investmentAux.to_json()
-
     # patch an investment in the invetments content
     def patchInvestment(self, investmentId, investmentData):
 
@@ -169,9 +170,22 @@ class InvestmentDataFile:
             if investmentId == str(investment.id):
                 print( f'investment found' )
                 self.investment.pop( index )
-                return { 'investmentId': investmentId }
+                return { 'id': investmentId }
 
             index += 1
 
         #   TODO: need to retunr something here
         return {}
+
+    # insert a new operation to an investment item
+    def insertNewOperation(self, investmentId, newOperation):
+
+        #   trasverse the investments list to fetch the given investment Id
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+                investment.addOperation(newOperation)
+                return investment.to_json()
+
+        #   TODO: need to retunr something here
+        return {}
+

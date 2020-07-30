@@ -212,3 +212,30 @@ paths:
           schema:
             type: "array"
 
+  /v1/investments/{investmentId}/operations:
+    post:
+      operationId: "service.APIServer.insertNewOperation"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to get a specific item from the list
+          type: string
+          required: True
+        - name: operationData
+          in: body
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+              amount:
+                type: number
+      tags:
+        - "Operations"
+      summary: "Insert a new operation item to an investment"
+      description: "Insert a new operation item to an investment"
+      responses:
+        201:
+          description: "New operation successfully created"
+          schema:
+            type: "array"
