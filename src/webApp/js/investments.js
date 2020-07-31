@@ -199,53 +199,31 @@ function showInvestmentTableDetails(_line, _investment) {
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
         + '<tbody id="operationDetail-' + _line + '"></tbody>'
         + '</table>'
-        + '<div class="float-right" id="operationDetailButtons-' + _line + '"><button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;'
-        + '<button type="button" class="btn btn-outline-primary">Edit</button> &nbsp;'
-        + '<button type="button" class="btn btn-outline-primary">Delete</button></div>'
+        + '<div class="float-right" id="operationDetailButtons-' + _line + '"></div>'
         + '</form></div></div>');
-
-    //  format the revenue details table
-    let revenueTable = '';
-    let revenueIndex = 1;
-
-    _investment.revenue.forEach((revenue) => {
-        revenueTable += '<tr><td>' + revenueIndex + '</td><td>' + formatInvDate(revenue.date) + '</td><td>' + to_currency(revenue.amount) + '</td></tr>';
-
-        revenueIndex++;
-    });
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-        + '<tbody>' + revenueTable + '</tbody>'
+        + '<tbody id="revenueDetail-' + _line + '"></tbody>'
         + '</table>'
-        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '<div class="float-right" id="revenueDetailButtons-' + _line + '"></div>'
         + '</form></div></div>');
-
-    //  format the  balance details table
-    let balanceTable = '';
-    let balanceIndex = 1;
-
-    _investment.balance.forEach((balance) => {
-        balanceTable += '<tr><td>' + balanceIndex + '</td><td>' + formatInvDate(balance.date) + '</td><td>' + to_currency(balance.amount) + '</td></tr>';
-
-        balanceIndex++;
-    });
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + _line + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
-        + '<tbody>' + balanceTable + '</tbody>'
+        + '<tbody id="balanceDetail-' + _line + '"></tbody>'
         + '</table>'
-        + '<div class="float-right"><button type="submit" class="btn btn-outline-primary">New</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Edit</button> &nbsp;'
-        + '<button type="submit" class="btn btn-outline-primary">Delete</button></div>'
+        + '<div class="float-right" id="balanceDetailButtons-' + _line + '"></div>'
         + '</form></div></div>');
 
     showOperationTableDetails(_line);
     showOperationDetailsButtons(_line, CRUD_BUTTONS);
+
+    showRevenueTableDetails(_line);
+
+    showBalanceTableDetails(_line);
 }
 
 /*  *
@@ -286,7 +264,7 @@ function showOperationDetailsButtons(_line, _buttonsType) {
     } else if (CONFIRMATION_BUTTONS == _buttonsType) {
 
         $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
-        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button>');
+        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button>');
     }
 }
 
@@ -364,13 +342,108 @@ function confirmNewOperation(_line) {
 }
 
 /*  *
-    * Confirm adding a new operation
+    * Cancel adding a new operation
     */
 
 function cancelNewOperation(_line) {
 
     showOperationTableDetails(_line);
     showOperationDetailsButtons(_line, CRUD_BUTTONS);
+}
+
+/*  *
+    * show the revenue details
+    */
+
+function showRevenueTableDetails(_line) {
+
+    let investment = investments[_line - 1];
+
+    $('#revenueDetail-' + _line).empty();
+
+    //  format the revenue details table
+    let revenueIndex = 1;
+
+    investment.revenue.forEach((revenue) => {
+        $('#revenueDetail-' + _line).append('<tr><td>' + revenueIndex + '</td>'
+            + '<td>' + formatInvDate(revenue.date) + '</td>'
+            + '<td>' + to_currency(revenue.amount) + '</td></tr>');
+
+        revenueIndex++;
+    });
+
+}
+
+/*  *
+    * show the balance details
+    */
+
+function showBalanceTableDetails(_line) {
+
+    let investment = investments[_line - 1];
+
+    $('#balanceDetail-' + _line).empty();
+
+    //  format the  balance details table
+    let balanceIndex = 1;
+
+    investment.balance.forEach((balance) => {
+        $('#balanceDetail-' + _line).append('<tr><td>' + balanceIndex + '</td>'
+            + '<td>' + formatInvDate(balance.date) + '</td>'
+            + '<td>' + to_currency(balance.amount) + '</td></tr>');
+
+        balanceIndex++;
+    });
+
+    $('#balanceDetailButtons-' + _line).empty();
+    $('#balanceDetailButtons-' + _line).append('<a onclick="showNewBalanceInputFields( ' + _line + ' );"><img src="img/addButton.svg" /></a>');
+}
+
+/*  *
+    * show the input fields to allow adding a new balance
+    */
+
+function showNewBalanceInputFields(_line) {
+
+    $('#balanceDetail-' + _line).append('<tr><td>New</td>'
+        + '<td><input type="text" class="form-control" id="inputNewBalanceDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control" id="inputNewBalanceAmount-' + _line + '" /></td></tr>');
+
+    $('#balanceDetailButtons-' + _line).empty();
+    $('#balanceDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewBalance( ' + _line + ' );">Confirm</button> &nbsp;');
+    $('#balanceDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="showBalanceTableDetails( ' + _line + ' );">Cancel</button>');
+}
+
+/*  *
+    * Confirm adding a new balance
+    */
+
+function confirmNewBalance(_line) {
+
+    let investment = investments[_line - 1];
+    let balanceDate = $('#inputNewBalanceDate-' + _line).val();
+    let balanceAmount = Number($('#inputNewBalanceAmount-' + _line).val());
+    let payload = {};
+
+    if (0 < balanceDate.length) {
+        payload['date'] = balanceDate;
+    }
+    if (balanceAmount != NaN) {
+        payload['amount'] = balanceAmount;
+    }
+
+    //  if all field are validated, add the operation record
+    let requestURL = '/investment/v1/investments/' + investment.id + '/balance';
+
+    //  show the  spinner while loading the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    console.log('[debug] insert balance payload: ' + JSON.stringify(payload));
+    //  hide the spinner and the modal
+    $('#loadingSpinner').empty();
+
+    $('#balanceDetailButtons-' + _line).empty();
 }
 
 /*  *
