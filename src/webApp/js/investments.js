@@ -392,13 +392,11 @@ function showBalanceTableDetails(_line) {
         $('#balanceDetail-' + _line).append('<tr><td>' + balanceIndex + '</td>'
             + '<td>' + formatInvDate(balance.date) + '</td>'
             + '<td>' + to_currency(balance.amount)
-            + '<a class="float-right" onclick="showBalanceOptionsMenu( ' + _line + ' );"><img id="balanceThreeDotsButton-' + _line + '" class="text-primary" src="img/threeDotsVertical.svg" /></a>'
-            //+ '<a class="float-right"><img id="balanceThreeDotsButton-' + _line + '" class="text-primary" src="img/threeDotsVertical.svg" /></a>'
-            //+ '<button class="btn btn-light dropdown-toggle" type="button" id="balanceOptionsMenu-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-            //+ '<img class="text-primary float-right" src="img/threeDotsVertical.svg" /></button>'
+            + '<a class="float-right dropdown-toggle" href="#" role="button" id="balanceThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+            + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
             + '<div class="dropdown-menu" id="balanceOptionsMenu-' + _line + '" aria-labelledby="balanceThreeDotsButton-' + _line + '">'
-            + '<button class="dropdown-item" type="button">Edit</button>'
-            + '<button class="dropdown-item" type="button">Delete</button></div>'
+            + '<button class="dropdown-item" type="button" onclick="editBalance( ' + _line + ', ' + balanceIndex + ' );">Edit</button>'
+            + '<button class="dropdown-item" type="button" onclick="deleteBalance( ' + _line + ', ' + balanceIndex + ' );">Delete</button></div>'
             + '</td></tr>');
         balanceIndex++;
     });
@@ -422,9 +420,12 @@ function showNewBalanceInputFields(_line) {
     $('#balanceDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="showBalanceTableDetails( ' + _line + ' );">Cancel</button>');
 }
 
-function showBalanceOptionsMenu(_line) {
-    console.log('[debug] show balance options menu: ' + _line);
-    $('#balanceOptionsMenu-' + _line).dropdown('toggle');
+function editBalance(_line, _balanceLine) {
+    console.log('[debug] edit balance options menu: ' + _line + ' --> ' + _balanceLine);
+}
+
+function deleteBalance(_line, _balanceLine) {
+    console.log('[debug] delete balance options menu: ' + _line + ' --> ' + _balanceLine);
 }
 
 /*  *
