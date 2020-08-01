@@ -204,7 +204,7 @@ function showInvestmentTableDetails(_line, _investment) {
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
         + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th><th>&nbsp;</th></thead>'
         + '<tbody id="revenueDetail-' + _line + '"></tbody>'
         + '</table>'
         + '<div class="float-right" id="revenueDetailButtons-' + _line + '"></div>'
@@ -367,7 +367,8 @@ function showRevenueTableDetails(_line) {
     investment.revenue.forEach((revenue) => {
         $('#revenueDetail-' + _line).append('<tr><td>' + revenueIndex + '</td>'
             + '<td>' + formatInvDate(revenue.date) + '</td>'
-            + '<td>' + to_currency(revenue.amount) + '</td></tr>');
+            + '<td>' + to_currency(revenue.amount) + '</td></tr>'
+            + '<td><a onclick="showBalanceOptionsMenu( ' + _line + ' );"><img class="text-primary" src="img/threeDotsVertical.svg" /></a></td></tr>');
 
         revenueIndex++;
     });
@@ -390,8 +391,15 @@ function showBalanceTableDetails(_line) {
     investment.balance.forEach((balance) => {
         $('#balanceDetail-' + _line).append('<tr><td>' + balanceIndex + '</td>'
             + '<td>' + formatInvDate(balance.date) + '</td>'
-            + '<td>' + to_currency(balance.amount) + '</td></tr>');
-
+            + '<td>' + to_currency(balance.amount)
+            + '<a class="float-right" onclick="showBalanceOptionsMenu( ' + _line + ' );"><img id="balanceThreeDotsButton-' + _line + '" class="text-primary" src="img/threeDotsVertical.svg" /></a>'
+            //+ '<a class="float-right"><img id="balanceThreeDotsButton-' + _line + '" class="text-primary" src="img/threeDotsVertical.svg" /></a>'
+            //+ '<button class="btn btn-light dropdown-toggle" type="button" id="balanceOptionsMenu-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+            //+ '<img class="text-primary float-right" src="img/threeDotsVertical.svg" /></button>'
+            + '<div class="dropdown-menu" id="balanceOptionsMenu-' + _line + '" aria-labelledby="balanceThreeDotsButton-' + _line + '">'
+            + '<button class="dropdown-item" type="button">Edit</button>'
+            + '<button class="dropdown-item" type="button">Delete</button></div>'
+            + '</td></tr>');
         balanceIndex++;
     });
 
@@ -412,6 +420,11 @@ function showNewBalanceInputFields(_line) {
     $('#balanceDetailButtons-' + _line).empty();
     $('#balanceDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewBalance( ' + _line + ' );">Confirm</button> &nbsp;');
     $('#balanceDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="showBalanceTableDetails( ' + _line + ' );">Cancel</button>');
+}
+
+function showBalanceOptionsMenu(_line) {
+    console.log('[debug] show balance options menu: ' + _line);
+    $('#balanceOptionsMenu-' + _line).dropdown('toggle');
 }
 
 /*  *
