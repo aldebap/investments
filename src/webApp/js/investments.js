@@ -10,9 +10,6 @@ const LISTING_VIEW = 'listing';
 const EVOLUTION_VIEW = 'evolution';
 const GRAPHICAL_VIEW = 'graphical';
 
-const CRUD_BUTTONS = 'crud';
-const CONFIRMATION_BUTTONS = 'confirmation';
-
 //  globals
 
 let currentView = '';
@@ -204,7 +201,7 @@ function showInvestmentTableDetails(_line, _investment) {
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
         + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th><th>&nbsp;</th></thead>'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
         + '<tbody id="revenueDetail-' + _line + '"></tbody>'
         + '</table>'
         + '<div class="float-right" id="revenueDetailButtons-' + _line + '"></div>'
@@ -219,10 +216,7 @@ function showInvestmentTableDetails(_line, _investment) {
         + '</form></div></div>');
 
     showOperationTableDetails(_line);
-    showOperationDetailsButtons(_line, CRUD_BUTTONS);
-
     showRevenueTableDetails(_line);
-
     showBalanceTableDetails(_line);
 }
 
@@ -242,30 +236,19 @@ function showOperationTableDetails(_line) {
     investment.operations.forEach((operation) => {
         $('#operationDetail-' + _line).append('<tr><td>' + operationIndex + '</td>'
             + '<td>' + formatInvDate(operation.date) + '</td>'
-            + '<td>' + to_currency(operation.amount) + '</td></tr>');
+            + '<td>' + to_currency(operation.amount)
+            + '<a class="float-right dropdown-toggle" href="#" role="button" id="operationThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+            + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
+            + '<div class="dropdown-menu" id="operationOptionsMenu-' + _line + '" aria-labelledby="operationThreeDotsButton-' + _line + '">'
+            + '<button class="dropdown-item" type="button" onclick="showEditOperationInputFields( ' + _line + ', ' + operationIndex + ' );">Edit</button>'
+            + '<button class="dropdown-item" type="button" onclick="deleteOperation( ' + _line + ', ' + operationIndex + ' );">Delete</button></div>'
+            + '</td></tr>');
 
         operationIndex++;
     });
-}
-
-/*  *
-    * show the operation details buttons
-    */
-
-function showOperationDetailsButtons(_line, _buttonsType) {
 
     $('#operationDetailButtons-' + _line).empty();
-
-    if (CRUD_BUTTONS == _buttonsType) {
-
-        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="showNewOperationInputFields( ' + _line + ' );">New</button> &nbsp;');
-        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary">Edit</button> &nbsp;');
-        $('#operationDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary">Delete</button>');
-    } else if (CONFIRMATION_BUTTONS == _buttonsType) {
-
-        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
-        $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="cancelNewOperation( ' + _line + ' );">Cancel</button>');
-    }
+    $('#operationDetailButtons-' + _line).append('<a onclick="showNewOperationInputFields( ' + _line + ' );"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
@@ -278,7 +261,21 @@ function showNewOperationInputFields(_line) {
         + '<td><input type="text" class="form-control" id="inputNewOperationDate-' + _line + '" /></td>'
         + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>');
 
-    showOperationDetailsButtons(_line, CONFIRMATION_BUTTONS);
+    $('#operationDetailButtons-' + _line).empty();
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showOperationTableDetails( ' + _line + ' );">Cancel</button>');
+}
+
+/*  *
+    * show the input fields to allow editing an operation
+    */
+
+function showEditOperationInputFields(_line, _operationLine) {
+    console.log('[debug] edit operation options menu: ' + _line + ' --> ' + _operationLine);
+}
+
+function deleteOperation(_line, _operationLine) {
+    console.log('[debug] delete operation options menu: ' + _line + ' --> ' + _operationLine);
 }
 
 /*  *
@@ -338,17 +335,7 @@ function confirmNewOperation(_line) {
         }
     });
 
-    showOperationDetailsButtons(_line, CRUD_BUTTONS);
-}
-
-/*  *
-    * Cancel adding a new operation
-    */
-
-function cancelNewOperation(_line) {
-
-    showOperationTableDetails(_line);
-    showOperationDetailsButtons(_line, CRUD_BUTTONS);
+    $('#operationDetailButtons-' + _line).empty();
 }
 
 /*  *
@@ -367,12 +354,77 @@ function showRevenueTableDetails(_line) {
     investment.revenue.forEach((revenue) => {
         $('#revenueDetail-' + _line).append('<tr><td>' + revenueIndex + '</td>'
             + '<td>' + formatInvDate(revenue.date) + '</td>'
-            + '<td>' + to_currency(revenue.amount) + '</td></tr>'
-            + '<td><a onclick="showBalanceOptionsMenu( ' + _line + ' );"><img class="text-primary" src="img/threeDotsVertical.svg" /></a></td></tr>');
+            + '<a class="float-right dropdown-toggle" href="#" role="button" id="revenueThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+            + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
+            + '<div class="dropdown-menu" id="revenueOptionsMenu-' + _line + '" aria-labelledby="revenueThreeDotsButton-' + _line + '">'
+            + '<button class="dropdown-item" type="button" onclick="showEditRevenueInputFields( ' + _line + ', ' + revenueIndex + ' );">Edit</button>'
+            + '<button class="dropdown-item" type="button" onclick="deleteRevenue( ' + _line + ', ' + revenueIndex + ' );">Delete</button></div>'
+            + '</td></tr>');
 
         revenueIndex++;
     });
 
+    $('#revenueDetailButtons-' + _line).empty();
+    $('#revenueDetailButtons-' + _line).append('<a onclick="showNewRevenueInputFields( ' + _line + ' );"><img src="img/addButton.svg" /></a>');
+}
+
+/*  *
+    * show the input fields to allow adding a new revenue
+    */
+
+function showNewRevenueInputFields(_line) {
+
+    $('#revenueDetail-' + _line).append('<tr><td>New</td>'
+        + '<td><input type="text" class="form-control" id="inputNewRevenueDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control" id="inputNewRevenueAmount-' + _line + '" /></td></tr>');
+
+    $('#revenueDetailButtons-' + _line).empty();
+    $('#revenueDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewRevenue( ' + _line + ' );">Confirm</button> &nbsp;');
+    $('#revenueDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-secondary" onclick="showRevenueTableDetails( ' + _line + ' );">Cancel</button>');
+}
+
+/*  *
+    * show the input fields to allow editing a revenue
+    */
+
+function showEditRevenueInputFields(_line, _revenueLine) {
+    console.log('[debug] edit revenue options menu: ' + _line + ' --> ' + _revenueLine);
+}
+
+function deleteRevenue(_line, _revenueLine) {
+    console.log('[debug] delete revenue options menu: ' + _line + ' --> ' + _revenueLine);
+}
+
+/*  *
+    * Confirm adding a new revenue
+    */
+
+function confirmNewRevenue(_line) {
+
+    let investment = investments[_line - 1];
+    let revenueDate = $('#inputNewRevenueDate-' + _line).val();
+    let revenueAmount = Number($('#inputNewRevenueAmount-' + _line).val());
+    let payload = {};
+
+    if (0 < revenueDate.length) {
+        payload['date'] = revenueDate;
+    }
+    if (revenueAmount != NaN) {
+        payload['amount'] = revenueAmount;
+    }
+
+    //  if all field are validated, add the revenue record
+    let requestURL = '/investment/v1/investments/' + investment.id + '/revenue';
+
+    //  show the  spinner while loading the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    console.log('[debug] insert revenue payload: ' + JSON.stringify(payload));
+    //  hide the spinner and the modal
+    $('#loadingSpinner').empty();
+
+    $('#revenueDetailButtons-' + _line).empty();
 }
 
 /*  *
@@ -395,7 +447,7 @@ function showBalanceTableDetails(_line) {
             + '<a class="float-right dropdown-toggle" href="#" role="button" id="balanceThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
             + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
             + '<div class="dropdown-menu" id="balanceOptionsMenu-' + _line + '" aria-labelledby="balanceThreeDotsButton-' + _line + '">'
-            + '<button class="dropdown-item" type="button" onclick="editBalance( ' + _line + ', ' + balanceIndex + ' );">Edit</button>'
+            + '<button class="dropdown-item" type="button" onclick="showEditBalanceInputFields( ' + _line + ', ' + balanceIndex + ' );">Edit</button>'
             + '<button class="dropdown-item" type="button" onclick="deleteBalance( ' + _line + ', ' + balanceIndex + ' );">Delete</button></div>'
             + '</td></tr>');
         balanceIndex++;
@@ -417,10 +469,14 @@ function showNewBalanceInputFields(_line) {
 
     $('#balanceDetailButtons-' + _line).empty();
     $('#balanceDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewBalance( ' + _line + ' );">Confirm</button> &nbsp;');
-    $('#balanceDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-primary" onclick="showBalanceTableDetails( ' + _line + ' );">Cancel</button>');
+    $('#balanceDetailButtons-' + _line).append('<button type="button" class="btn btn-outline-secondary" onclick="showBalanceTableDetails( ' + _line + ' );">Cancel</button>');
 }
 
-function editBalance(_line, _balanceLine) {
+/*  *
+    * show the input fields to allow editing a balance
+    */
+
+function showEditBalanceInputFields(_line, _balanceLine) {
     console.log('[debug] edit balance options menu: ' + _line + ' --> ' + _balanceLine);
 }
 
