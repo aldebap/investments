@@ -123,3 +123,9 @@ class Investment:
 
     def addOperation(self, newOperation):
         self.operation.append(Operation.unserialize(newOperation))
+
+    def addRevenue(self, newRevenue):
+        self.operation.append(Revenue.unserialize(newRevenue))
+
+    def addBalance(self, newBalance):
+        self.operation.append(Balance.unserialize(newBalance))

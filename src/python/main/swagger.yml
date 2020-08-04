@@ -218,7 +218,7 @@ paths:
       parameters:
         - name: investmentId
           in: path
-          description: Investment ID to get a specific item from the list
+          description: Investment ID to whom the new operation is to be inserted
           type: string
           required: True
         - name: operationData
@@ -237,5 +237,61 @@ paths:
       responses:
         201:
           description: "New operation successfully created"
+          schema:
+            type: "array"
+
+  /v1/investments/{investmentId}/revenue:
+    post:
+      operationId: "service.APIServer.insertNewRevenue"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to whom the new revenue is to be inserted
+          type: string
+          required: True
+        - name: revenueData
+          in: body
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+              amount:
+                type: number
+      tags:
+        - "Revenue"
+      summary: "Insert a new revenue item to an investment"
+      description: "Insert a new revenue item to an investment"
+      responses:
+        201:
+          description: "New revenue successfully created"
+          schema:
+            type: "array"
+
+  /v1/investments/{investmentId}/balance:
+    post:
+      operationId: "service.APIServer.insertNewBalance"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to whom the new balance is to be inserted
+          type: string
+          required: True
+        - name: balanceData
+          in: body
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+              amount:
+                type: number
+      tags:
+        - "Balance"
+      summary: "Insert a new balance item to an investment"
+      description: "Insert a new balance item to an investment"
+      responses:
+        201:
+          description: "New balance successfully created"
           schema:
             type: "array"

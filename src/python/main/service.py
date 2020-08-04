@@ -147,3 +147,37 @@ class APIServer:
             abort(404, 'investmentId not found')
 
         return result, 201
+
+    #   service to insert a new revenue to an investment
+    @classmethod
+    def insertNewRevenue(cls, investmentId, revenueData):
+
+        if 'date' not in revenueData or 0 == len(revenueData['date']):
+            abort(400, 'date attribute is required')
+
+        if 'amount' not in revenueData or 0 == revenueData['amount']:
+            abort(400, 'amount attribute is required')
+
+        result = cls._singleInstance.investmentDataFile.insertNewRevenue(investmentId, revenueData)
+
+        if 'id' not in result:
+            abort(404, 'investmentId not found')
+
+        return result, 201
+
+    #   service to insert a new balance to an investment
+    @classmethod
+    def insertNewBalance(cls, investmentId, balanceData):
+
+        if 'date' not in balanceData or 0 == len(balanceData['date']):
+            abort(400, 'date attribute is required')
+
+        if 'amount' not in balanceData or 0 == balanceData['amount']:
+            abort(400, 'amount attribute is required')
+
+        result = cls._singleInstance.investmentDataFile.insertNewBalance(investmentId, balanceData)
+
+        if 'id' not in result:
+            abort(404, 'investmentId not found')
+
+        return result, 201

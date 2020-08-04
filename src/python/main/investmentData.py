@@ -189,3 +189,26 @@ class InvestmentDataFile:
         #   TODO: need to retunr something here
         return {}
 
+    # insert a new revenue to an investment item
+    def insertNewRevenue(self, investmentId, newRevenue):
+
+        #   trasverse the investments list to fetch the given investment Id
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+                investment.addRevenue(newRevenue)
+                return investment.to_json()
+
+        #   TODO: need to retunr something here
+        return {}
+
+    # insert a new operation to an investment item
+    def insertNewBalance(self, investmentId, newBalance):
+
+        #   trasverse the investments list to fetch the given investment Id
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+                investment.addBalance(newBalance)
+                return investment.to_json()
+
+        #   TODO: need to retunr something here
+        return {}
