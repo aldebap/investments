@@ -185,6 +185,7 @@ function showInvestmentsEvolutionView() {
     $('tr').append('<th scope="col" style="text-align:right">Operations</th>');
     $('tr').append('<th scope="col" style="text-align:right">Profit</th>');
     $('tr').append('<th scope="col" style="text-align:right">Interests</th>');
+    $('tr').append('<th scope="col" style="text-align:right">Rate</th>');
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody id="investmentEvolutionTable">');
 
@@ -220,6 +221,7 @@ function showInvestmentsEvolutionView() {
         if (investment.balance[investment.balance.length - 1].amount != operationsAmount) {
             interestsAmount -= operationsAmount;
         }
+        let interestRate = 100 * interestsAmount / investment.balance[0].amount;
 
         $('#investmentEvolutionTable').append('<tr id="' + investment.id + '">');
         $('#' + investment.id).append('<td>' + line);
@@ -230,7 +232,13 @@ function showInvestmentsEvolutionView() {
         $('#' + investment.id).append('<td>' + formatInvDate(endDate));
         $('#' + investment.id).append('<td style="text-align:right">' + to_currency(operationsAmount));
         $('#' + investment.id).append('<td style="text-align:right">' + to_currency(profitAmount));
-        $('#' + investment.id).append('<td style="text-align:right">' + to_currency(interestsAmount));
+        if (0 <= interestsAmount) {
+            $('#' + investment.id).append('<td style="text-align:right">' + to_currency(interestsAmount));
+            $('#' + investment.id).append('<td style="text-align:right">' + interestRate.toFixed(3) + '%');
+        } else {
+            $('#' + investment.id).append('<td style="text-align:right" class="text-danger">' + to_currency(interestsAmount));
+            $('#' + investment.id).append('<td style="text-align:right" class="text-danger">' + interestRate.toFixed(3) + '%');
+        }
         $('#' + investment.id).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount));
 
         //  summarize the investment to the grand total
@@ -248,6 +256,8 @@ function showInvestmentsEvolutionView() {
         line++;
     });
 
+    let averageInterestRate = 100 * totalInterests / totalBalance;
+
     $('#investmentEvolutionTable').append('<tr id="totalAmount" class="table-active">');
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>&nbsp;');
@@ -257,7 +267,13 @@ function showInvestmentsEvolutionView() {
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalOperations));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalProfit));
-    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalInterests));
+    if (0 <= totalInterests) {
+        $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalInterests));
+        $('#totalAmount').append('<td style="text-align:right">' + averageInterestRate.toFixed(3) + '%');
+    } else {
+        $('#totalAmount').append('<td style="text-align:right" class="text-danger">' + to_currency(totalInterests));
+        $('#totalAmount').append('<td style="text-align:right" class="text-danger">' + averageInterestRate.toFixed(3) + '%');
+    }
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
 }
 
