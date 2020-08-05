@@ -81,7 +81,7 @@ function confirmNewBalance(_line) {
         payload['amount'] = balanceAmount;
     }
 
-    //  if all field are validated, add the operation record
+    //  if all field are validated, add the balance record
     let requestURL = '/investment/v1/investments/' + investment.id + '/balance';
 
     //  show the  spinner while loading the data from the API server
@@ -89,8 +89,36 @@ function confirmNewBalance(_line) {
     $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
 
     console.log('[debug] insert balance payload: ' + JSON.stringify(payload));
-    //  hide the spinner and the modal
-    $('#loadingSpinner').empty();
+
+    $.ajax({
+        url: requestURL,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(payload),
+        processData: false,
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to add balance to investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to add balance');
+
+            showBalanceTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        },
+        success: (_result) => {
+
+            //  TODO: the same period filter needs to be aplied to the result investment
+            investments[_line - 1] = _result;
+            showBalanceTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        }
+    });
 
     $('#balanceDetailButtons-' + _line).empty();
 }

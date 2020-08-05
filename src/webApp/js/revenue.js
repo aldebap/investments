@@ -89,8 +89,36 @@ function confirmNewRevenue(_line) {
     $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
 
     console.log('[debug] insert revenue payload: ' + JSON.stringify(payload));
-    //  hide the spinner and the modal
-    $('#loadingSpinner').empty();
+
+    $.ajax({
+        url: requestURL,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(payload),
+        processData: false,
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to add revenue to investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to add revenue');
+
+            showRevenueTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        },
+        success: (_result) => {
+
+            //  TODO: the same period filter needs to be aplied to the result investment
+            investments[_line - 1] = _result;
+            showRevenueTableDetails(_line);
+            //  hide the spinner and the modal
+            $('#loadingSpinner').empty();
+        }
+    });
 
     $('#revenueDetailButtons-' + _line).empty();
 }
