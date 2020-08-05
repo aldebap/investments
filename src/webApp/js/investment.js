@@ -73,7 +73,7 @@ function showInvestmentTableDetails(_line, _investment) {
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + _line + '">'
         + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
         + '<tbody id="operationDetail-' + _line + '"></tbody>'
         + '</table>'
         + '<div class="float-right" id="operationDetailButtons-' + _line + '"></div>'
@@ -81,7 +81,7 @@ function showInvestmentTableDetails(_line, _investment) {
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
         + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
         + '<tbody id="revenueDetail-' + _line + '"></tbody>'
         + '</table>'
         + '<div class="float-right" id="revenueDetailButtons-' + _line + '"></div>'
@@ -89,7 +89,7 @@ function showInvestmentTableDetails(_line, _investment) {
 
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + _line + '">'
         + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></thead>'
+        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
         + '<tbody id="balanceDetail-' + _line + '"></tbody>'
         + '</table>'
         + '<div class="float-right" id="balanceDetailButtons-' + _line + '"></div>'

@@ -22,6 +22,7 @@ function showRevenueTableDetails(_line) {
     investment.revenue.forEach((revenue) => {
         $('#revenueDetail-' + _line).append('<tr><td>' + revenueIndex + '</td>'
             + '<td>' + formatInvDate(revenue.date) + '</td>'
+            + '<td>' + to_currency(revenue.amount)
             + '<a class="float-right dropdown-toggle" href="#" role="button" id="revenueThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
             + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
             + '<div class="dropdown-menu" id="revenueOptionsMenu-' + _line + '" aria-labelledby="revenueThreeDotsButton-' + _line + '">'

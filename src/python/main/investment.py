@@ -10,8 +10,8 @@ import json
 import uuid
 
 from operation import Operation
-from balance import Balance
 from revenue import Revenue
+from balance import Balance
 
 #   Investment class
 
@@ -24,8 +24,8 @@ class Investment:
         self.type = ''
         self.bank = ''
         self.operation = []
-        self.balance = []
         self.revenue = []
+        self.balance = []
 
     def __str__(self):
         return f'{self.id}: {self.name} / {self.type} @ {self.bank} - balance: {self.balance}'
@@ -33,20 +33,20 @@ class Investment:
     # TODO: fix the redundancy of having two methods to do the exact same thing
     def to_json(self):
         operationList = []
-        balanceList = []
         revenueList = []
+        balanceList = []
 
         for operation in self.operation:
             operationList.append(operation.to_json())
 
-        for balance in self.balance:
-            balanceList.append(balance.to_json())
-
         for revenue in self.revenue:
             revenueList.append(revenue.to_json())
 
+        for balance in self.balance:
+            balanceList.append(balance.to_json())
+
         return {
-            "id": self.id, "name": self.name, "type": self.type, "bank": self.bank, "operations": operationList, "balance": balanceList, "revenue": revenueList
+            "id": self.id, "name": self.name, "type": self.type, "bank": self.bank, "operations": operationList, "revenue": revenueList, "balance": balanceList
         }
 
     # serialize an Investment object into a JSon
@@ -54,23 +54,23 @@ class Investment:
     @classmethod
     def serialize(cls, ref):
         operationList = []
-        balanceList = []
         revenueList = []
+        balanceList = []
 
         for operation in ref.operation:
             operationList.append(Operation.serialize(operation))
 
-        for balance in ref.balance:
-            balanceList.append(Balance.serialize(balance))
-
         for revenue in ref.revenue:
             revenueList.append(Revenue.serialize(revenue))
+
+        for balance in ref.balance:
+            balanceList.append(Balance.serialize(balance))
 
         # TODO: use constants for the names of all JSon fields
         #return json.dumps(attributes)
         return  {
             #"id": ref.id, "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": ref.operation, "balance": ref.balance, "revenue": ref.revenue
-            "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": operationList, "balance": balanceList, "revenue": revenueList
+            "name": ref.name, "type": ref.type, "bank": ref.bank, "operations": operationList, "revenue": revenueList, "balance": balanceList
         }
 
     # unserialize a JSon as an Investment object
@@ -103,14 +103,6 @@ class Investment:
 
         investmentAux.operation = sorted(operationAux, reverse=True)
 
-        balanceAux = []
-
-        if 'balance' in attributes:
-            for balanceItemAttributes in attributes['balance']:
-                balanceAux.append(Balance.unserialize(balanceItemAttributes))
-
-        investmentAux.balance = sorted(balanceAux, reverse=True)
-
         revenueAux = []
 
         if 'revenue' in attributes:
@@ -119,13 +111,30 @@ class Investment:
 
         investmentAux.revenue = sorted(revenueAux, reverse=True)
 
+        balanceAux = []
+
+        if 'balance' in attributes:
+            for balanceItemAttributes in attributes['balance']:
+                balanceAux.append(Balance.unserialize(balanceItemAttributes))
+
+        investmentAux.balance = sorted(balanceAux, reverse=True)
+
         return investmentAux
 
+    # add a new operation to the investment data
     def addOperation(self, newOperation):
         self.operation.append(Operation.unserialize(newOperation))
 
-    def addRevenue(self, newRevenue):
-        self.operation.append(Revenue.unserialize(newRevenue))
+        self.operation = sorted(self.operation, reverse=True)
 
+    # add a new revenue to the investment data
+    def addRevenue(self, newRevenue):
+        self.revenue.append(Revenue.unserialize(newRevenue))
+
+        self.revenue = sorted(self.revenue, reverse=True)
+
+    # add a new balance to the investment data
     def addBalance(self, newBalance):
-        self.operation.append(Balance.unserialize(newBalance))
+        self.balance.append(Balance.unserialize(newBalance))
+
+        self.balance = sorted(self.balance, reverse=True)
