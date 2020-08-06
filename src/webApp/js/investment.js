@@ -132,6 +132,7 @@ function addNewInvestment() {
         payload['balance'] = { date: balanceDate, amount: balanceAmount };
     }
 
+    //  TODO: use global constants  for these endpoints
     //  if all field are validated, add the investment record
     let requestURL = '/investment/v1/investments';
 
@@ -290,5 +291,5 @@ function deleteInvestment() {
         }
     });
 
-    $('#deleteInvestment').modal('hide');
+    $('#confirmExclusion').modal('hide');
 }

@@ -27,7 +27,7 @@ function showOperationTableDetails(_line) {
             + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
             + '<div class="dropdown-menu" id="operationOptionsMenu-' + _line + '" aria-labelledby="operationThreeDotsButton-' + _line + '">'
             + '<button class="dropdown-item" type="button" onclick="showEditOperationInputFields( ' + _line + ', ' + operationIndex + ' );">Edit</button>'
-            + '<button class="dropdown-item" type="button" onclick="deleteOperation( ' + _line + ', ' + operationIndex + ' );">Delete</button></div>'
+            + '<button class="dropdown-item" type="button" onclick="showDeleteOperationModal( ' + _line + ', ' + operationIndex + ' );">Delete</button></div>'
             + '</td></tr>');
 
         operationIndex++;
@@ -60,8 +60,32 @@ function showEditOperationInputFields(_line, _operationLine) {
     console.log('[debug] edit operation options menu: ' + _line + ' --> ' + _operationLine);
 }
 
-function deleteOperation(_line, _operationLine) {
-    console.log('[debug] delete operation options menu: ' + _line + ' --> ' + _operationLine);
+/*  *
+    * show the delete operation modal
+    */
+
+function showDeleteOperationModal(_line, _operationLine) {
+
+    console.log('[debug] showDeleteOperationModal(): ' + _line + ' --> ' + _operationLine);
+
+    //  set the investmentId and the operationId to be deleted
+    let investment = investments[_line - 1];
+    let investmentId = $('#inputInvestmentId-' + _line).val();
+    let operation = investment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    $('#deleteConfimationMessage').empty();
+    $('#deleteConfimationMessage').append('<p>Delete the operation on ' + formatInvDate(operation.date) + ' of $' + to_currency(operation.amount) + '</p>');
+    $('#formDeleteInvestment').empty();
+    $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
+    $('#formDeleteInvestment').append('<input type="hidden" id="deleteOperationId" value="' + operationId + '" />');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteOperation();">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
+
+    //  show the new Investment modal
+    $('#confirmExclusion').modal({
+        show: true
+    });
 }
 
 /*  *
@@ -122,4 +146,17 @@ function confirmNewOperation(_line) {
     });
 
     $('#operationDetailButtons-' + _line).empty();
+}
+
+/*  *
+    * delete operation item
+    */
+
+function deleteOperation() {
+
+    let investmentId = $('#deleteInvestmentId').val();
+    let operationId = $('#deleteOperationId').val();
+    let requestURL = '/investment/v1/investments';
+
+    console.log('[debug] delete operation: ' + investmentId + ' --> ' + operationId);
 }

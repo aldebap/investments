@@ -94,7 +94,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="newInvestmentBody">
+                    <div class="modal-body">
                         <div class="card">
                             <div class="card-body">
                                 <form id="formNewInvestment">
@@ -158,23 +158,21 @@
         </div>
 
         <!-- Delete investment confirmation modal -->
-        <div class="modal fade" id="deleteInvestment" data-backdrop="static" data-keyboard="false" tabindex="-1"
-            role="dialog" aria-labelledby="deleteInvestmentTitle" aria-hidden="true">
+        <div class="modal fade" id="confirmExclusion" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            role="dialog" aria-labelledby="confirmExclusionTitle" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="deleteInvestmentTitle">Delete the Investment</h5>
+                        <h5 class="modal-title" id="confirmExclusionTitle">Confirm exclusion</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                    <div class="modal-body">
+                        <div id="deleteConfimationMessage"></div>
+                    </div>
                     <div class="modal-footer">
-                        <form id="formDeleteInvestment">
-                            <input type="hidden" id="deleteInvestmentId" value="0" />'
-                            <button type="button" class="btn btn-outline-primary"
-                                onclick="deleteInvestment();">Confirm</button>
-                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
-                        </form>
+                        <form id="formDeleteInvestment"></form>
                     </div>
                 </div>
             </div>

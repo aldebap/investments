@@ -156,14 +156,18 @@ function showDeleteInvestmentModal(_line) {
     console.log('[debug] showDeleteInvestmentModal()');
 
     //  set the investmentId to be deleted
+    let investment = investments[_line - 1];
     let investmentId = $('#inputInvestmentId-' + _line).val();
 
-    $('#deleteInvestmentId').val(investmentId);
+    $('#deleteConfimationMessage').empty();
+    $('#deleteConfimationMessage').append('<p>Delete the investment "' + investment.name + '" at ' + investment.bank + '</p>');
+    $('#formDeleteInvestment').empty();
+    $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteInvestment();">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
 
     //  show the new Investment modal
-    $('#deleteInvestment').modal({
-        show: true
-    });
+    $('#confirmExclusion').modal({ show: true });
 }
 
 /*  *
