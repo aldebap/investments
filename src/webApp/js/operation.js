@@ -20,7 +20,7 @@ function showOperationTableDetails(_line) {
     let operationIndex = 1;
 
     investment.operations.forEach((operation) => {
-        $('#operationDetail-' + _line).append('<tr><td>' + operationIndex + '</td>'
+        $('#operationDetail-' + _line).append('<tr id="operationDetail-' + _line + '-' + operationIndex + '"><td>' + operationIndex + '</td>'
             + '<td>' + formatInvDate(operation.date) + '</td>'
             + '<td>' + to_currency(operation.amount)
             + '<a class="float-right dropdown-toggle" href="#" role="button" id="operationThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
@@ -57,7 +57,26 @@ function showNewOperationInputFields(_line) {
     */
 
 function showEditOperationInputFields(_line, _operationLine) {
-    console.log('[debug] edit operation options menu: ' + _line + ' --> ' + _operationLine);
+
+    console.log('[debug] show edit operation fields: ' + _line + ' --> ' + _operationLine);
+
+    //  set the investmentId and the operationId to be deleted
+    let investment = investments[_line - 1];
+    let investmentId = $('#inputInvestmentId-' + _line).val();
+    let operation = investment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    $('#operationDetail-' + _line + '-' + _operationLine).empty();
+    $('#operationDetail-' + _line + '-' + _operationLine).append('<td>' + _operationLine + '</td>'
+        // TODO: need to difine how to format these two fields for edition
+        + '<td><input type="text" class="form-control" id="inputEditOperationDate-' + _line + '" value="' + formatInvDate(operation.date) + '"></td>'
+        + '<td><input type="text" class="form-control" id="inputEditOperationAmount-' + _line + '" value="' + to_currency(operation.amount) + '"/></td>');
+
+    $('#operationDetailButtons-' + _line).empty();
+    $('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateInvestmentId" value="' + investmentId + '" />');
+    $('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateOperationId" value="' + operationId + '" />');
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="updateInvestment();">Confirm</button> &nbsp;');
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showOperationTableDetails( ' + _line + ' );">Cancel</button>');
 }
 
 /*  *
@@ -75,7 +94,7 @@ function showDeleteOperationModal(_line, _operationLine) {
     let operationId = operation.id;
 
     $('#deleteConfimationMessage').empty();
-    $('#deleteConfimationMessage').append('<p>Delete the operation on ' + formatInvDate(operation.date) + ' of $' + to_currency(operation.amount) + '</p>');
+    $('#deleteConfimationMessage').append('<p>Delete the $' + to_currency(operation.amount) + ' operation on ' + formatInvDate(operation.date) + ' ?</p>');
     $('#formDeleteInvestment').empty();
     $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
     $('#formDeleteInvestment').append('<input type="hidden" id="deleteOperationId" value="' + operationId + '" />');
@@ -146,6 +165,19 @@ function confirmNewOperation(_line) {
     });
 
     $('#operationDetailButtons-' + _line).empty();
+}
+
+/*  *
+    * update investment item
+    */
+
+function updateInvestment(_line) {
+
+    let investmentId = $('#updateInvestmentId').val();
+    let operationId = $('#updateOperationId').val();
+    let requestURL = '/investment/v1/investments';
+
+    console.log('[debug] update operation: ' + investmentId + ' --> ' + operationId);
 }
 
 /*  *
