@@ -199,8 +199,10 @@ class InvestmentDataFile:
                 #   trasverse the operations list to fetch the given operation Id
                 for operation in investment.operation:
                     if operationId == str(operation.id):
-                        operation.date = operationData['date']
-                        operation.amount = operationData['amount']
+                        if 'date' in operationData:
+                            operation.date = operationData['date']
+                        if 'amount' in operationData:
+                            operation.amount = operationData['amount']
 
                         #   TODO: when everything is done, data needs to be persisted
                         #self.save()

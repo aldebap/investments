@@ -152,11 +152,11 @@ class APIServer:
     @classmethod
     def patchOperation(cls, investmentId, operationId, operationData):
 
-        if 'date' not in operationData or 0 == len(operationData['date']):
-            abort(400, 'date attribute is required')
+        #if 'date' not in operationData or 0 == len(operationData['date']):
+        #    abort(400, 'date attribute is required')
 
-        if 'amount' not in operationData or 0 == operationData['amount']:
-            abort(400, 'amount attribute is required')
+        #if 'amount' not in operationData or 0 == operationData['amount']:
+        #    abort(400, 'amount attribute is required')
 
         result = cls._singleInstance.investmentDataFile.patchOperation(investmentId, operationId, operationData)
 
