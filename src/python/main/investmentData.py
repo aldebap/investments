@@ -189,6 +189,51 @@ class InvestmentDataFile:
         #   TODO: need to retunr something here
         return {}
 
+    # patch an operation item from an investment
+    def patchOperation(self, investmentId, operationId, operationData):
+
+        #   trasverse the investments list to fetch the given investment Id
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+
+                #   trasverse the operations list to fetch the given operation Id
+                for operation in investment.operation:
+                    if operationId == str(operation.id):
+                        operation.date = operationData['date']
+                        operation.amount = operationData['amount']
+
+                        #   TODO: when everything is done, data needs to be persisted
+                        #self.save()
+
+                        return operation.to_json()
+
+        #   TODO: need to retunr something here
+        return {}
+
+    # delete an operation item from an investment
+    def deleteOperation(self, investmentId, operationId):
+
+        #   trasverse the investments list to fetch the given investment Id
+        index = 0
+
+        print( f'attempt to delete operationId: {operationId}' )
+        for investment in self.investment:
+            print( f'iterating through investmentId: {str(investment.id)}' )
+            if investmentId == str(investment.id):
+
+                #   trasverse the operations list to fetch the given operation Id
+                for operation in investment.operation:
+                    print( f'iterating through operationId: {str(operation.id)}' )
+                    if operationId == str(operation.id):
+                        print( f'operation found' )
+                        self.investment.operation.pop( index )
+                        return { 'id': operationId }
+
+                    index += 1
+
+        #   TODO: need to retunr something here
+        return {}
+
     # insert a new revenue to an investment item
     def insertNewRevenue(self, investmentId, newRevenue):
 

@@ -148,6 +148,33 @@ class APIServer:
 
         return result, 201
 
+    #   service to patch an operation from an investment
+    @classmethod
+    def patchOperation(cls, investmentId, operationId, operationData):
+
+        if 'date' not in operationData or 0 == len(operationData['date']):
+            abort(400, 'date attribute is required')
+
+        if 'amount' not in operationData or 0 == operationData['amount']:
+            abort(400, 'amount attribute is required')
+
+        result = cls._singleInstance.investmentDataFile.patchOperation(investmentId, operationId, operationData)
+
+        if 'id' not in result:
+            abort(404, 'operationId not found')
+
+        return result, 201
+
+    #   service to delete an operation from an investment
+    @classmethod
+    def deleteOperation(cls, investmentId, operationId):
+        result = cls._singleInstance.investmentDataFile.deleteOperation(investmentId, operationId)
+
+        if 'id' not in result:
+            abort(404, 'operationId not found')
+
+        return result, 204
+
     #   service to insert a new revenue to an investment
     @classmethod
     def insertNewRevenue(cls, investmentId, revenueData):

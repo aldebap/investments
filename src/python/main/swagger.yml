@@ -240,6 +240,65 @@ paths:
           schema:
             type: "array"
 
+  /v1/investments/{investmentId}/operations/{operationId}:
+    patch:
+      operationId: "service.APIServer.patchOperation"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to the investment whose item to be patched belongs
+          type: string
+          required: True
+        - name: operationId
+          in: path
+          description: Operation ID to of the item to be patched
+          type: string
+          required: True
+        - name: operationData
+          in: body
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+              amount:
+                type: number
+      tags:
+        - "Operations"
+      summary: "Patch an operation item"
+      description: "Patch an operation item"
+      responses:
+        200:
+          description: "Successful patched the operation item"
+          schema:
+            type: "array"
+    delete:
+      operationId: "service.APIServer.deleteOperation"
+      parameters:
+        - name: investmentId
+          in: path
+          description: Investment ID to the investment whose item to be deleted belongs
+          type: string
+          required: True
+        - name: operationId
+          in: path
+          description: Operation ID to of the item to be deleted
+          type: string
+          required: True
+      tags:
+        - "Operations"
+      summary: "Delete an operation item"
+      description: "Delete an operation item"
+      responses:
+        204:
+          description: "Successfully deleted the operation item"
+          schema:
+            type: "array"
+        404:
+          description: "OperationId not found"
+          schema:
+            type: "array"
+
   /v1/investments/{investmentId}/revenue:
     post:
       operationId: "service.APIServer.insertNewRevenue"
