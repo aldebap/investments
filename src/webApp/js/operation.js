@@ -98,7 +98,7 @@ function showDeleteOperationModal(_line, _operationLine) {
     $('#formDeleteInvestment').empty();
     $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
     $('#formDeleteInvestment').append('<input type="hidden" id="deleteOperationId" value="' + operationId + '" />');
-    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteOperation();">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteOperation(' + _line + ', ' + _operationLine + ');">Confirm</button> &nbsp;');
     $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
 
     //  show the new Investment modal
@@ -247,11 +247,55 @@ function updateOperation(_line, _operationLine) {
     * delete operation item
     */
 
-function deleteOperation() {
+function deleteOperation(_line, _operationLine) {
 
     let investmentId = $('#deleteInvestmentId').val();
     let operationId = $('#deleteOperationId').val();
     let requestURL = '/investment/v1/investments';
 
     console.log('[debug] delete operation: ' + investmentId + ' --> ' + operationId);
+
+    //  show the  spinner while deleting the data from the API server
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
+
+    $.ajax({
+        url: requestURL + '/' + investmentId + '/operations/' + operationId,
+        method: 'DELETE',
+        error: function () {
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
+                + 'Error trying to update investment data'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>');
+
+            console.log('[debug] Error attempting to delete operation');
+
+            showOperationTableDetails(_line);
+            //  hide the spinner
+            $('#loadingSpinner').empty();
+        },
+        success: (_result) => {
+
+            delete investments[_line - 1].operations[_operationLine - 1];
+
+            $('#toastContainer').empty();
+            $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
+                + '<div class="toast-header">'
+                + '<img src="..." class="rounded mr-2" alt="..." />'
+                + '<strong class="mr-auto">' + _line + '</strong>'
+                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                + '</div>'
+                + '<div class="toast-body">Operation data succesfully deleted</div>'
+                + '</div>');
+
+            showOperationTableDetails(_line);
+            //  hide the spinner
+            $('#loadingSpinner').empty();
+            //  TODO: use Bootstrap toasts to show the result of update operation
+        }
+    });
+
+    $('#confirmExclusion').modal('hide');
 }

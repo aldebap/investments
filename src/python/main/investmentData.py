@@ -228,7 +228,7 @@ class InvestmentDataFile:
                     print( f'iterating through operationId: {str(operation.id)}' )
                     if operationId == str(operation.id):
                         print( f'operation found' )
-                        self.investment.operation.pop( index )
+                        investment.operation.pop( index )
                         return { 'id': operationId }
 
                     index += 1
