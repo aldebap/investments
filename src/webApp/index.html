@@ -9,6 +9,8 @@
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     </link>
+    <link rel="stylesheet" href="css/bootstrap-datepicker3.min.css">
+    </link>
     <!-- TODO: fix and move this to a .css file-->
     <style>
         .float {
@@ -73,10 +75,28 @@
                 <form class="form-inline my-2 my-lg-0">
                     <!-- TODO: implement date period filtering -->
                     <!-- TODO: create a service to make these two fields dropboxes -->
-                    <input class="form-control mr-sm-2" type="search" placeholder="startDate" aria-label="Start date"
-                        id="filterStartDate">
-                    <input class="form-control mr-sm-2" type="search" placeholder="endDate" aria-label="End date"
-                        id="filterEndDate">
+                    <div class="input-group date" data-provide="datepicker" id="startDate-picker">
+                        <!--
+                        <input class="form-control mr-sm-2" type="search" placeholder="startDate"
+                            aria-label="Start date" id="filterStartDate" />
+                        -->
+                        <input type="text" class="form-control mr-sm-2" placeholder="startDate" aria-label="Start date"
+                            data-target="#startDate-picker" id="filterStartDate" />
+                        <div class="input-group-append" data-target="#startDate-picker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                    <div class="input-group date" data-provide="datepicker" id="endDate-picker">
+                        <!--
+                        <input class="form-control mr-sm-2" type="search" placeholder="endDate" aria-label="End date"
+                            id="filterEndDate" />
+                        -->
+                        <input type="text" class="form-control mr-sm-2" placeholder="endDate" aria-label="End date"
+                            data-target="#endDate-picker" id="filterEndDate" />
+                        <div class="input-group-append" data-target="#endDate-picker" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
                     <!-- TODO: add a field to indicate active investments -->
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Filter</button>
                 </form>
@@ -190,6 +210,9 @@
     <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.pt-BR.min.js"></script>
+
     <script type="text/javascript" src="js/graphics.js"></script>
     <script type="text/javascript" src="js/investment.js"></script>
     <script type="text/javascript" src="js/operation.js"></script>
@@ -199,6 +222,13 @@
     <script type="text/javascript" src="js/investmentsApp.js"></script>
 
     <script type="text/javascript">
+        $('.datepicker').datepicker();
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+        });
+        //$('#container-fluid .input-group.date').datepicker({
+        //    language: "pt-BR"
+        //});
         selectListingView();
         loadInvestments();
     </script>
