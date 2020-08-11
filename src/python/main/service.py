@@ -85,8 +85,13 @@ class APIServer:
         #   query parameters not informed are defaulted to '_' so, change it to None for the getInvestment() function
         if startDate == '_':
             startDate = None
+        else:
+            startDate = str(startDate)
+
         if endDate == '_':
             endDate = None
+        else:
+            endDate = str(endDate)
 
         return {'Investments': cls._singleInstance.investmentDataFile.getInvestments(None, startDate, endDate, active)}
 

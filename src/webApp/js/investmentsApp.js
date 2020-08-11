@@ -52,20 +52,31 @@ function loadInvestments() {
     let requestURL = '/investment/v1/investments';
     let queryString = '';
 
+    console.log('[debug] load investments: ' + startDate + ' - ' + endDate);
     //  based on the filter options, format the investments service query string
-    if (startDate.length > 0) {
-        queryString += (queryString.length == 0) ? '' : '&' + 'startDate=' + startDate;
+    if (0 < startDate.length) {
+        if (0 < queryString.length) {
+            queryString += '&';
+        }
+        queryString += 'startDate=' + unformatDate(startDate);
     }
-    if (endDate.length > 0) {
-        queryString += (queryString.length == 0) ? '' : '&' + 'endDate=' + endDate;
+    if (0 < endDate.length) {
+        if (0 < queryString.length) {
+            queryString += '&';
+        }
+        queryString += 'endDate=' + unformatDate(endDate);
     }
     if (active == false) {
-        queryString += (queryString.length == 0) ? '' : '&' + 'active=False';
+        if (0 < queryString.length) {
+            queryString += '&';
+        }
+        queryString += 'active=False';
     }
 
-    if (queryString.length > 0) {
-        requestURL += queryString;
+    if (0 < queryString.length) {
+        requestURL += '?' + queryString;
     }
+    console.log('[debug] load investments: query string: ' + queryString);
 
     //  show the  spinner while loading the data from the API server
     $('#loadingSpinner').empty();

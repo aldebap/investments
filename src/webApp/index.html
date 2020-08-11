@@ -73,12 +73,8 @@
                 <div id="loadingSpinner"></div>&nbsp;&nbsp;&nbsp;
 
                 <form class="form-inline my-2 my-lg-0">
-                    <!-- TODO: implement date period filtering -->
+                    <!-- TODO: make better use of the datepicker components -->
                     <div class="input-group date" data-provide="datepicker" id="startDate-picker">
-                        <!--
-                        <input class="form-control mr-sm-2" type="search" placeholder="startDate"
-                            aria-label="Start date" id="filterStartDate" />
-                        -->
                         <input type="text" class="form-control mr-sm-2" placeholder="startDate" aria-label="Start date"
                             data-target="#startDate-picker" id="filterStartDate" />
                         <div class="input-group-append" data-target="#startDate-picker" data-toggle="datetimepicker">
@@ -86,10 +82,6 @@
                         </div>
                     </div>
                     <div class="input-group date" data-provide="datepicker" id="endDate-picker">
-                        <!--
-                        <input class="form-control mr-sm-2" type="search" placeholder="endDate" aria-label="End date"
-                            id="filterEndDate" />
-                        -->
                         <input type="text" class="form-control mr-sm-2" placeholder="endDate" aria-label="End date"
                             data-target="#endDate-picker" id="filterEndDate" />
                         <div class="input-group-append" data-target="#endDate-picker" data-toggle="datetimepicker">
@@ -98,7 +90,8 @@
                     </div>
                     &nbsp;
                     <!-- TODO: add a field to indicate active investments -->
-                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Filter</button>
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit"
+                        onclick="loadInvestments();">Filter</button>
                 </form>
             </div>
         </nav>
@@ -222,10 +215,8 @@
     <script type="text/javascript" src="js/investmentsApp.js"></script>
 
     <script type="text/javascript">
-        $('.datepicker').datepicker();
-        $('.datepicker').datepicker({
-            format: 'dd/mm/yyyy',
-        });
+        //$('.datepicker').datepicker();
+        $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
         //$('#container-fluid .input-group.date').datepicker({
         //    language: "pt-BR"
         //});

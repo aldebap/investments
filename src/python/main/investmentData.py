@@ -97,6 +97,8 @@ class InvestmentDataFile:
                 if endDate is None or investment.balance[ 0 ].date > endDate:
                     endDate = investment.balance[ 0 ].date
 
+        print( f'[debug] get investment: {startDate} - {endDate}' )
+
         #   trasverse the investments list to fetch those that satisfy all search criteria
         for investment in self.investment:
             if active == True and investment.balance[0].amount == 0:

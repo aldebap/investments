@@ -15,6 +15,14 @@ function formatInvDate(_date) {
 }
 
 /*  *
+    * helper function to transform a formatted date into an inverted date
+    */
+
+function unformatDate(_date) {
+    return _date.slice(6) + _date.slice(0, 2) + _date.slice(3, 5);
+}
+
+/*  *
     * helper function to format a number as currency
     */
 
