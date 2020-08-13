@@ -45,12 +45,11 @@ function selectGraphicalView() {
 
 function loadInvestments() {
 
-    const requestURL = '/investment/v1/investments';
 
     let startDate = $('#filterStartDate').val();
     let endDate = $('#filterEndDate').val();
-    //  TODO: fix the bug that this checkbox is nor working
-    let active = $('#activeOnly').attr('checked');
+    let active = $('#activeOnly').is(':checked');
+    let requestURL = '/investment/v1/investments';
     let queryString = '';
 
     console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
