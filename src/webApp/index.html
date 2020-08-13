@@ -73,23 +73,19 @@
                 <div id="loadingSpinner"></div>&nbsp;&nbsp;&nbsp;
 
                 <form class="form-inline my-2 my-lg-0">
-                    <!-- TODO: make better use of the datepicker components -->
-                    <div class="input-group date" data-provide="datepicker" id="startDate-picker">
+                    <div class="input-group input-daterange" data-provide="datepicker">
                         <input type="text" class="form-control mr-sm-2" placeholder="startDate" aria-label="Start date"
-                            data-target="#startDate-picker" id="filterStartDate" />
-                        <div class="input-group-append" data-target="#startDate-picker" data-toggle="datetimepicker">
-                            <div class="input-group-text"><img src="img/calendar.svg" /></div>
-                        </div>
-                    </div>
-                    <div class="input-group date" data-provide="datepicker" id="endDate-picker">
+                            id="filterStartDate" />
+                        <div class="input-group-addon text-white">&nbsp; to &nbsp; &nbsp;</div>
                         <input type="text" class="form-control mr-sm-2" placeholder="endDate" aria-label="End date"
-                            data-target="#endDate-picker" id="filterEndDate" />
-                        <div class="input-group-append" data-target="#endDate-picker" data-toggle="datetimepicker">
-                            <div class="input-group-text"><img src="img/calendar.svg" /></div>
-                        </div>
+                            id="filterEndDate" />
                     </div>
-                    &nbsp;
-                    <!-- TODO: add a field to indicate active investments -->
+                    &nbsp; &nbsp;
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-checkbox-input" id="activeOnly" checked />
+                        <label class="form-checkbox-label text-white" for="activeOnly">&nbsp; Active Only</label>
+                    </div>
+                    &nbsp; &nbsp; &nbsp;
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit"
                         onclick="loadInvestments();">Filter</button>
                 </form>

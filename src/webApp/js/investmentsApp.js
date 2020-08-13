@@ -45,14 +45,15 @@ function selectGraphicalView() {
 
 function loadInvestments() {
 
+    const requestURL = '/investment/v1/investments';
+
     let startDate = $('#filterStartDate').val();
     let endDate = $('#filterEndDate').val();
-    //  TODO: this needs to be an option in the navbar
-    let active = true;
-    let requestURL = '/investment/v1/investments';
+    //  TODO: fix the bug that this checkbox is nor working
+    let active = $('#activeOnly').attr('checked');
     let queryString = '';
 
-    console.log('[debug] load investments: ' + startDate + ' - ' + endDate);
+    console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
     //  based on the filter options, format the investments service query string
     if (0 < startDate.length) {
         if (0 < queryString.length) {
@@ -66,7 +67,7 @@ function loadInvestments() {
         }
         queryString += 'endDate=' + unformatDate(endDate);
     }
-    if (active == false) {
+    if (0 == active) {
         if (0 < queryString.length) {
             queryString += '&';
         }
