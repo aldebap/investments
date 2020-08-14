@@ -20,7 +20,7 @@ function showInvestmentTable() {
 
     investments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
-        $('#investmentRow-' + line).append('<td>' + line);
+        $('#investmentRow-' + line).append('<th>' + line);
         $('#investmentRow-' + line).append('<td>' + investment.bank);
         $('#investmentRow-' + line).append('<td>' + investment.type);
         $('#investmentRow-' + line).append('<td>' + investment.name);
@@ -36,6 +36,7 @@ function showInvestmentTable() {
             + '<img src="img/caretDown.svg" /></a>');
         // TODO: to catch the event of clicking the caret to show it upside down, and to close other collapse rows that may be open
 
+        $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6"><div class="container" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
         showInvestmentTableDetails(line, investment);
@@ -124,11 +125,10 @@ function showEditInvestmentInputFields(_line) {
     $('#investmentRow-' + _line).append('<td>' + formatInvDate(investment.balance[0].date) + '</td>');
     $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount) + '</td>');
 
-    //$('#operationDetailButtons-' + _line).empty();
-    //$('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateInvestmentId" value="' + investmentId + '" />');
-    //$('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateOperationId" value="' + operationId + '" />');
-    //$('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="updateOperation(' + _line + ', ' + _operationLine + ');">Confirm</button> &nbsp;');
-    //$('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showOperationTableDetails( ' + _line + ' );">Cancel</button>');
+    $('#investmentButtons-' + _line).empty();
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="updateInvestment(' + _line + ');">Confirm</button> &nbsp;');
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showInvestmentTable();">Cancel</button>');
+    $('#collapseInvestmentButtons-' + _line).collapse('show');
 }
 
 /*  *
