@@ -45,7 +45,6 @@ function selectGraphicalView() {
 
 function loadInvestments() {
 
-
     let startDate = $('#filterStartDate').val();
     let endDate = $('#filterEndDate').val();
     let active = $('#activeOnly').is(':checked');
