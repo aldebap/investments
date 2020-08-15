@@ -137,50 +137,6 @@ function showInvestmentsListingView() {
 }
 
 /*  *
-    * show the add new investment modal
-    */
-
-function showNewInvestmentModal() {
-
-    //  clean previous values from the form
-    $('#inputBank-new').val('');
-    $('#inputType-new').val('');
-    $('#inputName-new').val('');
-    $('#inputOperationDate-new').val('');
-    $('#inputOperationAmount-new').val('');
-    $('#inputBalanceDate-new').val('');
-    $('#inputBalanceAmount-new').val('');
-
-    //  show the new Investment modal
-    $('#newInvestment').modal({
-        show: true
-    });
-}
-
-/*  *
-    * show the delete investment modal
-    */
-
-function showDeleteInvestmentModal(_line) {
-
-    console.log('[debug] showDeleteInvestmentModal()');
-
-    //  set the investmentId to be deleted
-    let investment = investments[_line - 1];
-    let investmentId = $('#inputInvestmentId-' + _line).val();
-
-    $('#deleteConfimationMessage').empty();
-    $('#deleteConfimationMessage').append('<p>Delete the investment "' + investment.name + '" at ' + investment.bank + '</p>');
-    $('#formDeleteInvestment').empty();
-    $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
-    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteInvestment();">Confirm</button> &nbsp;');
-    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
-
-    //  show the new Investment modal
-    $('#confirmExclusion').modal({ show: true });
-}
-
-/*  *
     * show the investments evolution view
     */
 
@@ -203,6 +159,7 @@ function showInvestmentsEvolutionView() {
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody id="investmentEvolutionTable">');
 
+    //  TODO: all this business rules should be made on backend side
     let line = 1;
     let minDate = '';
     let maxDate = '';

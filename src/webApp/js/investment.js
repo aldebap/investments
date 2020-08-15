@@ -6,6 +6,10 @@
 
 //  constants
 
+//  globals
+
+let editingInvestmentLine = 0;
+
 /*  *
     * show the investments table
     */
@@ -20,25 +24,10 @@ function showInvestmentTable() {
 
     investments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
-        $('#investmentRow-' + line).append('<th>' + line);
-        $('#investmentRow-' + line).append('<td>' + investment.bank);
-        $('#investmentRow-' + line).append('<td>' + investment.type);
-        $('#investmentRow-' + line).append('<td>' + investment.name);
-        $('#investmentRow-' + line).append('<td>' + formatInvDate(investment.balance[0].date));
-        $('#investmentRow-' + line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
-            + '&nbsp; <a class="dropdown-toggle" href="#" role="button" id="investmentThreeDotsButton-' + line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-            + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
-            + '<div class="dropdown-menu" id="investmentOptionsMenu-' + line + '" aria-labelledby="investmentThreeDotsButton-' + line + '">'
-            + '<button class="dropdown-item" type="button" onclick="showEditInvestmentInputFields( ' + line + ' );">Edit</button>'
-            + '<button class="dropdown-item" type="button" onclick="showDeleteInvestmentModal( ' + line + ' );">Delete</button></div>'
-
-            + '&nbsp; <a class="float-right" data-toggle="collapse" href="#collapseRow-' + line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + line + '">'
-            + '<img src="img/caretDown.svg" /></a>');
-        // TODO: to catch the event of clicking the caret to show it upside down, and to close other collapse rows that may be open
-
         $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6"><div class="container" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
+        showInvestmentLine(line);
         showInvestmentTableDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
@@ -58,6 +47,42 @@ function showInvestmentTable() {
     $('#totalAmount').append('<td>Total');
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
     $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
+
+    editingInvestmentLine = 0;
+}
+
+/*  *
+    * show an investment table line
+    */
+
+function showInvestmentLine(_line) {
+
+    console.log('[debug] show edit investment fields: ' + _line);
+
+    //  set the investmentId and the operationId to be deleted
+    let investment = investments[_line - 1];
+
+    $('#investmentRow-' + _line).empty();
+    $('#investmentRow-' + _line).append('<th>' + _line);
+    $('#investmentRow-' + _line).append('<td>' + investment.bank);
+    $('#investmentRow-' + _line).append('<td>' + investment.type);
+    $('#investmentRow-' + _line).append('<td>' + investment.name);
+    $('#investmentRow-' + _line).append('<td>' + formatInvDate(investment.balance[0].date));
+    $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
+        + '&nbsp; <a class="dropdown-toggle" href="#" role="button" id="investmentThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+        + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
+        + '<div class="dropdown-menu" id="investmentOptionsMenu-' + _line + '" aria-labelledby="investmentThreeDotsButton-' + _line + '">'
+        + '<button class="dropdown-item" type="button" onclick="showEditInvestmentInputFields( ' + _line + ' );">Edit</button>'
+        + '<button class="dropdown-item" type="button" onclick="showDeleteInvestmentModal( ' + _line + ' );">Delete</button></div>'
+
+        + '&nbsp; <a class="float-right" data-toggle="collapse" href="#collapseRow-' + _line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + _line + '">'
+        + '<img id="caret-' + _line + '" src="img/caretDown.svg" /></a>');
+    // TODO: to catch the event of clicking the caret to show it upside down, and to close other collapse rows that may be open
+
+    $('#investmentButtons-' + _line).empty();
+    $('#collapseInvestmentButtons-' + _line).collapse('hide');
+
+    editingInvestmentLine = 0;
 }
 
 /*  *
@@ -107,12 +132,39 @@ function showInvestmentTableDetails(_line, _investment) {
 }
 
 /*  *
+    * show the add new investment modal
+    */
+
+function showNewInvestmentModal() {
+
+    //  clean previous values from the form
+    $('#inputBank-new').val('');
+    $('#inputType-new').val('');
+    $('#inputName-new').val('');
+    $('#inputOperationDate-new').val('');
+    $('#inputOperationAmount-new').val('');
+    $('#inputBalanceDate-new').val('');
+    $('#inputBalanceAmount-new').val('');
+
+    //  show the new Investment modal
+    $('#newInvestment').modal({
+        show: true
+    });
+}
+
+/*  *
     * show the input fields to allow editing an investment
     */
 
 function showEditInvestmentInputFields(_line) {
 
     console.log('[debug] show edit investment fields: ' + _line);
+
+    //  if edit fields are shown for another line, hide them in order to have only one editing line at a time
+    if (0 != editingInvestmentLine) {
+
+        showInvestmentLine(editingInvestmentLine);
+    }
 
     //  set the investmentId and the operationId to be deleted
     let investment = investments[_line - 1];
@@ -127,8 +179,31 @@ function showEditInvestmentInputFields(_line) {
 
     $('#investmentButtons-' + _line).empty();
     $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="updateInvestment(' + _line + ');">Confirm</button> &nbsp;');
-    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showInvestmentTable();">Cancel</button>');
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showInvestmentLine(' + _line + ');">Cancel</button>');
     $('#collapseInvestmentButtons-' + _line).collapse('show');
+
+    editingInvestmentLine = _line;
+}
+
+/*  *
+    * show the delete investment modal
+    */
+
+function showDeleteInvestmentModal(_line) {
+
+    console.log('[debug] showDeleteInvestmentModal()');
+
+    //  set the investmentId to be deleted
+    let investment = investments[_line - 1];
+
+    $('#deleteConfimationMessage').empty();
+    $('#deleteConfimationMessage').append('<p>Delete the investment "' + investment.name + '" at ' + investment.bank + '</p>');
+    $('#formDeleteInvestment').empty();
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteInvestment(' + _line + ');">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
+
+    //  show the new Investment modal
+    $('#confirmExclusion').modal({ show: true });
 }
 
 /*  *
@@ -209,18 +284,19 @@ function addNewInvestment() {
 
 function updateInvestment(_line) {
 
-    let bank = $('#inputBank-' + _line).val();
-    let type = $('#inputType-' + _line).val();
-    let name = $('#inputName-' + _line).val();
+    let investment = investments[_line - 1];
+    let bank = $('#inputEditInvestmentBank-' + _line).val();
+    let type = $('#inputEditInvestmentType-' + _line).val();
+    let name = $('#inputEditInvestmentName-' + _line).val();
     let payload = {};
 
-    if (bank != investments[_line - 1].bank) {
+    if (bank != investment.bank) {
         payload['bank'] = bank;
     }
-    if (type != investments[_line - 1].type) {
+    if (type != investment.type) {
         payload['type'] = type;
     }
-    if (name != investments[_line - 1].name) {
+    if (name != investment.name) {
         payload['name'] = name;
     }
 
@@ -234,7 +310,7 @@ function updateInvestment(_line) {
         $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
 
         $.ajax({
-            url: requestURL + '/' + investments[_line - 1].id,
+            url: requestURL + '/' + investment.id,
             method: 'PATCH',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
@@ -254,9 +330,11 @@ function updateInvestment(_line) {
             },
             success: (_result) => {
 
-                investments[_line - 1].bank = bank;
-                investments[_line - 1].type = type;
-                investments[_line - 1].name = name;
+                investment.bank = bank;
+                investment.type = type;
+                investment.name = name;
+
+                showInvestmentLine(_line);
 
                 $('#toastContainer').empty();
                 $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
@@ -274,14 +352,19 @@ function updateInvestment(_line) {
             }
         });
     }
+
+    showInvestmentLine(_line);
 }
 
 /*  *
     * delete investment item
     */
 
-function deleteInvestment() {
-    let investmentId = $('#deleteInvestmentId').val();
+function deleteInvestment(_line) {
+
+    console.log('[debug] deleteInvestment( ' + _line + ' )');
+
+    let investment = investments[_line - 1];
     let requestURL = '/investment/v1/investments';
 
     //  show the  spinner while loading the data from the API server
@@ -289,7 +372,7 @@ function deleteInvestment() {
     $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
 
     $.ajax({
-        url: requestURL + '/' + investmentId,
+        url: requestURL + '/' + investment.id,
         method: 'DELETE',
         error: function () {
 
@@ -310,12 +393,13 @@ function deleteInvestment() {
             $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
                 + '<div class="toast-header">'
                 + '<img src="..." class="rounded mr-2" alt="..." />'
-                + '<strong class="mr-auto">' + investmentId + '</strong>'
+                + '<strong class="mr-auto">' + investment.id + '</strong>'
                 + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                 + '</div>'
                 + '<div class="toast-body">Investment succesfully deleted</div>'
                 + '</div>');
 
+            //  TODO: remove the line from the investment array, or to reload it from API
             showInvestmentTable();
             //  hide the spinner
             $('#loadingSpinner').empty();
