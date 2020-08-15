@@ -24,7 +24,8 @@ function showInvestmentTable() {
 
     investments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
-        $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6"><div class="container" id="investmentButtons-' + line + '">');
+        //$('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6"><div class="container" id="investmentButtons-' + line + '">');
+        $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
         showInvestmentLine(line);
@@ -178,8 +179,8 @@ function showEditInvestmentInputFields(_line) {
     $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount) + '</td>');
 
     $('#investmentButtons-' + _line).empty();
-    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="updateInvestment(' + _line + ');">Confirm</button> &nbsp;');
-    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showInvestmentLine(' + _line + ');">Cancel</button>');
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary float-right" onclick="showInvestmentLine(' + _line + ');">Cancel</button>');
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary float-right mr-2" onclick="updateInvestment(' + _line + ');">Confirm</button>');
     $('#collapseInvestmentButtons-' + _line).collapse('show');
 
     editingInvestmentLine = _line;
