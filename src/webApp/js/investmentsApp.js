@@ -12,7 +12,9 @@ const GRAPHICAL_VIEW = 'graphical';
 
 const UNORDERED = 'unordered';
 const ORDERBYBANK_UP = 'orderByBank_up';
-const ORDERBYBANK_DOWN = 'orderByBank_DOWN';
+const ORDERBYBANK_DOWN = 'orderByBank_down';
+const ORDERBYTYPE_UP = 'orderByType_up';
+const ORDERBYTYPE_DOWN = 'orderByType_down';
 
 //  globals
 
@@ -137,7 +139,7 @@ function showInvestmentsListingView() {
     //  TODO: to make the title  columns bank, type and name to work as a filter
     $('tr').append('<th scope="col">#</th>');
     $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchBankOrder();">Bank</a><div class="float-right" id="bankOrderIcon" /></th>');
-    $('tr').append('<th scope="col">Type</th>');
+    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchTypeOrder();">Type</a><div class="float-right" id="typeOrderIcon" /></th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
@@ -157,7 +159,7 @@ function switchBankOrder() {
 
     console.log('[debug] select bank order: ' + currentOrder);
 
-    if (UNORDERED == currentOrder) {
+    if (UNORDERED == currentOrder || ORDERBYTYPE_UP == currentOrder || ORDERBYTYPE_DOWN == currentOrder) {
 
         currentOrder = ORDERBYBANK_UP;
 
@@ -189,12 +191,26 @@ function switchBankOrder() {
         showInvestmentsView();
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
-        currentOrder = UNORDERED;
+        switchOffOrder();
+    }
+}
+
+/*  *
+    * switch the Type order
+    */
+
+function switchTypeOrder() {
+
+    console.log('[debug] select type order: ' + currentOrder);
+
+    if (UNORDERED == currentOrder || ORDERBYBANK_UP == currentOrder || ORDERBYBANK_DOWN == currentOrder) {
+
+        currentOrder = ORDERBYTYPE_UP;
 
         investments.sort((a, b) => {
-            if (a.originalOrder < b.originalOrder) {
+            if (a.type < b.type) {
                 return -1;
-            } else if (a.originalOrder === b.originalOrder) {
+            } else if (a.type === b.type) {
                 return 0;
             } else {
                 return 1;
@@ -202,7 +218,46 @@ function switchBankOrder() {
         });
 
         showInvestmentsView();
+    } else if (ORDERBYTYPE_UP == currentOrder) {
+
+        currentOrder = ORDERBYTYPE_DOWN;
+
+        investments.sort((a, b) => {
+            if (a.type > b.type) {
+                return -1;
+            } else if (a.type === b.type) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        showInvestmentsView();
+    } else if (ORDERBYTYPE_DOWN == currentOrder) {
+
+        switchOffOrder();
     }
+}
+
+/*  *
+    * switch off the order
+    */
+
+function switchOffOrder() {
+
+    currentOrder = UNORDERED;
+
+    investments.sort((a, b) => {
+        if (a.originalOrder < b.originalOrder) {
+            return -1;
+        } else if (a.originalOrder === b.originalOrder) {
+            return 0;
+        } else {
+            return 1;
+        }
+    });
+
+    showInvestmentsView();
 }
 
 /*  *
@@ -212,6 +267,7 @@ function switchBankOrder() {
 function showOrderIndicator() {
 
     $('#bankOrderIcon').empty();
+    $('#typeOrderIcon').empty();
 
     if (ORDERBYBANK_UP == currentOrder) {
 
@@ -220,6 +276,12 @@ function showOrderIndicator() {
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
         $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
+    } else if (ORDERBYTYPE_UP == currentOrder) {
+
+        $('#typeOrderIcon').append('<img class="text-white" src="img/sortAlphaUp.svg" />');
+    } else if (ORDERBYTYPE_DOWN == currentOrder) {
+
+        $('#typeOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
     }
 }
 
