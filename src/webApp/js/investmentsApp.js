@@ -95,6 +95,13 @@ function loadInvestments() {
         success: (_result) => {
             investments = _result['Investments'];
 
+            //  save the original order
+            let line = 1;
+
+            investments.forEach((investment) => {
+                investment.originalOrder = line++;
+            });
+
             showInvestmentsView();
 
             //  hide the spinner
@@ -129,43 +136,90 @@ function showInvestmentsListingView() {
     $('thead').append('<tr>');
     //  TODO: to make the title  columns bank, type and name to work as a filter
     $('tr').append('<th scope="col">#</th>');
-    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="selectBankOrder();">Bank</a><div class="float-right" id="bankOrderIcon" /></th>');
+    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchBankOrder();">Bank</a><div class="float-right" id="bankOrderIcon" /></th>');
     $('tr').append('<th scope="col">Type</th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
     $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
     $('table').append('<tbody id="investmentTable">');
 
+    showOrderIndicator();
     showInvestmentTable();
 
     $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *
-    * show the investments listing view
+    * switch the Bank order
     */
 
-function selectBankOrder() {
+function switchBankOrder() {
 
     console.log('[debug] select bank order: ' + currentOrder);
 
     if (UNORDERED == currentOrder) {
 
-        $('#bankOrderIcon').empty();
-        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaUp.svg" />');
-
         currentOrder = ORDERBYBANK_UP;
+
+        investments.sort((a, b) => {
+            if (a.bank < b.bank) {
+                return -1;
+            } else if (a.bank === b.bank) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        showInvestmentsView();
     } else if (ORDERBYBANK_UP == currentOrder) {
 
-        $('#bankOrderIcon').empty();
-        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
-
         currentOrder = ORDERBYBANK_DOWN;
+
+        investments.sort((a, b) => {
+            if (a.bank > b.bank) {
+                return -1;
+            } else if (a.bank === b.bank) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        showInvestmentsView();
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
-        $('#bankOrderIcon').empty();
-
         currentOrder = UNORDERED;
+
+        investments.sort((a, b) => {
+            if (a.originalOrder < b.originalOrder) {
+                return -1;
+            } else if (a.originalOrder === b.originalOrder) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        showInvestmentsView();
+    }
+}
+
+/*  *
+    * show the order indicator
+    */
+
+function showOrderIndicator() {
+
+    $('#bankOrderIcon').empty();
+
+    if (ORDERBYBANK_UP == currentOrder) {
+
+        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaUp.svg" />');
+
+    } else if (ORDERBYBANK_DOWN == currentOrder) {
+
+        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
     }
 }
 
