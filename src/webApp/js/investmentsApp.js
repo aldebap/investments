@@ -10,9 +10,14 @@ const LISTING_VIEW = 'listing';
 const EVOLUTION_VIEW = 'evolution';
 const GRAPHICAL_VIEW = 'graphical';
 
+const UNORDERED = 'unordered';
+const ORDERBYBANK_UP = 'orderByBank_up';
+const ORDERBYBANK_DOWN = 'orderByBank_DOWN';
+
 //  globals
 
 let currentView = '';
+let currentOrder = UNORDERED;
 let investments = [];
 
 /*  *
@@ -124,7 +129,7 @@ function showInvestmentsListingView() {
     $('thead').append('<tr>');
     //  TODO: to make the title  columns bank, type and name to work as a filter
     $('tr').append('<th scope="col">#</th>');
-    $('tr').append('<th scope="col">Bank</th>');
+    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="selectBankOrder();">Bank</a><div class="float-right" id="bankOrderIcon" /></th>');
     $('tr').append('<th scope="col">Type</th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
@@ -134,6 +139,34 @@ function showInvestmentsListingView() {
     showInvestmentTable();
 
     $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
+}
+
+/*  *
+    * show the investments listing view
+    */
+
+function selectBankOrder() {
+
+    console.log('[debug] select bank order: ' + currentOrder);
+
+    if (UNORDERED == currentOrder) {
+
+        $('#bankOrderIcon').empty();
+        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaUp.svg" />');
+
+        currentOrder = ORDERBYBANK_UP;
+    } else if (ORDERBYBANK_UP == currentOrder) {
+
+        $('#bankOrderIcon').empty();
+        $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
+
+        currentOrder = ORDERBYBANK_DOWN;
+    } else if (ORDERBYBANK_DOWN == currentOrder) {
+
+        $('#bankOrderIcon').empty();
+
+        currentOrder = UNORDERED;
+    }
 }
 
 /*  *

@@ -24,7 +24,6 @@ function showInvestmentTable() {
 
     investments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
-        //$('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6"><div class="container" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
 
@@ -47,7 +46,9 @@ function showInvestmentTable() {
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>Total');
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
-    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance)
+        + '&nbsp; <img class="invisible" src="img/threeDotsVertical.svg" />'
+        + '&nbsp; <img class="invisible" src="img/caretDown.svg" />');
 
     editingInvestmentLine = 0;
 }
@@ -78,7 +79,15 @@ function showInvestmentLine(_line) {
 
         + '&nbsp; <a class="float-right" data-toggle="collapse" href="#collapseRow-' + _line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + _line + '">'
         + '<img id="caret-' + _line + '" src="img/caretDown.svg" /></a>');
-    // TODO: to catch the event of clicking the caret to show it upside down, and to close other collapse rows that may be open
+
+    // events the change the caret up and down according to the condition of the collapse row
+    $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
+        $('#caret-' + _line).attr('src', 'img/caretUp.svg');
+    });
+
+    $('#collapseRow-' + _line).on('hidden.bs.collapse', () => {
+        $('#caret-' + _line).attr('src', 'img/caretDown.svg');
+    });
 
     $('#investmentButtons-' + _line).empty();
     $('#collapseInvestmentButtons-' + _line).collapse('hide');
