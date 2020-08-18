@@ -15,6 +15,8 @@ const ORDERBYBANK_UP = 'orderByBank_up';
 const ORDERBYBANK_DOWN = 'orderByBank_down';
 const ORDERBYTYPE_UP = 'orderByType_up';
 const ORDERBYTYPE_DOWN = 'orderByType_down';
+const ORDERBYBALANCEAMOUNT_UP = 'orderByBalanceAmount_up';
+const ORDERBYBALANCEAMOUNT_DOWN = 'orderByBalanceAmount_down';
 
 //  globals
 
@@ -142,7 +144,8 @@ function showInvestmentsListingView() {
     $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchTypeOrder();">Type</a><div class="float-right" id="typeOrderIcon" /></th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
-    $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
+    $('tr').append('<th scope="col" style="text-align:right"><a class="text-white" href="#" onclick="switchBalanceAmountOrder();">Balance</a><div class="float-right" id="balanceAmountOrderIcon" /></th>');
+    $('tr').append('<th scope="col">&nbsp;</th>');
     $('table').append('<tbody id="investmentTable">');
 
     showOrderIndicator();
@@ -159,7 +162,7 @@ function switchBankOrder() {
 
     console.log('[debug] select bank order: ' + currentOrder);
 
-    if (UNORDERED == currentOrder || ORDERBYTYPE_UP == currentOrder || ORDERBYTYPE_DOWN == currentOrder) {
+    if (UNORDERED == currentOrder || (ORDERBYBANK_UP != currentOrder && ORDERBYBANK_DOWN != currentOrder)) {
 
         currentOrder = ORDERBYBANK_UP;
 
@@ -172,22 +175,12 @@ function switchBankOrder() {
                 return 1;
             }
         });
-
         showInvestmentsView();
     } else if (ORDERBYBANK_UP == currentOrder) {
 
         currentOrder = ORDERBYBANK_DOWN;
 
-        investments.sort((a, b) => {
-            if (a.bank > b.bank) {
-                return -1;
-            } else if (a.bank === b.bank) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
-
+        investments.reverse();
         showInvestmentsView();
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
@@ -203,7 +196,7 @@ function switchTypeOrder() {
 
     console.log('[debug] select type order: ' + currentOrder);
 
-    if (UNORDERED == currentOrder || ORDERBYBANK_UP == currentOrder || ORDERBYBANK_DOWN == currentOrder) {
+    if (UNORDERED == currentOrder || (ORDERBYTYPE_UP != currentOrder && ORDERBYTYPE_DOWN != currentOrder)) {
 
         currentOrder = ORDERBYTYPE_UP;
 
@@ -222,10 +215,30 @@ function switchTypeOrder() {
 
         currentOrder = ORDERBYTYPE_DOWN;
 
+        investments.reverse();
+        showInvestmentsView();
+    } else if (ORDERBYTYPE_DOWN == currentOrder) {
+
+        switchOffOrder();
+    }
+}
+
+/*  *
+    * switch the balanceamount order
+    */
+
+function switchBalanceAmountOrder() {
+
+    console.log('[debug] select balance amount order: ' + currentOrder);
+
+    if (UNORDERED == currentOrder || (ORDERBYBALANCEAMOUNT_UP != currentOrder && ORDERBYBALANCEAMOUNT_DOWN != currentOrder)) {
+
+        currentOrder = ORDERBYBALANCEAMOUNT_UP;
+
         investments.sort((a, b) => {
-            if (a.type > b.type) {
+            if (a.balance[0].amount < b.balance[0].amount) {
                 return -1;
-            } else if (a.type === b.type) {
+            } else if (a.balance[0].amount === b.balance[0].amount) {
                 return 0;
             } else {
                 return 1;
@@ -233,7 +246,13 @@ function switchTypeOrder() {
         });
 
         showInvestmentsView();
-    } else if (ORDERBYTYPE_DOWN == currentOrder) {
+    } else if (ORDERBYBALANCEAMOUNT_UP == currentOrder) {
+
+        currentOrder = ORDERBYBALANCEAMOUNT_DOWN;
+
+        investments.reverse();
+        showInvestmentsView();
+    } else if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
 
         switchOffOrder();
     }
@@ -268,6 +287,7 @@ function showOrderIndicator() {
 
     $('#bankOrderIcon').empty();
     $('#typeOrderIcon').empty();
+    $('#balanceAmountOrderIcon').empty();
 
     if (ORDERBYBANK_UP == currentOrder) {
 
@@ -282,6 +302,12 @@ function showOrderIndicator() {
     } else if (ORDERBYTYPE_DOWN == currentOrder) {
 
         $('#typeOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
+    } else if (ORDERBYBALANCEAMOUNT_UP == currentOrder) {
+
+        $('#balanceAmountOrderIcon').append('<img class="text-white" src="img/sortNumericUp.svg" />');
+    } else if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
+
+        $('#balanceAmountOrderIcon').append('<img class="text-white" src="img/sortNumericDown.svg" />');
     }
 }
 

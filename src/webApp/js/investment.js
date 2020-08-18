@@ -24,8 +24,8 @@ function showInvestmentTable() {
 
     investments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
-        $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="6" id="investmentButtons-' + line + '">');
-        $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="6"><div class="container" id="containerRow-' + line + '">');
+        $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="7" id="investmentButtons-' + line + '">');
+        $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="7"><div class="container" id="containerRow-' + line + '">');
 
         showInvestmentLine(line);
         showInvestmentTableDetails(line, investment);
@@ -46,9 +46,8 @@ function showInvestmentTable() {
     $('#totalAmount').append('<td>&nbsp;');
     $('#totalAmount').append('<td>Total');
     $('#totalAmount').append('<td>' + formatInvDate(maxDate));
-    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance)
-        + '&nbsp; <img class="invisible" src="img/threeDotsVertical.svg" />'
-        + '&nbsp; <img class="invisible" src="img/caretDown.svg" />');
+    $('#totalAmount').append('<td style="text-align:right">' + to_currency(totalBalance));
+    $('#totalAmount').append('<td>&nbsp;');
 
     editingInvestmentLine = 0;
 }
@@ -70,15 +69,15 @@ function showInvestmentLine(_line) {
     $('#investmentRow-' + _line).append('<td>' + investment.type);
     $('#investmentRow-' + _line).append('<td>' + investment.name);
     $('#investmentRow-' + _line).append('<td>' + formatInvDate(investment.balance[0].date));
-    $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount)
-        + '&nbsp; <a class="dropdown-toggle" href="#" role="button" id="investmentThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+    $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount));
+    $('#investmentRow-' + _line).append('<td class="mx-0 px-0"><a class="dropdown-toggle" href="#" role="button" id="investmentThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
         + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
         + '<div class="dropdown-menu" id="investmentOptionsMenu-' + _line + '" aria-labelledby="investmentThreeDotsButton-' + _line + '">'
         + '<button class="dropdown-item" type="button" onclick="showEditInvestmentInputFields( ' + _line + ' );">Edit</button>'
         + '<button class="dropdown-item" type="button" onclick="showDeleteInvestmentModal( ' + _line + ' );">Delete</button></div>'
 
-        + '&nbsp; <a class="float-right" data-toggle="collapse" href="#collapseRow-' + _line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + _line + '">'
-        + '<img id="caret-' + _line + '" src="img/caretDown.svg" /></a>');
+        + '&nbsp; <a data-toggle="collapse" href="#collapseRow-' + _line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + _line + '">'
+        + '<img id="caret-' + _line + '" src="img/caretDown.svg" /></a></td>');
 
     // events the change the caret up and down according to the condition of the collapse row
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
@@ -186,6 +185,7 @@ function showEditInvestmentInputFields(_line) {
     $('#investmentRow-' + _line).append('<td><input type="text" class="form-control" id="inputEditInvestmentName-' + _line + '" value="' + investment.name + '"></td>');
     $('#investmentRow-' + _line).append('<td>' + formatInvDate(investment.balance[0].date) + '</td>');
     $('#investmentRow-' + _line).append('<td style="text-align:right">' + to_currency(investment.balance[0].amount) + '</td>');
+    $('#investmentRow-' + _line).append('<td>&nbsp;</td>');
 
     $('#investmentButtons-' + _line).empty();
     $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary float-right" onclick="showInvestmentLine(' + _line + ');">Cancel</button>');
