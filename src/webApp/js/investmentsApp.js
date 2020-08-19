@@ -23,6 +23,8 @@ const ORDERBYBALANCEAMOUNT_DOWN = 'orderByBalanceAmount_down';
 let currentView = '';
 let currentOrder = UNORDERED;
 let investments = [];
+let bankSelection = [];
+let typeSelection = [];
 
 /*  *
     * select listing view as the current investments view
@@ -92,6 +94,8 @@ function loadInvestments() {
 
     //  call investment service on the API server
     investments = [];
+    bankSelection = [];
+    typeSelection = [];
 
     $.ajax({
         url: requestURL,
@@ -138,10 +142,13 @@ function showInvestmentsListingView() {
     $('#container').append('<table class="table table-hover">');
     $('table').append('<thead class="thead-dark">');
     $('thead').append('<tr>');
-    //  TODO: to make the title  columns bank, type and name to work as a filter
     $('tr').append('<th scope="col">#</th>');
-    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchBankOrder();">Bank</a><div class="float-right" id="bankOrderIcon" /></th>');
-    $('tr').append('<th scope="col"><a class="text-white" href="#" onclick="switchTypeOrder();">Type</a><div class="float-right" id="typeOrderIcon" /></th>');
+    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchBankOrder();">Bank</a>'
+        + '<a href="#" onclick="selectBankFunnel();"><img src="img/funnel.svg" /></a>'
+        + '<div class="float-right" id="bankOrderIcon" /></th>');
+    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchTypeOrder();">Type</a>'
+        + '<a href="#" onclick="selectTypeFilter();"><img src="img/funnel.svg" /></a>'
+        + '<div class="float-right" id="typeOrderIcon" /></th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
     $('tr').append('<th scope="col" style="text-align:right"><a class="text-white" href="#" onclick="switchBalanceAmountOrder();">Balance</a><div class="float-right" id="balanceAmountOrderIcon" /></th>');
@@ -309,6 +316,69 @@ function showOrderIndicator() {
 
         $('#balanceAmountOrderIcon').append('<img class="text-white" src="img/sortNumericDown.svg" />');
     }
+}
+
+/*  *
+    * select Bank funnel
+    */
+
+function selectBankFunnel() {
+
+    console.log('[debug] select bank funnel');
+
+    //  get the list of all available banks
+    let banks = [];
+
+    investments.forEach((investment) => {
+        if (!banks.includes(investment.bank)) {
+            banks.push(investment.bank);
+        }
+    });
+
+    //  make a list of checkboxes for each bank
+    $('#funnelSelectionList').empty();
+
+    banks.forEach((bank) => {
+
+        let checked = "";
+
+        if (0 == bankSelection.length || bankSelection.includes(bank)) {
+
+            checked = "checked";
+        }
+
+        $('#funnelSelectionList').append('<div class="form-check">'
+            + '<input class="form-check-input" type="checkbox" value="" id="selectBank-' + bank + '" ' + checked + '>'
+            + '<label class="form-check-label" for="selectBank-' + bank + '">' + bank + '</label>'
+            + '</div>');
+    });
+
+    $('#confirmFunnelSelection').attr('onclick', 'confirmBankFunnelSelection();');
+
+    //  show the new Investment modal
+    $('#funnelSelection').modal({
+        show: true
+    });
+
+    //bankSelection = [];
+}
+
+/*  *
+    * Confirm Bank funnel selection
+    */
+
+function confirmBankFunnelSelection() {
+
+    console.log('[debug] confirm bank funnel selection');
+}
+
+/*  *
+    * select Type filter
+    */
+
+function selectTypeFilter() {
+
+    console.log('[debug] select type filter');
 }
 
 /*  *
