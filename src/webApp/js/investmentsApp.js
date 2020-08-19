@@ -336,6 +336,8 @@ function selectBankFunnel() {
     });
 
     //  make a list of checkboxes for each bank
+    let index = 0;
+
     $('#funnelSelectionList').empty();
 
     banks.forEach((bank) => {
@@ -347,29 +349,46 @@ function selectBankFunnel() {
             checked = "checked";
         }
 
+        index++;
+
         $('#funnelSelectionList').append('<div class="form-check">'
-            + '<input class="form-check-input" type="checkbox" value="" id="selectBank-' + bank + '" ' + checked + '>'
-            + '<label class="form-check-label" for="selectBank-' + bank + '">' + bank + '</label>'
+            + '<input class="form-check-input" type="checkbox" value="" id="selectBank-' + index + '" ' + checked + '>'
+            + '<label class="form-check-label" for="selectBank-' + index + '" id="selectBankLabel-' + index + '">' + bank + '</label>'
             + '</div>');
     });
 
-    $('#confirmFunnelSelection').attr('onclick', 'confirmBankFunnelSelection();');
+    $('#funnelSelectionTitle').text('Bank Selection');
+    $('#confirmFunnelSelection').attr('onclick', 'confirmBankFunnelSelection( ' + index + ' );');
 
     //  show the new Investment modal
     $('#funnelSelection').modal({
         show: true
     });
 
-    //bankSelection = [];
 }
 
 /*  *
     * Confirm Bank funnel selection
     */
 
-function confirmBankFunnelSelection() {
+function confirmBankFunnelSelection(maxIndex) {
 
     console.log('[debug] confirm bank funnel selection');
+
+    bankSelection = [];
+
+    //  get a list of all checked banks
+    for (let index = 1; index <= maxIndex; index++) {
+
+        if ($('#selectBank-' + index).is(':checked')) {
+
+            bankSelection.push($('#selectBankLabel-' + index).text());
+        }
+    }
+
+    $('#funnelSelection').modal('hide');
+
+    showInvestmentTable();
 }
 
 /*  *
