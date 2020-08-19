@@ -22,7 +22,8 @@ function showInvestmentTable() {
 
     $('#investmentTable').empty();
 
-    investments.forEach((investment) => {
+
+    funnelledInvestments.forEach((investment) => {
         $('#investmentTable').append('<tr id="investmentRow-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseInvestmentButtons-' + line + '"><td colspan="7" id="investmentButtons-' + line + '">');
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="7"><div class="container" id="containerRow-' + line + '">');
@@ -61,7 +62,7 @@ function showInvestmentLine(_line) {
     console.log('[debug] show edit investment fields: ' + _line);
 
     //  set the investmentId and the operationId to be deleted
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
 
     $('#investmentRow-' + _line).empty();
     $('#investmentRow-' + _line).append('<th>' + _line);
@@ -100,7 +101,7 @@ function showInvestmentLine(_line) {
 
 function showInvestmentTableDetails(_line, _investment) {
 
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
 
     //  format the investment details form
     $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body">'
@@ -176,7 +177,7 @@ function showEditInvestmentInputFields(_line) {
     }
 
     //  set the investmentId and the operationId to be deleted
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
 
     $('#investmentRow-' + _line).empty();
     $('#investmentRow-' + _line).append('<td>' + _line);
@@ -204,7 +205,7 @@ function showDeleteInvestmentModal(_line) {
     console.log('[debug] showDeleteInvestmentModal()');
 
     //  set the investmentId to be deleted
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
 
     $('#deleteConfimationMessage').empty();
     $('#deleteConfimationMessage').append('<p>Delete the investment "' + investment.name + '" at ' + investment.bank + '</p>');
@@ -266,6 +267,7 @@ function addNewInvestment() {
         processData: false,
         error: function () {
 
+            //  TODO: no toast information is working
             $('#toastContainer').empty();
             $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
                 + 'Error trying to add investment data'
@@ -294,7 +296,7 @@ function addNewInvestment() {
 
 function updateInvestment(_line) {
 
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
     let bank = $('#inputEditInvestmentBank-' + _line).val();
     let type = $('#inputEditInvestmentType-' + _line).val();
     let name = $('#inputEditInvestmentName-' + _line).val();
@@ -374,7 +376,7 @@ function deleteInvestment(_line) {
 
     console.log('[debug] deleteInvestment( ' + _line + ' )');
 
-    let investment = investments[_line - 1];
+    let investment = funnelledInvestments[_line - 1];
     let requestURL = '/investment/v1/investments';
 
     //  show the  spinner while loading the data from the API server

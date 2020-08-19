@@ -23,6 +23,7 @@ const ORDERBYBALANCEAMOUNT_DOWN = 'orderByBalanceAmount_down';
 let currentView = '';
 let currentOrder = UNORDERED;
 let investments = [];
+let funnelledInvestments = [];
 let bankSelection = [];
 let typeSelection = [];
 
@@ -110,6 +111,8 @@ function loadInvestments() {
                 investment.originalOrder = line++;
             });
 
+            funnelledInvestments = investments;
+
             showInvestmentsView();
 
             //  hide the spinner
@@ -147,7 +150,7 @@ function showInvestmentsListingView() {
         + '<a href="#" onclick="selectBankFunnel();"><img src="img/funnel.svg" /></a>'
         + '<div class="float-right" id="bankOrderIcon" /></th>');
     $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchTypeOrder();">Type</a>'
-        + '<a href="#" onclick="selectTypeFilter();"><img src="img/funnel.svg" /></a>'
+        + '<a href="#" onclick="selectTypeFunnel();"><img src="img/funnel.svg" /></a>'
         + '<div class="float-right" id="typeOrderIcon" /></th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Date</th>');
@@ -173,7 +176,7 @@ function switchBankOrder() {
 
         currentOrder = ORDERBYBANK_UP;
 
-        investments.sort((a, b) => {
+        funnelledInvestments.sort((a, b) => {
             if (a.bank < b.bank) {
                 return -1;
             } else if (a.bank === b.bank) {
@@ -187,7 +190,7 @@ function switchBankOrder() {
 
         currentOrder = ORDERBYBANK_DOWN;
 
-        investments.reverse();
+        funnelledInvestments.reverse();
         showInvestmentsView();
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
@@ -207,7 +210,7 @@ function switchTypeOrder() {
 
         currentOrder = ORDERBYTYPE_UP;
 
-        investments.sort((a, b) => {
+        funnelledInvestments.sort((a, b) => {
             if (a.type < b.type) {
                 return -1;
             } else if (a.type === b.type) {
@@ -222,7 +225,7 @@ function switchTypeOrder() {
 
         currentOrder = ORDERBYTYPE_DOWN;
 
-        investments.reverse();
+        funnelledInvestments.reverse();
         showInvestmentsView();
     } else if (ORDERBYTYPE_DOWN == currentOrder) {
 
@@ -242,7 +245,7 @@ function switchBalanceAmountOrder() {
 
         currentOrder = ORDERBYBALANCEAMOUNT_UP;
 
-        investments.sort((a, b) => {
+        funnelledInvestments.sort((a, b) => {
             if (a.balance[0].amount < b.balance[0].amount) {
                 return -1;
             } else if (a.balance[0].amount === b.balance[0].amount) {
@@ -257,7 +260,7 @@ function switchBalanceAmountOrder() {
 
         currentOrder = ORDERBYBALANCEAMOUNT_DOWN;
 
-        investments.reverse();
+        funnelledInvestments.reverse();
         showInvestmentsView();
     } else if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
 
@@ -273,7 +276,7 @@ function switchOffOrder() {
 
     currentOrder = UNORDERED;
 
-    investments.sort((a, b) => {
+    funnelledInvestments.sort((a, b) => {
         if (a.originalOrder < b.originalOrder) {
             return -1;
         } else if (a.originalOrder === b.originalOrder) {
@@ -345,7 +348,6 @@ function selectBankFunnel() {
         let checked = "";
 
         if (0 == bankSelection.length || bankSelection.includes(bank)) {
-
             checked = "checked";
         }
 
@@ -379,25 +381,41 @@ function confirmBankFunnelSelection(maxIndex) {
 
     //  get a list of all checked banks
     for (let index = 1; index <= maxIndex; index++) {
-
         if ($('#selectBank-' + index).is(':checked')) {
-
             bankSelection.push($('#selectBankLabel-' + index).text());
         }
     }
 
+    //  set a list with all funnelled investments
+    funnelledInvestments = [];
+
+    investments.forEach((investment) => {
+        if (bankSelection.includes(investment.bank)) {
+            funnelledInvestments.push(investment);
+        }
+    });
+
     $('#funnelSelection').modal('hide');
 
-    showInvestmentTable();
+    showInvestmentsView();
 }
 
 /*  *
     * select Type filter
     */
 
-function selectTypeFilter() {
+function selectTypeFunnel() {
 
-    console.log('[debug] select type filter');
+    console.log('[debug] select type funnel');
+}
+
+/*  *
+    * Confirm type funnel selection
+    */
+
+function confirmTypeFunnelSelection(maxIndex) {
+
+    console.log('[debug] confirm type funnel selection');
 }
 
 /*  *
