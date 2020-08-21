@@ -362,11 +362,10 @@ function selectBankFunnel() {
     $('#funnelSelectionTitle').text('Bank Selection');
     $('#confirmFunnelSelection').attr('onclick', 'confirmBankFunnelSelection( ' + index + ' );');
 
-    //  show the new Investment modal
+    //  show the funnel selection modal
     $('#funnelSelection').modal({
         show: true
     });
-
 }
 
 /*  *
@@ -386,11 +385,17 @@ function confirmBankFunnelSelection(maxIndex) {
         }
     }
 
+    if (0 == bankSelection.length) {
+        $('#funnelSelectionList').append('<p /><div class="alert alert-warning" role="alert">Need to select at least one bank</div>');
+        return;
+    }
+
     //  set a list with all funnelled investments
     funnelledInvestments = [];
 
     investments.forEach((investment) => {
-        if (bankSelection.includes(investment.bank)) {
+        if (bankSelection.includes(investment.bank)
+            && (0 == typeSelection.length || typeSelection.includes(investment.type))) {
             funnelledInvestments.push(investment);
         }
     });
@@ -407,6 +412,44 @@ function confirmBankFunnelSelection(maxIndex) {
 function selectTypeFunnel() {
 
     console.log('[debug] select type funnel');
+
+    //  get the list of all available banks
+    let types = [];
+
+    investments.forEach((investment) => {
+        if (!types.includes(investment.type)) {
+            types.push(investment.type);
+        }
+    });
+
+    //  make a list of checkboxes for each type
+    let index = 0;
+
+    $('#funnelSelectionList').empty();
+
+    types.forEach((type) => {
+
+        let checked = "";
+
+        if (0 == typeSelection.length || typeSelection.includes(type)) {
+            checked = "checked";
+        }
+
+        index++;
+
+        $('#funnelSelectionList').append('<div class="form-check">'
+            + '<input class="form-check-input" type="checkbox" value="" id="selectType-' + index + '" ' + checked + '>'
+            + '<label class="form-check-label" for="selectType-' + index + '" id="selectTypeLabel-' + index + '">' + type + '</label>'
+            + '</div>');
+    });
+
+    $('#funnelSelectionTitle').text('Type Selection');
+    $('#confirmFunnelSelection').attr('onclick', 'confirmTypeFunnelSelection( ' + index + ' );');
+
+    //  show the funnel selection modal
+    $('#funnelSelection').modal({
+        show: true
+    });
 }
 
 /*  *
@@ -416,6 +459,34 @@ function selectTypeFunnel() {
 function confirmTypeFunnelSelection(maxIndex) {
 
     console.log('[debug] confirm type funnel selection');
+
+    typeSelection = [];
+
+    //  get a list of all checked types
+    for (let index = 1; index <= maxIndex; index++) {
+        if ($('#selectType-' + index).is(':checked')) {
+            typeSelection.push($('#selectTypeLabel-' + index).text());
+        }
+    }
+    //  TODO: think of a better way to show this alert warning
+    if (0 == typeSelection.length) {
+        $('#funnelSelectionList').append('<p /><div class="alert alert-warning" role="alert">Need to select at least one type</div>');
+        return;
+    }
+
+    //  set a list with all funnelled investments
+    funnelledInvestments = [];
+
+    investments.forEach((investment) => {
+        if ((0 == bankSelection.length || bankSelection.includes(investment.bank))
+            && typeSelection.includes(investment.type)) {
+            funnelledInvestments.push(investment);
+        }
+    });
+
+    $('#funnelSelection').modal('hide');
+
+    showInvestmentsView();
 }
 
 /*  *
