@@ -168,6 +168,7 @@ function showInvestmentsListingView() {
     * switch the Bank order
     */
 
+// TODO: after changing the items in funnel list, the order needs to be re-run
 function switchBankOrder() {
 
     console.log('[debug] select bank order: ' + currentOrder);
@@ -500,8 +501,12 @@ function showInvestmentsEvolutionView() {
     $('table').append('<thead class="thead-dark">');
     $('thead').append('<tr>');
     $('tr').append('<th scope="col">#</th>');
-    $('tr').append('<th scope="col">Bank</th>');
-    $('tr').append('<th scope="col">Type</th>');
+    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchBankOrder();">Bank</a>'
+        + '<a href="#" onclick="selectBankFunnel();"><img src="img/funnel.svg" /></a>'
+        + '<div class="float-right" id="bankOrderIcon" /></th>');
+    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchTypeOrder();">Type</a>'
+        + '<a href="#" onclick="selectTypeFunnel();"><img src="img/funnel.svg" /></a>'
+        + '<div class="float-right" id="typeOrderIcon" /></th>');
     $('tr').append('<th scope="col">Investment</th>');
     $('tr').append('<th scope="col">Start Date</th>');
     $('tr').append('<th scope="col">End Date</th>');
@@ -509,7 +514,7 @@ function showInvestmentsEvolutionView() {
     $('tr').append('<th scope="col" style="text-align:right">Profit</th>');
     $('tr').append('<th scope="col" style="text-align:right">Interests</th>');
     $('tr').append('<th scope="col" style="text-align:right">Rate</th>');
-    $('tr').append('<th scope="col" style="text-align:right">Balance</th>');
+    $('tr').append('<th scope="col" style="text-align:right"><a class="text-white" href="#" onclick="switchBalanceAmountOrder();">Balance</a><div class="float-right" id="balanceAmountOrderIcon" /></th>');
     $('table').append('<tbody id="investmentEvolutionTable">');
 
     //  TODO: all this business rules should be made on backend side
@@ -521,8 +526,7 @@ function showInvestmentsEvolutionView() {
     let totalInterests = 0;
     let totalBalance = 0;
 
-    //  TODO: to make the title  columns bank, type and name to work as a filter
-    investments.forEach((investment) => {
+    funnelledInvestments.forEach((investment) => {
         let startDate = investment.balance[investment.balance.length - 1].date;
         let endDate = investment.balance[0].date;
         let operationsAmount = 0;
@@ -625,7 +629,7 @@ function showInvestmentsGraphicalView() {
     //  sum the balance amounts grouped by bank
     let data = {};
 
-    investments.forEach((investment) => {
+    funnelledInvestments.forEach((investment) => {
         if (investment.bank in data) {
             data[investment.bank] += investment.balance[0].amount;
         } else {
@@ -638,7 +642,7 @@ function showInvestmentsGraphicalView() {
     //  sum the balance amounts grouped by type
     data = {};
 
-    investments.forEach((investment) => {
+    funnelledInvestments.forEach((investment) => {
         if (investment.type in data) {
             data[investment.type] += investment.balance[0].amount;
         } else {
