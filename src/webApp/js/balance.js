@@ -43,8 +43,10 @@ function showBalanceTableDetails(_line) {
 function showNewBalanceInputFields(_line) {
 
     $('#balanceDetail-' + _line).append('<tr><td>New</td>'
-        + '<td><input type="text" class="form-control" id="inputNewBalanceDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="balance date" id="inputNewBalanceDate-' + _line + '" /></td>'
         + '<td><input type="text" class="form-control" id="inputNewBalanceAmount-' + _line + '" /></td></tr>');
+
+    $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
 
     $('#balanceDetailButtons-' + _line).empty();
     $('#balanceDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewBalance( ' + _line + ' );">Confirm</button> &nbsp;');
@@ -75,7 +77,7 @@ function confirmNewBalance(_line) {
     let payload = {};
 
     if (0 < balanceDate.length) {
-        payload['date'] = balanceDate;
+        payload['date'] = unformatDate(balanceDate);
     }
     if (balanceAmount != NaN) {
         payload['amount'] = balanceAmount;

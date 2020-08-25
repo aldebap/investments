@@ -101,6 +101,8 @@ function showInvestmentLine(_line) {
 
 function showInvestmentTableDetails(_line, _investment) {
 
+    //  TODO: only one detaiols open at a time
+
     let investment = funnelledInvestments[_line - 1];
 
     //  format the investment details form
