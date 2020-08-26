@@ -44,8 +44,10 @@ function showRevenueTableDetails(_line) {
 function showNewRevenueInputFields(_line) {
 
     $('#revenueDetail-' + _line).append('<tr><td>New</td>'
-        + '<td><input type="text" class="form-control" id="inputNewRevenueDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="operation date" id="inputNewRevenueDate-' + _line + '" /></td>'
         + '<td><input type="text" class="form-control" id="inputNewRevenueAmount-' + _line + '" /></td></tr>');
+
+    $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
 
     $('#revenueDetailButtons-' + _line).empty();
     $('#revenueDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmNewRevenue( ' + _line + ' );">Confirm</button> &nbsp;');
@@ -76,7 +78,7 @@ function confirmNewRevenue(_line) {
     let payload = {};
 
     if (0 < revenueDate.length) {
-        payload['date'] = revenueDate;
+        payload['date'] = unformatDate(revenueDate);
     }
     if (revenueAmount != NaN) {
         payload['amount'] = revenueAmount;

@@ -44,8 +44,10 @@ function showOperationTableDetails(_line) {
 function showNewOperationInputFields(_line) {
 
     $('#operationDetail-' + _line).append('<tr><td>New</td>'
-        + '<td><input type="text" class="form-control" id="inputNewOperationDate-' + _line + '" /></td>'
+        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="operation date" id="inputNewOperationDate-' + _line + '" /></td>'
         + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>');
+
+    $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
 
     $('#operationDetailButtons-' + _line).empty();
     $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="addNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
@@ -69,8 +71,10 @@ function showEditOperationInputFields(_line, _operationLine) {
     $('#operationDetail-' + _line + '-' + _operationLine).empty();
     $('#operationDetail-' + _line + '-' + _operationLine).append('<td>' + _operationLine + '</td>'
         // TODO: need to difine how to format these two fields for edition
-        + '<td><input type="text" class="form-control" id="inputEditOperationDate-' + _line + '" value="' + formatInvDate(operation.date) + '"></td>'
+        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="operation date" id="inputEditOperationDate-' + _line + '" value="' + formatInvDate(operation.date) + '" /></td>'
         + '<td><input type="text" class="form-control" id="inputEditOperationAmount-' + _line + '" value="' + to_currency(operation.amount) + '"/></td>');
+
+    $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
 
     $('#operationDetailButtons-' + _line).empty();
     $('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateInvestmentId" value="' + investmentId + '" />');
@@ -119,7 +123,7 @@ function addNewOperation(_line) {
     let payload = {};
 
     if (0 < operationDate.length) {
-        payload['date'] = operationDate;
+        payload['date'] = unformatDate(operationDate);
     }
     if (operationAmount != NaN) {
         payload['amount'] = operationAmount;
@@ -180,7 +184,7 @@ function updateOperation(_line, _operationLine) {
     console.log('[debug] update operation: ' + date + ' / ' + amount);
 
     if (date != investments[_line - 1].operations[_operationLine - 1].date) {
-        payload['date'] = date;
+        payload['date'] = unformatDate(date);
     }
     if (amount != investments[_line - 1].operations[_operationLine - 1].amount) {
         payload['amount'] = Number(amount);
