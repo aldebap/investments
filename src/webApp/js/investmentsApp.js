@@ -52,76 +52,6 @@ function selectGraphicalView() {
 }
 
 /*  *
-    * load investments from API server
-    */
-
-function loadInvestments() {
-
-    let startDate = $('#filterStartDate').val();
-    let endDate = $('#filterEndDate').val();
-    let active = $('#activeOnly').is(':checked');
-    let requestURL = '/investment/v1/investments';
-    let queryString = '';
-
-    console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
-    //  based on the filter options, format the investments service query string
-    if (0 < startDate.length) {
-        if (0 < queryString.length) {
-            queryString += '&';
-        }
-        queryString += 'startDate=' + unformatDate(startDate);
-    }
-    if (0 < endDate.length) {
-        if (0 < queryString.length) {
-            queryString += '&';
-        }
-        queryString += 'endDate=' + unformatDate(endDate);
-    }
-    if (0 == active) {
-        if (0 < queryString.length) {
-            queryString += '&';
-        }
-        queryString += 'active=False';
-    }
-
-    if (0 < queryString.length) {
-        requestURL += '?' + queryString;
-    }
-    console.log('[debug] load investments: query string: ' + queryString);
-
-    //  show the  spinner while loading the data from the API server
-    $('#loadingSpinner').empty();
-    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Loading...</span></div>');
-
-    //  call investment service on the API server
-    investments = [];
-    bankSelection = [];
-    typeSelection = [];
-
-    $.ajax({
-        url: requestURL,
-        method: 'GET',
-        success: (_result) => {
-            investments = _result['Investments'];
-
-            //  save the original order
-            let line = 1;
-
-            investments.forEach((investment) => {
-                investment.originalOrder = line++;
-            });
-
-            funnelledInvestments = investments;
-
-            showInvestmentsView();
-
-            //  hide the spinner
-            $('#loadingSpinner').empty();
-        }
-    });
-}
-
-/*  *
     * show current investments view
     */
 
@@ -133,35 +63,6 @@ function showInvestmentsView() {
     } else if (GRAPHICAL_VIEW == currentView) {
         showInvestmentsGraphicalView();
     }
-}
-
-/*  *
-    * show the investments listing view
-    */
-
-function showInvestmentsListingView() {
-
-    $('#container').empty();
-    $('#container').append('<table class="table table-hover">');
-    $('table').append('<thead class="thead-dark">');
-    $('thead').append('<tr>');
-    $('tr').append('<th scope="col">#</th>');
-    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchBankOrder();">Bank</a>'
-        + '<a href="#" onclick="selectBankFunnel();"><img src="img/funnel.svg" /></a>'
-        + '<div class="float-right" id="bankOrderIcon" /></th>');
-    $('tr').append('<th scope="col"><a class="text-white mr-2" href="#" onclick="switchTypeOrder();">Type</a>'
-        + '<a href="#" onclick="selectTypeFunnel();"><img src="img/funnel.svg" /></a>'
-        + '<div class="float-right" id="typeOrderIcon" /></th>');
-    $('tr').append('<th scope="col">Investment</th>');
-    $('tr').append('<th scope="col">Date</th>');
-    $('tr').append('<th scope="col" style="text-align:right"><a class="text-white" href="#" onclick="switchBalanceAmountOrder();">Balance</a><div class="float-right" id="balanceAmountOrderIcon" /></th>');
-    $('tr').append('<th scope="col">&nbsp;</th>');
-    $('table').append('<tbody id="investmentTable">');
-
-    showOrderIndicator();
-    showInvestmentTable();
-
-    $('#container').append('<a class="float" onclick="showNewInvestmentModal();"><img src="img/addButton.svg" /></a>');
 }
 
 /*  *

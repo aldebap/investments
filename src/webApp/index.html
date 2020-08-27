@@ -86,7 +86,7 @@
                     </div>
                     &nbsp; &nbsp; &nbsp;
                     <button class="btn btn-outline-light my-2 my-sm-0" type="submit"
-                        onclick="loadInvestments();">Filter</button>
+                        onclick="loadInvestments(showInvestmentsView);">Filter</button>
                 </form>
             </div>
         </nav>
@@ -229,16 +229,14 @@
     <script type="text/javascript" src="js/operation.js"></script>
     <script type="text/javascript" src="js/revenue.js"></script>
     <script type="text/javascript" src="js/balance.js"></script>
+    <script type="text/javascript" src="js/investmentsListView.js"></script>
     <script type="text/javascript" src="js/investmentsApp.js"></script>
 
     <script type="text/javascript">
-        //$('.datepicker').datepicker();
         $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
-        //$('#container-fluid .input-group.date').datepicker({
-        //    language: "pt-BR"
-        //});
+
         selectListingView();
-        loadInvestments();
+        loadInvestments(showInvestmentsView);
     </script>
 </body>
 
