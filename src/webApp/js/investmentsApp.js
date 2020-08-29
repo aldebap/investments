@@ -22,7 +22,6 @@ const ORDERBYBALANCEAMOUNT_DOWN = 'orderByBalanceAmount_down';
 
 let currentView = '';
 let currentOrder = UNORDERED;
-let investments = [];
 let funnelledInvestments = [];
 let bankSelection = [];
 let typeSelection = [];
@@ -66,38 +65,82 @@ function showInvestmentsView() {
 }
 
 /*  *
+    * show the spinner that indicates data being loading from the server
+    */
+
+function showSpinner() {
+
+    $('#loadingSpinner').empty();
+    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Loading...</span></div>');
+}
+
+/*  *
+    * hide the spinner
+    */
+
+function hideSpinner() {
+
+    $('#loadingSpinner').empty();
+}
+
+/*  *
+    * load investments from server
+    */
+
+function loadInvestments() {
+
+    let startDate = $('#filterStartDate').val();
+    let endDate = $('#filterEndDate').val();
+    let active = $('#activeOnly').is(':checked');
+
+    console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
+
+    showSpinner();
+
+    bankSelection = [];
+    typeSelection = [];
+
+    getAllInvestments(startDate, endDate, active, showLoadedInvestments);
+}
+
+/*  *
+    * callback function to show investments loaded
+    */
+
+function showLoadedInvestments() {
+
+    //  save the original order
+    let line = 1;
+
+    investments.forEach((investment) => {
+        investment.originalOrder = line++;
+    });
+
+    funnelledInvestments = investments;
+
+    showInvestmentsView();
+    hideSpinner();
+}
+
+/*  *
     * switch the Bank order
     */
 
-// TODO: after changing the items in funnel list, the order needs to be re-run
 function switchBankOrder() {
-
-    console.log('[debug] select bank order: ' + currentOrder);
 
     if (UNORDERED == currentOrder || (ORDERBYBANK_UP != currentOrder && ORDERBYBANK_DOWN != currentOrder)) {
 
         currentOrder = ORDERBYBANK_UP;
-
-        funnelledInvestments.sort((a, b) => {
-            if (a.bank < b.bank) {
-                return -1;
-            } else if (a.bank === b.bank) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
-        showInvestmentsView();
     } else if (ORDERBYBANK_UP == currentOrder) {
 
         currentOrder = ORDERBYBANK_DOWN;
-
-        funnelledInvestments.reverse();
-        showInvestmentsView();
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
-        switchOffOrder();
+        currentOrder = UNORDERED;
     }
+
+    applyCurrentOrder();
+    showInvestmentsView();
 }
 
 /*  *
@@ -106,33 +149,19 @@ function switchBankOrder() {
 
 function switchTypeOrder() {
 
-    console.log('[debug] select type order: ' + currentOrder);
-
     if (UNORDERED == currentOrder || (ORDERBYTYPE_UP != currentOrder && ORDERBYTYPE_DOWN != currentOrder)) {
 
         currentOrder = ORDERBYTYPE_UP;
-
-        funnelledInvestments.sort((a, b) => {
-            if (a.type < b.type) {
-                return -1;
-            } else if (a.type === b.type) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
-
-        showInvestmentsView();
     } else if (ORDERBYTYPE_UP == currentOrder) {
 
         currentOrder = ORDERBYTYPE_DOWN;
-
-        funnelledInvestments.reverse();
-        showInvestmentsView();
     } else if (ORDERBYTYPE_DOWN == currentOrder) {
 
-        switchOffOrder();
+        currentOrder = UNORDERED;
     }
+
+    applyCurrentOrder();
+    showInvestmentsView();
 }
 
 /*  *
@@ -141,53 +170,18 @@ function switchTypeOrder() {
 
 function switchBalanceAmountOrder() {
 
-    console.log('[debug] select balance amount order: ' + currentOrder);
-
     if (UNORDERED == currentOrder || (ORDERBYBALANCEAMOUNT_UP != currentOrder && ORDERBYBALANCEAMOUNT_DOWN != currentOrder)) {
 
         currentOrder = ORDERBYBALANCEAMOUNT_UP;
-
-        funnelledInvestments.sort((a, b) => {
-            if (a.balance[0].amount < b.balance[0].amount) {
-                return -1;
-            } else if (a.balance[0].amount === b.balance[0].amount) {
-                return 0;
-            } else {
-                return 1;
-            }
-        });
-
-        showInvestmentsView();
     } else if (ORDERBYBALANCEAMOUNT_UP == currentOrder) {
 
         currentOrder = ORDERBYBALANCEAMOUNT_DOWN;
-
-        funnelledInvestments.reverse();
-        showInvestmentsView();
     } else if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
 
-        switchOffOrder();
+        currentOrder = UNORDERED;
     }
-}
 
-/*  *
-    * switch off the order
-    */
-
-function switchOffOrder() {
-
-    currentOrder = UNORDERED;
-
-    funnelledInvestments.sort((a, b) => {
-        if (a.originalOrder < b.originalOrder) {
-            return -1;
-        } else if (a.originalOrder === b.originalOrder) {
-            return 0;
-        } else {
-            return 1;
-        }
-    });
-
+    applyCurrentOrder();
     showInvestmentsView();
 }
 
@@ -204,7 +198,6 @@ function showOrderIndicator() {
     if (ORDERBYBANK_UP == currentOrder) {
 
         $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaUp.svg" />');
-
     } else if (ORDERBYBANK_DOWN == currentOrder) {
 
         $('#bankOrderIcon').append('<img class="text-white" src="img/sortAlphaDown.svg" />');
@@ -220,6 +213,83 @@ function showOrderIndicator() {
     } else if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
 
         $('#balanceAmountOrderIcon').append('<img class="text-white" src="img/sortNumericDown.svg" />');
+    }
+}
+
+/*  *
+    * apply the current order
+    */
+
+function applyCurrentOrder() {
+
+    //  order by bank
+    if (ORDERBYBANK_UP == currentOrder || ORDERBYBANK_DOWN == currentOrder) {
+
+        funnelledInvestments.sort((a, b) => {
+            if (a.bank < b.bank) {
+                return -1;
+            } else if (a.bank === b.bank) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+    }
+    if (ORDERBYBANK_DOWN == currentOrder) {
+
+        funnelledInvestments.reverse();
+        return;
+    }
+
+    //  order by type
+    if (ORDERBYTYPE_UP == currentOrder || ORDERBYTYPE_DOWN == currentOrder) {
+
+        funnelledInvestments.sort((a, b) => {
+            if (a.type < b.type) {
+                return -1;
+            } else if (a.type === b.type) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+    }
+    if (ORDERBYTYPE_DOWN == currentOrder) {
+
+        funnelledInvestments.reverse();
+        return;
+    }
+
+    //  order by balance amount
+    if (ORDERBYBALANCEAMOUNT_UP == currentOrder || ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
+
+        funnelledInvestments.sort((a, b) => {
+            if (a.balance[0].amount < b.balance[0].amount) {
+                return -1;
+            } else if (a.balance[0].amount === b.balance[0].amount) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+    }
+    if (ORDERBYBALANCEAMOUNT_DOWN == currentOrder) {
+
+        funnelledInvestments.reverse();
+        return;
+    }
+
+    //  unordered means original order
+    if (UNORDERED == currentOrder) {
+        funnelledInvestments.sort((a, b) => {
+            if (a.originalOrder < b.originalOrder) {
+                return -1;
+            } else if (a.originalOrder === b.originalOrder) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
     }
 }
 
@@ -304,6 +374,7 @@ function confirmBankFunnelSelection(maxIndex) {
 
     $('#funnelSelection').modal('hide');
 
+    applyCurrentOrder();
     showInvestmentsView();
 }
 
@@ -388,6 +459,7 @@ function confirmTypeFunnelSelection(maxIndex) {
 
     $('#funnelSelection').modal('hide');
 
+    applyCurrentOrder();
     showInvestmentsView();
 }
 
@@ -418,6 +490,7 @@ function showInvestmentsEvolutionView() {
     $('tr').append('<th scope="col" style="text-align:right"><a class="text-white" href="#" onclick="switchBalanceAmountOrder();">Balance</a><div class="float-right" id="balanceAmountOrderIcon" /></th>');
     $('table').append('<tbody id="investmentEvolutionTable">');
 
+    //  TODO: need to show order indicator for this view
     //  TODO: all this business rules should be made on backend side
     let line = 1;
     let minDate = '';

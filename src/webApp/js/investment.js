@@ -6,22 +6,22 @@
 
 //  constants
 
+const investmentsRoute = '/investment/v1/investments';
+
 //  globals
 
+let investments = [];
+
 /*  *
-    * load investments from API server
+    * get all investments from API server
     */
 
-function loadInvestments(showInvestmentsFunc) {
+function getAllInvestments(startDate, endDate, active, showLoadedInvestmentsFunc) {
 
     //  TODO: this source needs to be the model so, no interface with HTML DOM
-    let startDate = $('#filterStartDate').val();
-    let endDate = $('#filterEndDate').val();
-    let active = $('#activeOnly').is(':checked');
-    let requestURL = '/investment/v1/investments';
+    let query = investmentsRoute;
     let queryString = '';
 
-    console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
     //  based on the filter options, format the investments service query string
     if (0 < startDate.length) {
         if (0 < queryString.length) {
@@ -43,39 +43,20 @@ function loadInvestments(showInvestmentsFunc) {
     }
 
     if (0 < queryString.length) {
-        requestURL += '?' + queryString;
+        query += '?' + queryString;
     }
-    console.log('[debug] load investments: query string: ' + queryString);
-
-    //  show the  spinner while loading the data from the API server
-    $('#loadingSpinner').empty();
-    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Loading...</span></div>');
+    console.log('[debug] get all investments: query string: ' + queryString);
 
     //  call investment service on the API server
     investments = [];
-    bankSelection = [];
-    typeSelection = [];
 
     $.ajax({
-        url: requestURL,
+        url: query,
         method: 'GET',
         success: (_result) => {
             investments = _result['Investments'];
 
-            //  save the original order
-            let line = 1;
-
-            investments.forEach((investment) => {
-                investment.originalOrder = line++;
-            });
-
-            funnelledInvestments = investments;
-
-            //            showInvestmentsView();
-            showInvestmentsFunc();
-
-            //  hide the spinner
-            $('#loadingSpinner').empty();
+            showLoadedInvestmentsFunc();
         }
     });
 }
