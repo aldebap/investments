@@ -1,4 +1,3 @@
-
 ////////////////////////////////////////////////////////////////////////////////
 //  investmentsListView.js  -  Aug-26-2020 by aldebap
 //
@@ -130,7 +129,7 @@ function showInvestmentLine(_line) {
 
 function showInvestmentTableDetails(_line, _investment) {
 
-    //  TODO: only one detaiols open at a time
+    //  TODO: only one details open at a time
 
     let investment = funnelledInvestments[_line - 1];
 

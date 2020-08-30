@@ -18,22 +18,18 @@ let investments = [];
 
 function getAllInvestments(startDate, endDate, active, showLoadedInvestmentsFunc) {
 
-    //  TODO: this source needs to be the model so, no interface with HTML DOM
     let query = investmentsRoute;
     let queryString = '';
 
     //  based on the filter options, format the investments service query string
     if (0 < startDate.length) {
-        if (0 < queryString.length) {
-            queryString += '&';
-        }
-        queryString += 'startDate=' + unformatDate(startDate);
+        queryString = 'startDate=' + startDate;
     }
     if (0 < endDate.length) {
         if (0 < queryString.length) {
             queryString += '&';
         }
-        queryString += 'endDate=' + unformatDate(endDate);
+        queryString += 'endDate=' + endDate;
     }
     if (0 == active) {
         if (0 < queryString.length) {
@@ -94,9 +90,7 @@ function addNewInvestment() {
         payload['balance'] = { date: balanceDate, amount: balanceAmount };
     }
 
-    //  TODO: use global constants  for these endpoints
     //  if all field are validated, add the investment record
-    let requestURL = '/investment/v1/investments';
 
     //  show the  spinner while loading the data from the API server
     $('#loadingSpinner').empty();
@@ -105,7 +99,7 @@ function addNewInvestment() {
     console.log('[debug] insert payload: ' + JSON.stringify(payload));
 
     $.ajax({
-        url: requestURL,
+        url: investmentsRoute,
         method: 'POST',
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(payload),
