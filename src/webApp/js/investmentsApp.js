@@ -85,6 +85,44 @@ function hideSpinner() {
 }
 
 /*  *
+    * show info toast
+    */
+
+function showInfoToast(message) {
+
+    $('#toastContainer').empty();
+    /*
+    $('#toastContainer').append('<div id="infoToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">'
+        + '<div class="toast-header">'
+        + '<img src="..." class="rounded mr-2" alt="..." />'
+        + '<strong class="mr-auto">Info</strong>'
+        + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '</div>'
+        + '<div class="toast-body">' + message + '</div>'
+        + '</div>');
+
+    $('#infoToast').toast('show');
+    */
+    $('#toastContainer').append('<div class="alert alert-info" role="alert">'
+        + message
+        + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '</div>');
+}
+
+/*  *
+    * show alert toast
+    */
+
+function showWarningToast(message) {
+
+    $('#toastContainer').empty();
+    $('#toastContainer').append('<div class="alert alert-warning" role="alert">'
+        + message
+        + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+        + '</div>');
+}
+
+/*  *
     * load investments from server
     */
 
@@ -102,6 +140,7 @@ function loadInvestments() {
     }
 
     console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
+    showInfoToast('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
 
     showSpinner();
 

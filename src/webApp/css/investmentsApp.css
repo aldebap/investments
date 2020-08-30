@@ -4,6 +4,12 @@
 //  Investments web application styles
 ///////////////////////////////////////////////////////////////////////////// */
 
+.float-toast {
+    position: relative;
+    min-height: 200px;
+    opacity: 0.5;
+}
+
 .float {
     position: fixed;
     width: 30px;
