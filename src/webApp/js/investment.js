@@ -61,41 +61,9 @@ function getAllInvestments(startDate, endDate, active, showLoadedInvestmentsFunc
     * add a new investment item
     */
 
-function addNewInvestment() {
+function addNewInvestment(payload, newInvestmentCallbackFunc) {
 
-    //  TODO: this source needs to be the model so, no interface with HTML DOM
-    let bank = $('#inputBank-new').val();
-    let type = $('#inputType-new').val();
-    let name = $('#inputName-new').val();
-    let operationDate = $('#inputOperationDate-new').val();
-    let operationAmount = Number($('#inputOperationAmount-new').val());
-    let balanceDate = $('#inputBalanceDate-new').val();
-    let balanceAmount = Number($('#inputBalanceAmount-new').val());
-    let payload = {};
-
-    if (0 < bank.length) {
-        payload['bank'] = bank;
-    }
-    if (0 < type.length) {
-        payload['type'] = type;
-    }
-    if (0 < name.length) {
-        payload['name'] = name;
-    }
-    if (0 < operationDate.length && operationAmount != NaN) {
-        payload['operation'] = { date: operationDate, amount: operationAmount };
-    }
-
-    if (0 < balanceDate.length && balanceAmount != NaN) {
-        payload['balance'] = { date: balanceDate, amount: balanceAmount };
-    }
-
-    //  if all field are validated, add the investment record
-
-    //  show the  spinner while loading the data from the API server
-    $('#loadingSpinner').empty();
-    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
-
+    //  call investment service on the API server
     console.log('[debug] insert payload: ' + JSON.stringify(payload));
 
     $.ajax({
@@ -104,29 +72,16 @@ function addNewInvestment() {
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(payload),
         processData: false,
-        error: function () {
-
-            //  TODO: no toast information is working
-            $('#toastContainer').empty();
-            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
-                + 'Error trying to add investment data'
-                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                + '</div>');
+        error: () => {
 
             console.log('[debug] Error attempting to add investment');
-
-            //  hide the spinner and the modal
-            $('#loadingSpinner').empty();
+            newInvestmentCallbackFunc('Error trying to add investment data');
         },
         success: (_result) => {
 
-            showInvestmentTable();
-            //  hide the spinner and the modal
-            $('#loadingSpinner').empty();
+            newInvestmentCallbackFunc('');
         }
     });
-
-    $('#newInvestment').modal('hide');
 }
 
 /*  *

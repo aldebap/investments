@@ -10,6 +10,11 @@ const LISTING_VIEW = 'listing';
 const EVOLUTION_VIEW = 'evolution';
 const GRAPHICAL_VIEW = 'graphical';
 
+const ALERT_DEBUG = 'debug';
+const ALERT_INFO = 'info';
+const ALERT_WARNING = 'warning';
+const ALERT_ERROR = 'error';
+
 const UNORDERED = 'unordered';
 const ORDERBYBANK_UP = 'orderByBank_up';
 const ORDERBYBANK_DOWN = 'orderByBank_down';
@@ -85,10 +90,22 @@ function hideSpinner() {
 }
 
 /*  *
-    * show info toast
+    * show alert message
     */
 
-function showInfoToast(message) {
+function showAlertMessage(alertType, message) {
+
+    let colorClass = '';
+
+    if (ALERT_DEBUG == alertType) {
+        colorClass = 'alert-secondary';
+    } else if (ALERT_INFO == alertType) {
+        colorClass = 'alert-info';
+    } else if (ALERT_WARNING == alertType) {
+        colorClass = 'alert-warning';
+    } else if (ALERT_ERROR == alertType) {
+        colorClass = 'alert-danger';
+    }
 
     $('#toastContainer').empty();
     /*
@@ -103,20 +120,7 @@ function showInfoToast(message) {
 
     $('#infoToast').toast('show');
     */
-    $('#toastContainer').append('<div class="alert alert-info" role="alert">'
-        + message
-        + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-        + '</div>');
-}
-
-/*  *
-    * show alert toast
-    */
-
-function showWarningToast(message) {
-
-    $('#toastContainer').empty();
-    $('#toastContainer').append('<div class="alert alert-warning" role="alert">'
+    $('#toastContainer').append('<div class="alert ' + colorClass + '" role="alert">'
         + message
         + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
         + '</div>');
@@ -140,7 +144,7 @@ function loadInvestments() {
     }
 
     console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
-    showInfoToast('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
+    showAlertMessage(ALERT_DEBUG, '[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
 
     showSpinner();
 

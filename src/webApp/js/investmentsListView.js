@@ -193,6 +193,63 @@ function showNewInvestmentModal() {
 }
 
 /*  *
+    * Confirm adding a new investment
+    */
+
+function confirmNewInvestment() {
+
+    let bank = $('#inputBank-new').val();
+    let type = $('#inputType-new').val();
+    let name = $('#inputName-new').val();
+    let operationDate = $('#inputOperationDate-new').val();
+    let operationAmount = Number($('#inputOperationAmount-new').val());
+    let balanceDate = $('#inputBalanceDate-new').val();
+    let balanceAmount = Number($('#inputBalanceAmount-new').val());
+    let payload = {};
+
+    //  TODO: need to make consistencies of required fileds
+    if (0 < bank.length) {
+        payload['bank'] = bank;
+    }
+    if (0 < type.length) {
+        payload['type'] = type;
+    }
+    if (0 < name.length) {
+        payload['name'] = name;
+    }
+    if (0 < operationDate.length && operationAmount != NaN) {
+        payload['operation'] = { date: operationDate, amount: operationAmount };
+    }
+
+    if (0 < balanceDate.length && balanceAmount != NaN) {
+        payload['balance'] = { date: balanceDate, amount: balanceAmount };
+    }
+
+    //  if all field are validated, add the investment record
+    showSpinner();
+    addNewInvestment(payload, newInvestmentCallback);
+
+    $('#newInvestment').modal('hide');
+}
+
+/*  *
+    * New investment callback function
+    */
+
+function newInvestmentCallback(message) {
+
+    if ('' == message) {
+
+        showAlertMessage(ALERT_INFO, 'New investment sucessfully added');
+        showInvestmentsView();
+    } else {
+
+        showAlertMessage(ALERT_ERROR, message);
+    }
+    hideSpinner();
+}
+
+/*  *
     * show the input fields to allow editing an investment
     */
 
