@@ -5,8 +5,9 @@
 ///////////////////////////////////////////////////////////////////////////// */
 
 .float-toast {
-    position: relative;
-    min-height: 200px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     opacity: 0.5;
 }
 

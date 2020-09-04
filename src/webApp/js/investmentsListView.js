@@ -190,6 +190,9 @@ function showNewInvestmentModal() {
     $('#newInvestment').modal({
         show: true
     });
+
+    //  TODO: fix the focus
+    $('#inputBank-new').focus();
 }
 
 /*  *

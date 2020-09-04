@@ -105,9 +105,11 @@ function showAlertMessage(alertType, message) {
         colorClass = 'alert-warning';
     } else if (ALERT_ERROR == alertType) {
         colorClass = 'alert-danger';
+    } else {
+        colorClass = 'alert-primary';
     }
 
-    $('#toastContainer').empty();
+    $('#alertsContainer').empty();
     /*
     $('#toastContainer').append('<div id="infoToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">'
         + '<div class="toast-header">'
@@ -117,10 +119,10 @@ function showAlertMessage(alertType, message) {
         + '</div>'
         + '<div class="toast-body">' + message + '</div>'
         + '</div>');
-
+    
     $('#infoToast').toast('show');
     */
-    $('#toastContainer').append('<div class="alert ' + colorClass + '" role="alert">'
+    $('#alertsContainer').append('<div class="alert ' + colorClass + '" role="alert">'
         + message
         + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
         + '</div>');
