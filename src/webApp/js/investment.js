@@ -16,22 +16,22 @@ let investments = [];
     * get all investments from API server
     */
 
-function getAllInvestments(startDate, endDate, active, showLoadedInvestmentsFunc) {
+function getAllInvestments(_startDate, _endDate, _active, showLoadedInvestmentsFunc) {
 
     let query = investmentsRoute;
     let queryString = '';
 
     //  based on the filter options, format the investments service query string
-    if (0 < startDate.length) {
-        queryString = 'startDate=' + startDate;
+    if (0 < _startDate.length) {
+        queryString = 'startDate=' + _startDate;
     }
-    if (0 < endDate.length) {
+    if (0 < _endDate.length) {
         if (0 < queryString.length) {
             queryString += '&';
         }
-        queryString += 'endDate=' + endDate;
+        queryString += 'endDate=' + _endDate;
     }
-    if (0 == active) {
+    if (0 == _active) {
         if (0 < queryString.length) {
             queryString += '&';
         }
@@ -61,16 +61,16 @@ function getAllInvestments(startDate, endDate, active, showLoadedInvestmentsFunc
     * add a new investment item
     */
 
-function addNewInvestment(payload, newInvestmentCallbackFunc) {
+function addNewInvestment(_payload, newInvestmentCallbackFunc) {
 
     //  call investment service on the API server
-    console.log('[debug] insert payload: ' + JSON.stringify(payload));
+    console.log('[debug] insert payload: ' + JSON.stringify(_payload));
 
     $.ajax({
         url: investmentsRoute,
         method: 'POST',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(payload),
+        data: JSON.stringify(_payload),
         processData: false,
         error: () => {
 
@@ -88,78 +88,37 @@ function addNewInvestment(payload, newInvestmentCallbackFunc) {
     * update investment item
     */
 
-function updateInvestment(_line) {
+function updateInvestment(_payload, _investment, updateInvestmentCallbackFunc) {
 
-    let investment = funnelledInvestments[_line - 1];
-    let bank = $('#inputEditInvestmentBank-' + _line).val();
-    let type = $('#inputEditInvestmentType-' + _line).val();
-    let name = $('#inputEditInvestmentName-' + _line).val();
-    let payload = {};
+    //  call investment service on the API server
+    console.log('[debug] patch payload: ' + JSON.stringify(_payload));
 
-    if (bank != investment.bank) {
-        payload['bank'] = bank;
-    }
-    if (type != investment.type) {
-        payload['type'] = type;
-    }
-    if (name != investment.name) {
-        payload['name'] = name;
-    }
+    $.ajax({
+        url: investmentsRoute + '/' + _investment.id,
+        method: 'PATCH',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(_payload),
+        processData: false,
+        error: function () {
 
-    //  if any field was changed, patch the investment record
-    if (0 < Object.keys(payload).length) {
+            console.log('[debug] Error attempting to patch investment');
+            updateInvestmentCallbackFunc('Error trying to update investment data');
+        },
+        success: (_result) => {
 
-        let requestURL = '/investment/v1/investments';
-
-        //  show the  spinner while loading the data from the API server
-        $('#loadingSpinner').empty();
-        $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
-
-        $.ajax({
-            url: requestURL + '/' + investment.id,
-            method: 'PATCH',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(payload),
-            processData: false,
-            error: function () {
-
-                $('#toastContainer').empty();
-                $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
-                    + 'Error trying to update investment data'
-                    + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                    + '</div>');
-
-                console.log('[debug] Error attempting to patch investment');
-
-                //  hide the spinner
-                $('#loadingSpinner').empty();
-            },
-            success: (_result) => {
-
-                investment.bank = bank;
-                investment.type = type;
-                investment.name = name;
-
-                showInvestmentLine(_line);
-
-                $('#toastContainer').empty();
-                $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
-                    + '<div class="toast-header">'
-                    + '<img src="..." class="rounded mr-2" alt="..." />'
-                    + '<strong class="mr-auto">' + name + '</strong>'
-                    + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                    + '</div>'
-                    + '<div class="toast-body">Investment data updated succesfully</div>'
-                    + '</div>');
-
-                //  hide the spinner
-                $('#loadingSpinner').empty();
-                //  TODO: use Bootstrap toasts to show the result of update operation
+            if ('bank' in _payload) {
+                _investment.bank = _payload.bank;
             }
-        });
-    }
+            if ('type' in _payload) {
+                _investment.type = _payload.type;
+            }
+            if ('name' in _payload) {
+                _investment.name = _payload.name;
+            }
 
-    showInvestmentLine(_line);
+            updateInvestmentCallbackFunc('');
+        }
+    });
 }
 
 /*  *

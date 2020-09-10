@@ -93,17 +93,17 @@ function hideSpinner() {
     * show alert message
     */
 
-function showAlertMessage(alertType, message) {
+function showAlertMessage(_alertType, _message) {
 
     let colorClass = '';
 
-    if (ALERT_DEBUG == alertType) {
+    if (ALERT_DEBUG == _alertType) {
         colorClass = 'alert-secondary';
-    } else if (ALERT_INFO == alertType) {
+    } else if (ALERT_INFO == _alertType) {
         colorClass = 'alert-info';
-    } else if (ALERT_WARNING == alertType) {
+    } else if (ALERT_WARNING == _alertType) {
         colorClass = 'alert-warning';
-    } else if (ALERT_ERROR == alertType) {
+    } else if (ALERT_ERROR == _alertType) {
         colorClass = 'alert-danger';
     } else {
         colorClass = 'alert-primary';
@@ -123,7 +123,7 @@ function showAlertMessage(alertType, message) {
     $('#infoToast').toast('show');
     */
     $('#alertsContainer').append('<div class="alert ' + colorClass + '" role="alert">'
-        + message
+        + _message
         + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
         + '</div>');
 }
@@ -395,12 +395,12 @@ function selectBankFunnel() {
     * Confirm Bank funnel selection
     */
 
-function confirmBankFunnelSelection(maxIndex) {
+function confirmBankFunnelSelection(_maxIndex) {
 
     bankSelection = [];
 
     //  get a list of all checked banks
-    for (let index = 1; index <= maxIndex; index++) {
+    for (let index = 1; index <= _maxIndex; index++) {
         if ($('#selectBank-' + index).is(':checked')) {
             bankSelection.push($('#selectBankLabel-' + index).text());
         }
@@ -476,12 +476,12 @@ function selectTypeFunnel() {
     * Confirm type funnel selection
     */
 
-function confirmTypeFunnelSelection(maxIndex) {
+function confirmTypeFunnelSelection(_maxIndex) {
 
     typeSelection = [];
 
     //  get a list of all checked types
-    for (let index = 1; index <= maxIndex; index++) {
+    for (let index = 1; index <= _maxIndex; index++) {
         if ($('#selectType-' + index).is(':checked')) {
             typeSelection.push($('#selectTypeLabel-' + index).text());
         }

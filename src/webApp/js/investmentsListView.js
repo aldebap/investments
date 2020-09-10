@@ -130,7 +130,7 @@ function showInvestmentLine(_line) {
 function showInvestmentTableDetails(_line, _investment) {
 
     //  TODO: only one details open at a time
-
+    //  TODO: this line seems to be a nonsense
     let investment = funnelledInvestments[_line - 1];
 
     //  format the investment details form
@@ -181,6 +181,7 @@ function showNewInvestmentModal() {
     $('#inputBank-new').val('');
     $('#inputType-new').val('');
     $('#inputName-new').val('');
+    //  TODO: date fields shoud be datepickers
     $('#inputOperationDate-new').val('');
     $('#inputOperationAmount-new').val('');
     $('#inputBalanceDate-new').val('');
@@ -208,25 +209,46 @@ function confirmNewInvestment() {
     let operationAmount = Number($('#inputOperationAmount-new').val());
     let balanceDate = $('#inputBalanceDate-new').val();
     let balanceAmount = Number($('#inputBalanceAmount-new').val());
+
+    //  check  if all required fields were filled
+    if (0 == bank.length) {
+        showAlertMessage(ALERT_ERROR, 'Bank name is a required field');
+        return;
+    }
+    if (0 == type.length) {
+        showAlertMessage(ALERT_ERROR, 'Investment type is a required field');
+        return;
+    }
+    if (0 == name.length) {
+        showAlertMessage(ALERT_ERROR, 'Investment name is a required field');
+        return;
+    }
+    if (0 == operationDate.length) {
+        showAlertMessage(ALERT_ERROR, 'First operation date is a required field');
+        return;
+    }
+    if (NaN == operationAmount || 0 >= operationAmount) {
+        showAlertMessage(ALERT_ERROR, 'First operation amount is a required number bigger than zero');
+        return;
+    }
+
+    if (0 == balanceDate.length) {
+        showAlertMessage(ALERT_ERROR, 'First balance date is a required field');
+        return;
+    }
+    if (NaN == balanceAmount || 0 >= balanceAmount) {
+        showAlertMessage(ALERT_ERROR, 'First balance amount is a required number bigger than zero');
+        return;
+    }
+
+    //  set the payload data
     let payload = {};
 
-    //  TODO: need to make consistencies of required fileds
-    if (0 < bank.length) {
-        payload['bank'] = bank;
-    }
-    if (0 < type.length) {
-        payload['type'] = type;
-    }
-    if (0 < name.length) {
-        payload['name'] = name;
-    }
-    if (0 < operationDate.length && operationAmount != NaN) {
-        payload['operation'] = { date: operationDate, amount: operationAmount };
-    }
-
-    if (0 < balanceDate.length && balanceAmount != NaN) {
-        payload['balance'] = { date: balanceDate, amount: balanceAmount };
-    }
+    payload['bank'] = bank;
+    payload['type'] = type;
+    payload['name'] = name;
+    payload['operation'] = { date: operationDate, amount: operationAmount };
+    payload['balance'] = { date: balanceDate, amount: balanceAmount };
 
     //  if all field are validated, add the investment record
     showSpinner();
@@ -241,7 +263,7 @@ function confirmNewInvestment() {
 
 function newInvestmentCallback(message) {
 
-    if ('' == message) {
+    if (0 == message.length) {
 
         showAlertMessage(ALERT_INFO, 'New investment sucessfully added');
         showInvestmentsView();
@@ -280,10 +302,57 @@ function showEditInvestmentInputFields(_line) {
 
     $('#investmentButtons-' + _line).empty();
     $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary float-right" onclick="showInvestmentLine(' + _line + ');">Cancel</button>');
-    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary float-right mr-2" onclick="updateInvestment(' + _line + ');">Confirm</button>');
+    $('#investmentButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary float-right mr-2" onclick="confirmEditInvestment();">Confirm</button>');
     $('#collapseInvestmentButtons-' + _line).collapse('show');
 
     editingInvestmentLine = _line;
+}
+
+/*  *
+    * Confirm editing an investment
+    */
+
+function confirmEditInvestment() {
+
+    let investment = funnelledInvestments[editingInvestmentLine - 1];
+    let bank = $('#inputEditInvestmentBank-' + editingInvestmentLine).val();
+    let type = $('#inputEditInvestmentType-' + editingInvestmentLine).val();
+    let name = $('#inputEditInvestmentName-' + editingInvestmentLine).val();
+    let payload = {};
+
+    //  TODO: check if all required fields were filled
+    if (bank != investment.bank) {
+        payload['bank'] = bank;
+    }
+    if (type != investment.type) {
+        payload['type'] = type;
+    }
+    if (name != investment.name) {
+        payload['name'] = name;
+    }
+
+    //  if any field was changed, patch the investment record
+    if (0 < Object.keys(payload).length) {
+        showSpinner();
+        updateInvestment(payload, investment, updateInvestmentCallback);
+    }
+}
+
+/*  *
+    * Update investment callback function
+    */
+
+function updateInvestmentCallback(message) {
+
+    if (0 == message.length) {
+
+        showAlertMessage(ALERT_INFO, 'Investment sucessfully updated');
+        showInvestmentLine(editingInvestmentLine);
+    } else {
+
+        showAlertMessage(ALERT_ERROR, message);
+    }
+    hideSpinner();
 }
 
 /*  *
