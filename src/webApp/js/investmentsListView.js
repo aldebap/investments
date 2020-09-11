@@ -387,9 +387,41 @@ function showDeleteInvestmentModal(_line) {
     $('#deleteConfimationMessage').empty();
     $('#deleteConfimationMessage').append('<p>Delete the investment "' + investment.name + '" at ' + investment.bank + '</p>');
     $('#formDeleteInvestment').empty();
-    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="deleteInvestment(' + _line + ');">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="confirmDeleteInvestment(' + _line + ');">Confirm</button> &nbsp;');
     $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
 
     //  show the new Investment modal
     $('#confirmExclusion').modal({ show: true });
+}
+
+/*  *
+    * Confirm delete an investment
+    */
+
+function confirmDeleteInvestment(_line) {
+
+    let investment = funnelledInvestments[_line - 1];
+
+    showSpinner();
+    deleteInvestment(investment, deleteInvestmentCallback);
+
+    $('#confirmExclusion').modal('hide');
+}
+
+/*  *
+    * Delete investment callback function
+    */
+
+function deleteInvestmentCallback(message) {
+
+    if (0 == message.length) {
+
+        showAlertMessage(ALERT_INFO, 'Investment sucessfully deleted');
+        //  TODO: remove the line from the investment array, or to reload it from API
+        showInvestmentsView();
+    } else {
+
+        showAlertMessage(ALERT_ERROR, message);
+    }
+    hideSpinner();
 }

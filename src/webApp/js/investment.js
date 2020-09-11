@@ -63,9 +63,9 @@ function getAllInvestments(_startDate, _endDate, _active, showLoadedInvestmentsF
 
 function addNewInvestment(_payload, newInvestmentCallbackFunc) {
 
-    //  call investment service on the API server
     console.log('[debug] insert payload: ' + JSON.stringify(_payload));
 
+    //  call investment service on the API server
     $.ajax({
         url: investmentsRoute,
         method: 'POST',
@@ -90,9 +90,9 @@ function addNewInvestment(_payload, newInvestmentCallbackFunc) {
 
 function updateInvestment(_payload, _investment, updateInvestmentCallbackFunc) {
 
-    //  call investment service on the API server
     console.log('[debug] patch payload: ' + JSON.stringify(_payload));
 
+    //  call investment service on the API server
     $.ajax({
         url: investmentsRoute + '/' + _investment.id,
         method: 'PATCH',
@@ -125,51 +125,23 @@ function updateInvestment(_payload, _investment, updateInvestmentCallbackFunc) {
     * delete investment item
     */
 
-function deleteInvestment(_line) {
+function deleteInvestment(_investment, deleteInvestmentCallbackFunc) {
 
-    console.log('[debug] deleteInvestment( ' + _line + ' )');
+    console.log('[debug] deleteInvestment( ' + _investment.name + ' )');
 
-    let investment = funnelledInvestments[_line - 1];
-    let requestURL = '/investment/v1/investments';
-
-    //  show the  spinner while loading the data from the API server
-    $('#loadingSpinner').empty();
-    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
-
+    //  call investment service on the API server
     $.ajax({
-        url: requestURL + '/' + investment.id,
+        url: investmentsRoute + '/' + _investment.id,
         method: 'DELETE',
         error: function () {
 
-            $('#toastContainer').empty();
-            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
-                + 'Error trying to delete investment data'
-                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                + '</div>');
-
             console.log('[debug] Error attempting to delete investment');
-
-            //  hide the spinner
-            $('#loadingSpinner').empty();
+            deleteInvestmentCallbackFunc('Error trying to delete investment data');
         },
         success: (_result) => {
 
-            $('#toastContainer').empty();
-            $('#toastContainer').append('<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">'
-                + '<div class="toast-header">'
-                + '<img src="..." class="rounded mr-2" alt="..." />'
-                + '<strong class="mr-auto">' + investment.id + '</strong>'
-                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                + '</div>'
-                + '<div class="toast-body">Investment succesfully deleted</div>'
-                + '</div>');
-
-            //  TODO: remove the line from the investment array, or to reload it from API
-            showInvestmentTable();
-            //  hide the spinner
-            $('#loadingSpinner').empty();
+            deleteInvestmentCallbackFunc('');
         }
     });
 
-    $('#confirmExclusion').modal('hide');
 }
