@@ -320,7 +320,21 @@ function confirmEditInvestment() {
     let name = $('#inputEditInvestmentName-' + editingInvestmentLine).val();
     let payload = {};
 
-    //  TODO: check if all required fields were filled
+    //  check  if all required fields were filled
+    if (0 == bank.length) {
+        showAlertMessage(ALERT_ERROR, 'Bank name is a required field');
+        return;
+    }
+    if (0 == type.length) {
+        showAlertMessage(ALERT_ERROR, 'Investment type is a required field');
+        return;
+    }
+    if (0 == name.length) {
+        showAlertMessage(ALERT_ERROR, 'Investment name is a required field');
+        return;
+    }
+
+    //  check the fields that were changed
     if (bank != investment.bank) {
         payload['bank'] = bank;
     }
@@ -333,8 +347,12 @@ function confirmEditInvestment() {
 
     //  if any field was changed, patch the investment record
     if (0 < Object.keys(payload).length) {
+
         showSpinner();
         updateInvestment(payload, investment, updateInvestmentCallback);
+    } else {
+
+        showInvestmentLine(editingInvestmentLine);
     }
 }
 
