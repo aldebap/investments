@@ -181,7 +181,6 @@ function showNewInvestmentModal() {
     $('#inputBank-new').val('');
     $('#inputType-new').val('');
     $('#inputName-new').val('');
-    //  TODO: date fields shoud be datepickers
     $('#inputOperationDate-new').val('');
     $('#inputOperationAmount-new').val('');
     $('#inputBalanceDate-new').val('');
@@ -247,8 +246,8 @@ function confirmNewInvestment() {
     payload['bank'] = bank;
     payload['type'] = type;
     payload['name'] = name;
-    payload['operation'] = { date: operationDate, amount: operationAmount };
-    payload['balance'] = { date: balanceDate, amount: balanceAmount };
+    payload['operation'] = { date: unformatDate(operationDate), amount: operationAmount };
+    payload['balance'] = { date: unformatDate(balanceDate), amount: balanceAmount };
 
     //  if all field are validated, add the investment record
     showSpinner();

@@ -145,9 +145,6 @@ function loadInvestments() {
         endDate = unformatDate(endDate);
     }
 
-    console.log('[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
-    showAlertMessage(ALERT_DEBUG, '[debug] load investments: ' + startDate + ' - ' + endDate + ' : ' + active);
-
     showSpinner();
 
     bankSelection = [];
