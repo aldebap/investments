@@ -8,6 +8,7 @@
 
 //  globals
 
+let detailsInvestmentLine = 0;
 let editingInvestmentLine = 0;
 
 /*  *
@@ -111,10 +112,24 @@ function showInvestmentLine(_line) {
     // events the change the caret up and down according to the condition of the collapse row
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretUp.svg');
+
+        if (0 < detailsInvestmentLine) {
+
+            $('#collapseRow-' + detailsInvestmentLine).collapse('hide');
+
+            //  wain until the collapse event is fired
+            //  TODO: there must be a better way to do this
+            while (0 < detailsInvestmentLine) {
+                $('#collapseRow-' + detailsInvestmentLine).attr();
+            }
+        }
+        detailsInvestmentLine = _line;
     });
 
     $('#collapseRow-' + _line).on('hidden.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretDown.svg');
+
+        detailsInvestmentLine = 0;
     });
 
     $('#investmentButtons-' + _line).empty();
@@ -129,7 +144,6 @@ function showInvestmentLine(_line) {
 
 function showInvestmentTableDetails(_line, _investment) {
 
-    //  TODO: only one details open at a time
     //  TODO: this line seems to be a nonsense
     let investment = funnelledInvestments[_line - 1];
 
