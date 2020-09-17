@@ -8,7 +8,6 @@
 
 //  globals
 
-let detailsInvestmentLine = 0;
 let editingInvestmentLine = 0;
 
 /*  *
@@ -113,23 +112,16 @@ function showInvestmentLine(_line) {
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretUp.svg');
 
-        if (0 < detailsInvestmentLine) {
+        for (let lineAux = 1; lineAux <= funnelledInvestments.length; lineAux++) {
 
-            $('#collapseRow-' + detailsInvestmentLine).collapse('hide');
-
-            //  wain until the collapse event is fired
-            //  TODO: there must be a better way to do this
-            while (0 < detailsInvestmentLine) {
-                $('#collapseRow-' + detailsInvestmentLine).attr();
+            if (lineAux != _line && $('#collapseRow-' + lineAux).is(':visible')) {
+                $('#collapseRow-' + lineAux).collapse('hide');
             }
         }
-        detailsInvestmentLine = _line;
     });
 
     $('#collapseRow-' + _line).on('hidden.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretDown.svg');
-
-        detailsInvestmentLine = 0;
     });
 
     $('#investmentButtons-' + _line).empty();

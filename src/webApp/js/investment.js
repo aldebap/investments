@@ -13,6 +13,28 @@ const investmentsRoute = '/investment/v1/investments';
 let investments = [];
 
 /*  *
+    * get investment from API server by ID
+    */
+
+function getInvestmentByID(_id, showLoadedInvestmentFunc) {
+
+    console.log('[debug] get investment by ID: ' + _id);
+
+    //  call investment service on the API server
+    let investment = {};
+
+    $.ajax({
+        url: investmentsRoute + '/' + _id,
+        method: 'GET',
+        success: (_result) => {
+            investment = _result['Investments'];
+
+            showLoadedInvestmentFunc(investment);
+        }
+    });
+}
+
+/*  *
     * get all investments from API server
     */
 
