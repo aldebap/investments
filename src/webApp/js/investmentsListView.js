@@ -9,6 +9,7 @@
 //  globals
 
 let editingInvestmentLine = 0;
+let deletingInvestmentLine = 0;
 
 /*  *
     * show the investments listing view
@@ -270,6 +271,7 @@ function newInvestmentCallback(message) {
 
     if (0 == message.length) {
 
+        //  TODO: insert the line to the investment array, or to reload it from API
         showAlertMessage(ALERT_INFO, 'New investment sucessfully added');
         showInvestmentsView();
     } else {
@@ -407,6 +409,8 @@ function confirmDeleteInvestment(_line) {
 
     let investment = funnelledInvestments[_line - 1];
 
+    deletingInvestmentLine = _line;
+
     showSpinner();
     deleteInvestment(investment, deleteInvestmentCallback);
 
@@ -422,7 +426,27 @@ function deleteInvestmentCallback(message) {
     if (0 == message.length) {
 
         showAlertMessage(ALERT_INFO, 'Investment sucessfully deleted');
-        //  TODO: remove the line from the investment array, or to reload it from API
+
+        //  remove the investment from both investments arrays
+        const investmentId = funnelledInvestments[deletingInvestmentLine - 1].id;
+        let investmentsAux = [];
+
+        investments.forEach((investment) => {
+            if (investmentId != investment.id) {
+                investmentsAux.push(investment);
+            }
+        });
+        investments = investmentsAux;
+
+        investmentsAux = [];
+
+        funnelledInvestments.forEach((investment) => {
+            if (investmentId != investment.id) {
+                investmentsAux.push(investment);
+            }
+        });
+        funnelledInvestments = investmentsAux;
+
         showInvestmentsView();
     } else {
 

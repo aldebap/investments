@@ -272,6 +272,8 @@ function showOrderIndicator() {
 
 function applyCurrentOrder() {
 
+    //  TODO: move the funneling application to here so, it make simpler when an investment iss added or deleted
+
     //  order by bank
     if (ORDERBYBANK_UP == currentOrder || ORDERBYBANK_DOWN == currentOrder) {
 
