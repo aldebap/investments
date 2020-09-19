@@ -101,6 +101,8 @@ function addNewInvestment(_payload, newInvestmentCallbackFunc) {
         },
         success: (_result) => {
 
+            //  insert the new investment to investments array
+            investments.push(_result);
             newInvestmentCallbackFunc('');
         }
     });

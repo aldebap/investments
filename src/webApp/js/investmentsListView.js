@@ -271,7 +271,6 @@ function newInvestmentCallback(message) {
 
     if (0 == message.length) {
 
-        //  TODO: insert the line to the investment array, or to reload it from API
         showAlertMessage(ALERT_INFO, 'New investment sucessfully added');
 
         applyCurrentOrder();
