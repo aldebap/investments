@@ -162,6 +162,16 @@ function deleteInvestment(_investment, deleteInvestmentCallbackFunc) {
         },
         success: (_result) => {
 
+            //  remove the investment from investments array
+            let investmentsAux = [];
+
+            investments.forEach((investment) => {
+                if (_investment.id != investment.id) {
+                    investmentsAux.push(investment);
+                }
+            });
+            investments = investmentsAux;
+
             deleteInvestmentCallbackFunc('');
         }
     });

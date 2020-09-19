@@ -272,7 +272,15 @@ function showOrderIndicator() {
 
 function applyCurrentOrder() {
 
-    //  TODO: move the funneling application to here so, it make simpler when an investment iss added or deleted
+    //  set a list with all funnelled investments
+    funnelledInvestments = [];
+
+    investments.forEach((investment) => {
+        if ((0 == bankSelection.length || bankSelection.includes(investment.bank))
+            && (0 == typeSelection.length || typeSelection.includes(investment.type))) {
+            funnelledInvestments.push(investment);
+        }
+    });
 
     //  order by bank
     if (ORDERBYBANK_UP == currentOrder || ORDERBYBANK_DOWN == currentOrder) {
@@ -410,16 +418,6 @@ function confirmBankFunnelSelection(_maxIndex) {
         return;
     }
 
-    //  set a list with all funnelled investments
-    funnelledInvestments = [];
-
-    investments.forEach((investment) => {
-        if (bankSelection.includes(investment.bank)
-            && (0 == typeSelection.length || typeSelection.includes(investment.type))) {
-            funnelledInvestments.push(investment);
-        }
-    });
-
     $('#funnelSelection').modal('hide');
 
     applyCurrentOrder();
@@ -490,16 +488,6 @@ function confirmTypeFunnelSelection(_maxIndex) {
         $('#funnelSelectionList').append('<p /><div class="alert alert-warning" role="alert">Need to select at least one type</div>');
         return;
     }
-
-    //  set a list with all funnelled investments
-    funnelledInvestments = [];
-
-    investments.forEach((investment) => {
-        if ((0 == bankSelection.length || bankSelection.includes(investment.bank))
-            && typeSelection.includes(investment.type)) {
-            funnelledInvestments.push(investment);
-        }
-    });
 
     $('#funnelSelection').modal('hide');
 

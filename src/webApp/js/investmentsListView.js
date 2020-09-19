@@ -273,6 +273,8 @@ function newInvestmentCallback(message) {
 
         //  TODO: insert the line to the investment array, or to reload it from API
         showAlertMessage(ALERT_INFO, 'New investment sucessfully added');
+
+        applyCurrentOrder();
         showInvestmentsView();
     } else {
 
@@ -427,26 +429,7 @@ function deleteInvestmentCallback(message) {
 
         showAlertMessage(ALERT_INFO, 'Investment sucessfully deleted');
 
-        //  remove the investment from both investments arrays
-        const investmentId = funnelledInvestments[deletingInvestmentLine - 1].id;
-        let investmentsAux = [];
-
-        investments.forEach((investment) => {
-            if (investmentId != investment.id) {
-                investmentsAux.push(investment);
-            }
-        });
-        investments = investmentsAux;
-
-        investmentsAux = [];
-
-        funnelledInvestments.forEach((investment) => {
-            if (investmentId != investment.id) {
-                investmentsAux.push(investment);
-            }
-        });
-        funnelledInvestments = investmentsAux;
-
+        applyCurrentOrder();
         showInvestmentsView();
     } else {
 
