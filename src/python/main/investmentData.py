@@ -79,6 +79,17 @@ class InvestmentDataFile:
 
         return investmentAux.to_json()
 
+    # fetch investment by Id from the invetments content
+    def getInvestmentById(self, investmentId):
+
+        #   trasverse the investments list to fetch the investmentId
+        for investment in self.investment:
+            if investmentId == str(investment.id):
+                return investment.to_json()
+
+        #   TODO: need to retunr something here
+        return {}
+
     # fetch all investments from the invetments content
     def getInvestments(self, investmentId, startDate, endDate, active):
         investmentList = []

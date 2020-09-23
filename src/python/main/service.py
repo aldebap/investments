@@ -97,14 +97,13 @@ class APIServer:
 
     #   service to get an investment given it's ID
     @classmethod
-    def investmentByID(cls, investmentId, startDate, endDate, active):
-        #   query parameters not informed are defaulted to '_' so, change it to None for the getInvestment() function
-        if startDate == '_':
-            startDate = None
-        if endDate == '_':
-            endDate = None
+    def investmentByID(cls, investmentId):
+        result = cls._singleInstance.investmentDataFile.getInvestmentById(investmentId)
 
-        return {'Investments': cls._singleInstance.investmentDataFile.getInvestments(investmentId, startDate, endDate, active)}
+        if 'id' not in result:
+            abort(404, 'investmentId not found')
+
+        return result, 200
 
     #   service to patch an investment given it's ID
     @classmethod
