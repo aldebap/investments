@@ -10,6 +10,7 @@
 
 let editingInvestmentLine = 0;
 let deletingInvestmentLine = 0;
+let fullDetailsInvestments = [];
 
 /*  *
     * show the investments listing view
@@ -58,7 +59,7 @@ function showInvestmentTable() {
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="7"><div class="container" id="containerRow-' + line + '">');
 
         showInvestmentLine(line);
-        showInvestmentTableDetails(line, investment);
+        //showInvestmentTableDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
 
@@ -113,6 +114,8 @@ function showInvestmentLine(_line) {
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretUp.svg');
 
+        loadFullDetailsInvestment(_line, investment);
+
         for (let lineAux = 1; lineAux <= funnelledInvestments.length; lineAux++) {
 
             if (lineAux != _line && $('#collapseRow-' + lineAux).is(':visible')) {
@@ -132,50 +135,85 @@ function showInvestmentLine(_line) {
 }
 
 /*  *
+    * load the full details investment data
+    */
+
+function loadFullDetailsInvestment(_line, _investment) {
+
+    //  check if the investment was loaded already
+    fullDetailsInvestments.forEach((investment) => {
+        if (investment.id == _investment.id) {
+            showInvestmentTableDetails(_line, investment);
+            return;
+        }
+    });
+
+    //  load the full details investment data
+    showSpinner();
+    getInvestmentByID(_investment.id, showInvestmentTableDetails);
+}
+
+/*  *
     * show the investment details
     */
 
-function showInvestmentTableDetails(_line, _investment) {
+function showInvestmentTableDetails(_investment) {
 
-    //  TODO: this line seems to be a nonsense
-    let investment = funnelledInvestments[_line - 1];
+    //  get the line of investment in funneld array
+    let line = 1;
+    let lineAux = NaN;
+
+    funnelledInvestments.forEach((investment) => {
+        if (investment.id == _investment.id) {
+            lineAux = line;
+        }
+        line++;
+    });
+
+    if (lineAux == NaN) {
+
+        console.log('[debug] showInvestmentTableDetails: something went wrong here');
+        return;
+    }
 
     //  format the investment details form
-    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body">'
+    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body">'
         + '<table class="table"><tbody>'
-        + '<tr><th>Bank</th><td>' + investment.bank + '</td></tr>'
-        + '<tr><th>Type</th><td>' + investment.type + '</td></tr>'
-        + '<tr><th>Name</th><td>' + investment.name + '</td></tr>'
+        + '<tr><th>Bank</th><td>' + _investment.bank + '</td></tr>'
+        + '<tr><th>Type</th><td>' + _investment.type + '</td></tr>'
+        + '<tr><th>Name</th><td>' + _investment.name + '</td></tr>'
         + '</tbody></table>'
         + '</div></div>');
 
-    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + _line + '">'
+    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + lineAux + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="operationDetail-' + _line + '"></tbody>'
+        + '<tbody id="operationDetail-' + lineAux + '"></tbody>'
         + '</table>'
-        + '<div class="float-right" id="operationDetailButtons-' + _line + '"></div>'
+        + '<div class="float-right" id="operationDetailButtons-' + lineAux + '"></div>'
         + '</form></div></div>');
 
-    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + _line + '">'
+    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + lineAux + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="revenueDetail-' + _line + '"></tbody>'
+        + '<tbody id="revenueDetail-' + lineAux + '"></tbody>'
         + '</table>'
-        + '<div class="float-right" id="revenueDetailButtons-' + _line + '"></div>'
+        + '<div class="float-right" id="revenueDetailButtons-' + lineAux + '"></div>'
         + '</form></div></div>');
 
-    $('#containerRow-' + _line).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + _line + '">'
+    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + lineAux + '">'
         + '<table class="table">'
         + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="balanceDetail-' + _line + '"></tbody>'
+        + '<tbody id="balanceDetail-' + lineAux + '"></tbody>'
         + '</table>'
-        + '<div class="float-right" id="balanceDetailButtons-' + _line + '"></div>'
+        + '<div class="float-right" id="balanceDetailButtons-' + lineAux + '"></div>'
         + '</form></div></div>');
 
-    showOperationTableDetails(_line);
-    showRevenueTableDetails(_line);
-    showBalanceTableDetails(_line);
+    showOperationTableDetails(lineAux, _investment);
+    //    showRevenueTableDetails(_line, _investment);
+    //   showBalanceTableDetails(_line, _investment);
+
+    hideSpinner();
 }
 
 /*  *

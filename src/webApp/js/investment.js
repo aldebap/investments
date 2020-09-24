@@ -21,15 +21,11 @@ function getInvestmentByID(_id, showLoadedInvestmentFunc) {
     console.log('[debug] get investment by ID: ' + _id);
 
     //  call investment service on the API server
-    let investment = {};
-
     $.ajax({
         url: investmentsRoute + '/' + _id,
         method: 'GET',
         success: (_result) => {
-            investment = _result['Investments'];
-
-            showLoadedInvestmentFunc(investment);
+            showLoadedInvestmentFunc(_result);
         }
     });
 }

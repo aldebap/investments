@@ -10,16 +10,16 @@
     * show the operation details
     */
 
-function showOperationTableDetails(_line) {
+function showOperationTableDetails(_line, _investment) {
 
-    let investment = investments[_line - 1];
+    //let investment = investments[_line - 1];
 
     $('#operationDetail-' + _line).empty();
 
     //  format the  operations details table
     let operationIndex = 1;
 
-    investment.operations.forEach((operation) => {
+    _investment.operations.forEach((operation) => {
         $('#operationDetail-' + _line).append('<tr id="operationDetail-' + _line + '-' + operationIndex + '"><td>' + operationIndex + '</td>'
             + '<td>' + formatInvDate(operation.date) + '</td>'
             + '<td>' + to_currency(operation.amount)
