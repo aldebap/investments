@@ -59,7 +59,6 @@ function showInvestmentTable() {
         $('#investmentTable').append('<tr class="collapse" id="collapseRow-' + line + '"><td colspan="7"><div class="container" id="containerRow-' + line + '">');
 
         showInvestmentLine(line);
-        //showInvestmentTableDetails(line, investment);
 
         $('#containerRow-' + line).append('</div></td></tr>');
 
@@ -110,12 +109,13 @@ function showInvestmentLine(_line) {
         + '&nbsp; <a data-toggle="collapse" href="#collapseRow-' + _line + '" role="button" aria-expanded="false" aria-controls="collapseRow-' + _line + '">'
         + '<img id="caret-' + _line + '" src="img/caretDown.svg" /></a></td>');
 
-    // events the change the caret up and down according to the condition of the collapse row
+    //  catch the event of change the caret down to show the collapse row
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretUp.svg');
 
         loadFullDetailsInvestment(_line, investment);
 
+        //  hide any collapse row that may be shown
         for (let lineAux = 1; lineAux <= funnelledInvestments.length; lineAux++) {
 
             if (lineAux != _line && $('#collapseRow-' + lineAux).is(':visible')) {
@@ -124,6 +124,7 @@ function showInvestmentLine(_line) {
         }
     });
 
+    //  catch the event of change the caret up to hide the collapse row
     $('#collapseRow-' + _line).on('hidden.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretDown.svg');
     });
@@ -159,6 +160,19 @@ function loadFullDetailsInvestment(_line, _investment) {
 
 function showInvestmentTableDetails(_investment) {
 
+    //  add the full details to the array if it was just loaded
+    var found = false;
+
+    fullDetailsInvestments.forEach((investment) => {
+        if (investment.id == _investment.id) {
+            found = true;
+        }
+    });
+
+    if (!found) {
+        fullDetailsInvestments.append(_investment);
+    }
+
     //  get the line of investment in funneld array
     let line = 1;
     let lineAux = NaN;
@@ -179,9 +193,9 @@ function showInvestmentTableDetails(_investment) {
     //  format the investment details form
     $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body">'
         + '<table class="table"><tbody>'
-        + '<tr><th>Bank</th><td>' + _investment.bank + '</td></tr>'
-        + '<tr><th>Type</th><td>' + _investment.type + '</td></tr>'
-        + '<tr><th>Name</th><td>' + _investment.name + '</td></tr>'
+        + '<tr><th>Bank:</th><td>' + _investment.bank + '</td></tr>'
+        + '<tr><th>Type:</th><td>' + _investment.type + '</td></tr>'
+        + '<tr><th>Name:</th><td>' + _investment.name + '</td></tr>'
         + '</tbody></table>'
         + '</div></div>');
 
