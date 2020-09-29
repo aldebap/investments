@@ -10,7 +10,6 @@
 
 let editingInvestmentLine = 0;
 let deletingInvestmentLine = 0;
-let fullDetailsInvestments = [];
 
 /*  *
     * show the investments listing view
@@ -113,7 +112,7 @@ function showInvestmentLine(_line) {
     $('#collapseRow-' + _line).on('shown.bs.collapse', () => {
         $('#caret-' + _line).attr('src', 'img/caretUp.svg');
 
-        loadFullDetailsInvestment(_line, investment);
+        loadFullDetailsInvestment(investment);
 
         //  hide any collapse row that may be shown
         for (let lineAux = 1; lineAux <= funnelledInvestments.length; lineAux++) {
@@ -133,101 +132,6 @@ function showInvestmentLine(_line) {
     $('#collapseInvestmentButtons-' + _line).collapse('hide');
 
     editingInvestmentLine = 0;
-}
-
-/*  *
-    * load the full details investment data
-    */
-
-function loadFullDetailsInvestment(_line, _investment) {
-
-    //  check if the investment was loaded already
-    fullDetailsInvestments.forEach((investment) => {
-        if (investment.id == _investment.id) {
-            showInvestmentTableDetails(_line, investment);
-            return;
-        }
-    });
-
-    //  load the full details investment data
-    showSpinner();
-    getInvestmentByID(_investment.id, showInvestmentTableDetails);
-}
-
-/*  *
-    * show the investment details
-    */
-
-function showInvestmentTableDetails(_investment) {
-
-    //  add the full details to the array if it was just loaded
-    var found = false;
-
-    fullDetailsInvestments.forEach((investment) => {
-        if (investment.id == _investment.id) {
-            found = true;
-        }
-    });
-
-    if (!found) {
-        fullDetailsInvestments.append(_investment);
-    }
-
-    //  get the line of investment in funneld array
-    let line = 1;
-    let lineAux = NaN;
-
-    funnelledInvestments.forEach((investment) => {
-        if (investment.id == _investment.id) {
-            lineAux = line;
-        }
-        line++;
-    });
-
-    if (lineAux == NaN) {
-
-        console.log('[debug] showInvestmentTableDetails: something went wrong here');
-        return;
-    }
-
-    //  format the investment details form
-    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Investment details</div><div class="card-body">'
-        + '<table class="table"><tbody>'
-        + '<tr><th>Bank:</th><td>' + _investment.bank + '</td></tr>'
-        + '<tr><th>Type:</th><td>' + _investment.type + '</td></tr>'
-        + '<tr><th>Name:</th><td>' + _investment.name + '</td></tr>'
-        + '</tbody></table>'
-        + '</div></div>');
-
-    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Operations</div><div class="card-body"><form id="formManageOperations-' + lineAux + '">'
-        + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="operationDetail-' + lineAux + '"></tbody>'
-        + '</table>'
-        + '<div class="float-right" id="operationDetailButtons-' + lineAux + '"></div>'
-        + '</form></div></div>');
-
-    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Revenue</div><div class="card-body"><form id="formManageRevenue-' + lineAux + '">'
-        + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="revenueDetail-' + lineAux + '"></tbody>'
-        + '</table>'
-        + '<div class="float-right" id="revenueDetailButtons-' + lineAux + '"></div>'
-        + '</form></div></div>');
-
-    $('#containerRow-' + lineAux).append('<div class="card"><div class="card-header">Balance</div><div class="card-body"><form id="formManageBalance-' + lineAux + '">'
-        + '<table class="table">'
-        + '<thead><tr><th scope="col">#</th><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>'
-        + '<tbody id="balanceDetail-' + lineAux + '"></tbody>'
-        + '</table>'
-        + '<div class="float-right" id="balanceDetailButtons-' + lineAux + '"></div>'
-        + '</form></div></div>');
-
-    showOperationTableDetails(lineAux, _investment);
-    //    showRevenueTableDetails(_line, _investment);
-    //   showBalanceTableDetails(_line, _investment);
-
-    hideSpinner();
 }
 
 /*  *

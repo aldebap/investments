@@ -6,52 +6,36 @@
 
 //  constants
 
+const operationsRoute = '/operations';
+
 /*  *
-    * show the operation details
+    * Add a new operation
     */
 
-function showOperationTableDetails(_line, _investment) {
+function addNewOperation(_investmentId, _payload, newOperationCallbackFunc) {
 
-    //let investment = investments[_line - 1];
+    //  if all field are validated, add the operation record
+    let requestURL = investmentsRoute + '/' + _investmentId + operationsRoute;
 
-    $('#operationDetail-' + _line).empty();
+    console.log('[debug] insert payload: ' + JSON.stringify(_payload));
 
-    //  format the  operations details table
-    let operationIndex = 1;
+    $.ajax({
+        url: requestURL,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(_payload),
+        processData: false,
+        error: function () {
 
-    _investment.operations.forEach((operation) => {
-        $('#operationDetail-' + _line).append('<tr id="operationDetail-' + _line + '-' + operationIndex + '"><td>' + operationIndex + '</td>'
-            + '<td>' + formatInvDate(operation.date) + '</td>'
-            + '<td>' + to_currency(operation.amount)
-            + '<a class="float-right dropdown-toggle" href="#" role="button" id="operationThreeDotsButton-' + _line + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-            + '<img class="text-primary" src="img/threeDotsVertical.svg" /></a>'
-            + '<div class="dropdown-menu" id="operationOptionsMenu-' + _line + '" aria-labelledby="operationThreeDotsButton-' + _line + '">'
-            + '<button class="dropdown-item" type="button" onclick="showEditOperationInputFields( ' + _line + ', ' + operationIndex + ' );">Edit</button>'
-            + '<button class="dropdown-item" type="button" onclick="showDeleteOperationModal( ' + _line + ', ' + operationIndex + ' );">Delete</button></div>'
-            + '</td></tr>');
+            console.log('[debug] Error attempting to add operation');
+            newOperationCallbackFunc('Error trying to add operation data');
+        },
+        success: (_result) => {
 
-        operationIndex++;
+            //  TODO: insert the new investment to investments array
+            newOperationCallbackFunc('');
+        }
     });
-
-    $('#operationDetailButtons-' + _line).empty();
-    $('#operationDetailButtons-' + _line).append('<a onclick="showNewOperationInputFields( ' + _line + ' );"><img src="img/addButton.svg" /></a>');
-}
-
-/*  *
-    * show the input fields to allow adding a new operation
-    */
-
-function showNewOperationInputFields(_line) {
-
-    $('#operationDetail-' + _line).append('<tr><td>New</td>'
-        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="operation date" id="inputNewOperationDate-' + _line + '" /></td>'
-        + '<td><input type="text" class="form-control" id="inputNewOperationAmount-' + _line + '" /></td></tr>');
-
-    $('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
-
-    $('#operationDetailButtons-' + _line).empty();
-    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="addNewOperation( ' + _line + ' );">Confirm</button> &nbsp;');
-    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showOperationTableDetails( ' + _line + ' );">Cancel</button>');
 }
 
 /*  *
@@ -109,66 +93,6 @@ function showDeleteOperationModal(_line, _operationLine) {
     $('#confirmExclusion').modal({
         show: true
     });
-}
-
-/*  *
-    * Confirm adding a new operation
-    */
-
-function addNewOperation(_line) {
-
-    let investment = investments[_line - 1];
-    let operationDate = $('#inputNewOperationDate-' + _line).val();
-    let operationAmount = Number($('#inputNewOperationAmount-' + _line).val());
-    let payload = {};
-
-    if (0 < operationDate.length) {
-        payload['date'] = unformatDate(operationDate);
-    }
-    if (operationAmount != NaN) {
-        payload['amount'] = operationAmount;
-    }
-
-    //  if all field are validated, add the operation record
-    let requestURL = '/investment/v1/investments/' + investment.id + '/operations';
-
-    //  show the  spinner while loading the data from the API server
-    $('#loadingSpinner').empty();
-    $('#loadingSpinner').append('<div class="spinner-border text-ligth" role="status"><span class="sr-only">Updating ...</span></div>');
-
-    console.log('[debug] insert payload: ' + JSON.stringify(payload));
-
-    $.ajax({
-        url: requestURL,
-        method: 'POST',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(payload),
-        processData: false,
-        error: function () {
-
-            $('#toastContainer').empty();
-            $('#toastContainer').append('<div class="alert alert-danger" role="alert">'
-                + 'Error trying to add operation to investment data'
-                + '<button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                + '</div>');
-
-            console.log('[debug] Error attempting to add operation');
-
-            showOperationTableDetails(_line);
-            //  hide the spinner and the modal
-            $('#loadingSpinner').empty();
-        },
-        success: (_result) => {
-
-            //  TODO: the same period filter needs to be aplied to the result investment
-            investments[_line - 1] = _result;
-            showOperationTableDetails(_line);
-            //  hide the spinner and the modal
-            $('#loadingSpinner').empty();
-        }
-    });
-
-    $('#operationDetailButtons-' + _line).empty();
 }
 
 /*  *
