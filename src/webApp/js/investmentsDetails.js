@@ -201,6 +201,99 @@ function newOperationCallback(message) {
 
         showAlertMessage(ALERT_INFO, 'New operation sucessfully added');
 
+        //  TODO: need to add the operation to the  full details array
+        showInvestmentTableDetails(shownInvestment);
+    } else {
+
+        showAlertMessage(ALERT_ERROR, message);
+    }
+    hideSpinner();
+}
+
+/*  *
+    * show the input fields to allow editing an operation
+    */
+
+function showEditOperationInputFields(_line, _operationLine) {
+
+    console.log('[debug] show edit operation fields: ' + _line + ' --> ' + _operationLine);
+
+    //  get the investmentId and the operationId to be edited
+    //let investment = investments[_line - 1];
+    //let investmentId = $('#inputInvestmentId-' + _line).val();
+    let investmentId = shownInvestment.id;
+    let operation = shownInvestment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    //  TODO: operation amount should not be formatted, because of the comma separator
+    $('#operationDetail-' + _line + '-' + _operationLine).empty();
+    $('#operationDetail-' + _line + '-' + _operationLine).append('<td>' + _operationLine + '</td>'
+        // TODO: need to difine how to format these two fields for edition
+        + '<td><input type="text" class="form-control mr-sm-2" data-provide="datepicker" aria-label="operation date" id="inputEditOperationDate-' + _line + '" value="' + formatInvDate(operation.date) + '" /></td>'
+        + '<td><input type="text" class="form-control" id="inputEditOperationAmount-' + _line + '" value="' + to_currency(operation.amount) + '"/></td>');
+
+    //$('.datepicker').datepicker({ format: 'dd/mm/yyyy' });
+
+    //  TODO: wonder about a better place to put these buttons
+    $('#operationDetailButtons-' + _line).empty();
+    $('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateInvestmentId" value="' + investmentId + '" />');
+    $('#operationDetailButtons-' + _line).append('<input type="hidden" id="updateOperationId" value="' + operationId + '" />');
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-primary" onclick="confirmEditOperation(' + _line + ', ' + _operationLine + ');">Confirm</button> &nbsp;');
+    $('#operationDetailButtons-' + _line).append('<button type="submit" class="btn btn-outline-secondary" onclick="showOperationTableDetails( ' + _line + ' );">Cancel</button>');
+}
+
+/*  *
+    * Confirm editing an operation
+    */
+
+function confirmEditOperation(_line, _operationLine) {
+
+    let operationDate = $('#inputEditOperationDate-' + _line).val();
+    let operationAmount = Number($('#inputEditOperationAmount-' + _line).val());
+
+    //  check  if all required fields were filled
+    if (0 == operationDate.length) {
+        showAlertMessage(ALERT_ERROR, 'operation date is a required field');
+        return;
+    }
+    if (NaN == operationAmount || 0 >= operationAmount) {
+        showAlertMessage(ALERT_ERROR, 'operation amount is a required number bigger than zero');
+        return;
+    }
+
+    //  get the investmentId and the operationId to be edited
+    let investmentId = shownInvestment.id;
+    let operation = shownInvestment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    //  set the payload data with the fields that were changed
+    let payload = {};
+
+    if (operationDate != operation.date) {
+        payload['date'] = unformatDate(operationDate);
+    }
+    if (operationAmount != operation.amount) {
+        payload['amount'] = operationAmount;
+    }
+
+    //  if any field was changed, patch the operation record
+    if (0 < Object.keys(payload).length) {
+        showSpinner();
+        patchOperation(investmentId, operationId, payload, patchOperationCallback);
+    }
+}
+
+/*  *
+    * Patch operation callback function
+    */
+
+function patchOperationCallback(message) {
+
+    if (0 == message.length) {
+
+        showAlertMessage(ALERT_INFO, 'Operation sucessfully patched');
+
+        //  TODO: need to edit the operation to the  full details array
         showInvestmentTableDetails(shownInvestment);
     } else {
 
