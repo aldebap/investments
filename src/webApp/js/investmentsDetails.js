@@ -10,6 +10,8 @@
 
 let fullDetailsInvestments = [];
 let shownInvestment;
+let editingOperationLine = 0;
+let deletingOperationLine = 0;
 
 /*  *
     * load the full details investment data
@@ -251,6 +253,8 @@ function confirmEditOperation(_line, _operationLine) {
     let operationDate = $('#inputEditOperationDate-' + _line).val();
     let operationAmount = Number($('#inputEditOperationAmount-' + _line).val());
 
+    //  TODO: check the bug where day and month are being swapped during edit operation !
+
     //  check  if all required fields were filled
     if (0 == operationDate.length) {
         showAlertMessage(ALERT_ERROR, 'operation date is a required field');
@@ -294,6 +298,74 @@ function patchOperationCallback(message) {
         showAlertMessage(ALERT_INFO, 'Operation sucessfully patched');
 
         //  TODO: need to edit the operation to the  full details array
+        showInvestmentTableDetails(shownInvestment);
+    } else {
+
+        showAlertMessage(ALERT_ERROR, message);
+    }
+    hideSpinner();
+}
+
+/*  *
+    * show the delete operation modal
+    */
+
+function showDeleteOperationModal(_line, _operationLine) {
+
+    console.log('[debug] showDeleteOperationModal(): ' + _line + ' --> ' + _operationLine);
+
+    //  set the investmentId and the operationId to be deleted
+    //let investment = investments[_line - 1];
+    //let investmentId = $('#inputInvestmentId-' + _line).val();
+    //let operation = investment.operations[_operationLine - 1];
+    //let operationId = operation.id;
+    let investmentId = shownInvestment.id;
+    let operation = shownInvestment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    $('#deleteConfimationMessage').empty();
+    $('#deleteConfimationMessage').append('<p>Delete the $' + to_currency(operation.amount) + ' operation on ' + formatInvDate(operation.date) + ' ?</p>');
+    $('#formDeleteInvestment').empty();
+    $('#formDeleteInvestment').append('<input type="hidden" id="deleteInvestmentId" value="' + investmentId + '" />');
+    $('#formDeleteInvestment').append('<input type="hidden" id="deleteOperationId" value="' + operationId + '" />');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-primary" onclick="confirmDeleteOperation(' + _line + ', ' + _operationLine + ');">Confirm</button> &nbsp;');
+    $('#formDeleteInvestment').append('<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>');
+
+    //  show the new Investment modal
+    $('#confirmExclusion').modal({
+        show: true
+    });
+}
+
+/*  *
+    * Confirm delete an operation
+    */
+
+function confirmDeleteOperation(_line, _operationLine) {
+
+    let investmentId = shownInvestment.id;
+    let operation = shownInvestment.operations[_operationLine - 1];
+    let operationId = operation.id;
+
+    deletingOperationLine = _operationLine;
+
+    showSpinner();
+    deleteOperation(investmentId, operationId, deleteOperationCallback);
+
+    $('#confirmExclusion').modal('hide');
+}
+
+/*  *
+    * Delete operation callback function
+    */
+
+function deleteOperationCallback(message) {
+
+    if (0 == message.length) {
+
+        showAlertMessage(ALERT_INFO, 'Operation sucessfully deleted');
+
+        //  TODO: need to delete the operation to from full details array
         showInvestmentTableDetails(shownInvestment);
     } else {
 
