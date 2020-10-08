@@ -197,17 +197,29 @@ function confirmNewOperation(_line) {
     * New operation callback function
     */
 
-function newOperationCallback(message) {
+function newOperationCallback(_message, _resultOperation) {
 
-    if (0 == message.length) {
+    if (0 == _message.length) {
 
         showAlertMessage(ALERT_INFO, 'New operation sucessfully added');
 
-        //  TODO: need to add the operation to the  full details array
+        console.log('[debug] operation successfully inserted : ' + JSON.stringify(_resultOperation));
+        //  add the new operation to the shown investment and to the full details array
+        shownInvestment.operations.push(_resultOperation);
+
+        let index = 0;
+        fullDetailsInvestments.forEach((investment) => {
+            if (investment.id == shownInvestment.id) {
+                console.log('[debug] full details updated : ' + index + ' --> ' + shownInvestment.id);
+                fullDetailsInvestments[index] = shownInvestment;
+            }
+            index++;
+        });
+
         showInvestmentTableDetails(shownInvestment);
     } else {
 
-        showAlertMessage(ALERT_ERROR, message);
+        showAlertMessage(ALERT_ERROR, _message);
     }
     hideSpinner();
 }

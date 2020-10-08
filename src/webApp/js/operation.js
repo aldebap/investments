@@ -28,12 +28,11 @@ function addNewOperation(_investmentId, _payload, newOperationCallbackFunc) {
         error: () => {
 
             console.log('[debug] Error attempting to add operation');
-            newOperationCallbackFunc('Error trying to add operation data');
+            newOperationCallbackFunc('Error trying to add operation data', {});
         },
         success: (_result) => {
 
-            //  TODO: insert the new investment to investments array
-            newOperationCallbackFunc('');
+            newOperationCallbackFunc('', _result);
         }
     });
 }
