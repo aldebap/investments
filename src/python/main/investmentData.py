@@ -87,7 +87,7 @@ class InvestmentDataFile:
             if investmentId == str(investment.id):
                 return investment.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # fetch all investments from the invetments content
@@ -168,7 +168,7 @@ class InvestmentDataFile:
 
                 return investment.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # delete an investment in the invetments content
@@ -187,7 +187,7 @@ class InvestmentDataFile:
 
             index += 1
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # insert a new operation to an investment item
@@ -196,10 +196,10 @@ class InvestmentDataFile:
         #   trasverse the investments list to fetch the given investment Id
         for investment in self.investment:
             if investmentId == str(investment.id):
-                investment.addOperation(newOperation)
-                return investment.to_json()
+                operationAux = investment.addOperation(newOperation)
+                return operationAux.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # patch an operation item from an investment
@@ -222,7 +222,7 @@ class InvestmentDataFile:
 
                         return operation.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # delete an operation item from an investment
@@ -246,7 +246,7 @@ class InvestmentDataFile:
 
                     index += 1
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # insert a new revenue to an investment item
@@ -258,7 +258,7 @@ class InvestmentDataFile:
                 investment.addRevenue(newRevenue)
                 return investment.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}
 
     # insert a new operation to an investment item
@@ -270,5 +270,5 @@ class InvestmentDataFile:
                 investment.addBalance(newBalance)
                 return investment.to_json()
 
-        #   TODO: need to retunr something here
+        #   TODO: need to return something here
         return {}

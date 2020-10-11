@@ -156,11 +156,10 @@ class APIServer:
     @classmethod
     def patchOperation(cls, investmentId, operationId, operationData):
 
-        #if 'date' not in operationData or 0 == len(operationData['date']):
-        #    abort(400, 'date attribute is required')
-
-        #if 'amount' not in operationData or 0 == operationData['amount']:
-        #    abort(400, 'amount attribute is required')
+        #   TODO: is there a way to use parenthesis in python's conditionals ???
+        if 'date' not in operationData or 0 == len(operationData['date']):
+            if 'amount' not in operationData or 0 == operationData['amount']:
+                abort(400, 'at least one field to patch is required')
 
         result = cls._singleInstance.investmentDataFile.patchOperation(investmentId, operationId, operationData)
 

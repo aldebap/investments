@@ -123,9 +123,12 @@ class Investment:
 
     # add a new operation to the investment data
     def addOperation(self, newOperation):
-        self.operation.append(Operation.unserialize(newOperation))
+        operationAux = Operation.unserialize(newOperation)
 
+        self.operation.append(operationAux)
         self.operation = sorted(self.operation, reverse=True)
+
+        return operationAux
 
     # add a new revenue to the investment data
     def addRevenue(self, newRevenue):
